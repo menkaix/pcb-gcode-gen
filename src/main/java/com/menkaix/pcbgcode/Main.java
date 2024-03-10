@@ -1,5 +1,6 @@
 package com.menkaix.pcbgcode ;
 
+import com.menkaix.project.GcodeProject;
 import com.menkaix.writegcode.GcodeFileWriter;
 
 /**
@@ -10,12 +11,9 @@ public class Main {
     
     public static void main(String[] args) {
     	
-    	GcodeFileWriter gfw = new GcodeFileWriter("test.nc") ;
+    	GcodeProject prj = new GcodeProject();
     	
-    	gfw.initializeGcode();
-    	gfw.finalizeGcode();
-    	
-    	gfw.write();
+    	prj.writeGcode();
     	
     }
     
