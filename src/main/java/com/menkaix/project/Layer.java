@@ -2,8 +2,6 @@ package com.menkaix.project;
 
 import java.util.List;
 
-import com.menkaix.geometry.GcodeObject;
-
 public class Layer {
 	
 	private int passes ;

@@ -13,9 +13,9 @@ public class GcodeFileWriter {
 	private List<String> gcodes;
 
 	public void initializeGcode() {
-		gcodes.add("M3 S0");
-		gcodes.add("S0");
-		gcodes.add("G0 X0 Y0");
+		gcodes.add("M3 S0"); //set rotation clockwise, no spin
+//		gcodes.add("S0");
+		gcodes.add("G0 X0 Y0"); //
 		gcodes.add("S1000");
 
 	}

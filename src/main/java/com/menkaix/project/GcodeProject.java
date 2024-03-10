@@ -4,7 +4,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.menkaix.geometry.GcodeObject;
 import com.menkaix.writegcode.GcodeFileWriter;
 
 public class GcodeProject {

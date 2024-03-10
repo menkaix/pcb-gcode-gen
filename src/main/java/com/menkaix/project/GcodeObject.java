@@ -1,4 +1,4 @@
-package com.menkaix.geometry;
+package com.menkaix.project;
 
 public interface GcodeObject {
 	
