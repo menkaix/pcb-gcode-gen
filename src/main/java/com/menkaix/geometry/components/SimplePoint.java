@@ -1,4 +1,4 @@
-package com.menkaix.geometry.basics;
+package com.menkaix.geometry.components;
 
 import java.io.Serializable;
 

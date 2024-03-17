@@ -1,0 +1,17 @@
+{
+  "bitHead": "LASER",
+  "layers": [
+    {
+      "layerName": "default",
+      "passes": 0,
+      "elements": []
+    },
+    {
+      "layerName": "work",
+      "passes": 15,
+      "elements": []
+    }
+  ],
+  "projectName": "mangatsika",
+  "projectFolder": ""
+}

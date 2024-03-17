@@ -1,10 +1,10 @@
-package com.menkaix.geometry.figures;
+package com.menkaix.geometry.colliders;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.menkaix.geometry.basics.SimplePoint;
-import com.menkaix.geometry.basics.Vector;
+import com.menkaix.geometry.components.SimplePoint;
+import com.menkaix.geometry.components.Vector;
 
 public class PolygonCollider implements Collider{
 
@@ -45,6 +45,12 @@ public class PolygonCollider implements Collider{
 		}
 
 		return false;
+	}
+
+	@Override
+	public void update() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

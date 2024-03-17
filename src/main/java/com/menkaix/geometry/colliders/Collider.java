@@ -1,6 +1,6 @@
-package com.menkaix.geometry.figures;
+package com.menkaix.geometry.colliders;
 
-import com.menkaix.geometry.basics.SimplePoint;
+import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.project.Behaviour;
 
 public interface Collider extends Behaviour{

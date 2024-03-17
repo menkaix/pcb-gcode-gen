@@ -1,7 +1,7 @@
-package com.menkaix.geometry.figures;
+package com.menkaix.geometry.colliders;
 
-import com.menkaix.geometry.basics.SimplePoint;
-import com.menkaix.geometry.basics.Vector;
+import com.menkaix.geometry.components.SimplePoint;
+import com.menkaix.geometry.components.Vector;
 
 public class Parallellepipede extends PolygonCollider {
 	

@@ -1,9 +1,10 @@
 package com.menkaix.project;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-import com.menkaix.geometry.drawable.Element;
+import com.menkaix.elements.Element;
 
 public class Layer  implements Serializable{
 	
@@ -11,11 +12,18 @@ public class Layer  implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -2179868110874128997L;
+	
+	private String layerName ;
 
 	private int passes ;
 	
-	private List<Element> elements ;
+	private List<Element> elements = new ArrayList<Element>();
 
+	
+	public Layer(String name) {
+		setLayerName(name);
+	}
+	
 	public int getPasses() {
 		return passes;
 	}
@@ -30,6 +38,14 @@ public class Layer  implements Serializable{
 
 	public void setElements(List<Element> elements) {
 		this.elements = elements;
+	}
+
+	public String getLayerName() {
+		return layerName;
+	}
+
+	public void setLayerName(String layerName) {
+		this.layerName = layerName;
 	}
 	
 
