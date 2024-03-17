@@ -1,5 +1,7 @@
 package com.menkaix.project;
 
+import com.menkaix.geometry.components.SimplePoint;
+
 public class ClosedLineGcodePath implements GcodeBehaviour {
 	
 	private Geometry geometry ;
@@ -17,9 +19,31 @@ public class ClosedLineGcodePath implements GcodeBehaviour {
 	}
 
 	@Override
-	public String getGcode() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getGcode(GcodeProject project) {
+		
+		String ans = "\n" ;
+		
+		
+		
+		ans += "G0 X"+geometry.getPoints().get(0).getX()+" Y"+geometry.getPoints().get(0).getY()+" Z"+(project.getPass()*project.getPassIncrement())+"\n" ;
+		ans += "S"+power+"\n" ;
+		
+		for(int i = 1 ; i<geometry.getPoints().size() ; i++) {
+			SimplePoint point = geometry.getPoints().get(i);
+			
+			ans += "G1 X"+geometry.getPoints().get(i).getX()+" Y"+geometry.getPoints().get(i).getY()+" Z"+(project.getPass()*project.getPassIncrement())+" F"+feedRate+"\n" ;
+			
+		}
+		
+		ans += "G1 X"+geometry.getPoints().get(0).getX()+" Y"+geometry.getPoints().get(0).getY()+" Z"+(project.getPass()*project.getPassIncrement())+" F"+feedRate+"\n" ;
+		
+		
+		//retrait ici en cas de fraiseuse (avant S0)
+		if(project.getBitHead() == BitHead.ROTOR) {
+			ans += "G0 Z"+project.getSafeLevel() + "\n" ;
+		}		
+		ans += "S0\n" ;
+		return ans;
 	}
 
 	public Geometry getGeometry() {

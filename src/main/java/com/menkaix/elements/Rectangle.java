@@ -23,9 +23,26 @@ public class Rectangle implements Element{
 
 	ArrayList<Behaviour> behaviours = new ArrayList<Behaviour>() ;
 	
-	public String name ;
+	public String elementName ;
+	public void setBehaviours(ArrayList<Behaviour> behaviours) {
+		this.behaviours = behaviours;
+	}
+
+	private double x = 0;
+	private double y = 0;
+	private double width = 10;
+	private double height = 10;
+	
+	public Rectangle() {
+		
+	}
 	
 	public Rectangle(String name, double x, double y, double width, double height) {
+		
+		setX(x);
+		setY(y);
+		setWidth(width);
+		setHeight(height);
 		
 		PolyGone polygonGeometry = new PolyGone();
 		polygonGeometry.addPoint(x, y);
@@ -39,14 +56,51 @@ public class Rectangle implements Element{
 
 	@Override
 	public String getElementName() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return elementName;
+	}
+
+	@Override
+	public void setElementName(String name) {
+		elementName = name ;
 	}
 
 	@Override
 	public List<Behaviour> getBehaviours() {
-		// TODO Auto-generated method stub
+		
 		return behaviours;
+	}
+
+	public double getX() {
+		return x;
+	}
+
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	public double getY() {
+		return y;
+	}
+
+	public void setY(double y) {
+		this.y = y;
+	}
+
+	public double getWidth() {
+		return width;
+	}
+
+	public void setWidth(double width) {
+		this.width = width;
+	}
+
+	public double getHeight() {
+		return height;
+	}
+
+	public void setHeight(double height) {
+		this.height = height;
 	}
 
 }

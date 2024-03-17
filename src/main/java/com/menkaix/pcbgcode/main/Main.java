@@ -1,5 +1,6 @@
 package com.menkaix.pcbgcode.main ;
 
+import com.menkaix.elements.Rectangle;
 import com.menkaix.pcbgcode.utilities.DuplicateLayerNameException;
 import com.menkaix.project.BitHead;
 import com.menkaix.project.GcodeProject;
@@ -19,7 +20,7 @@ public class Main {
     	Layer work = new Layer("work");
     	work.setPasses(15);
     	
-    	
+    	work.getElements().add(new Rectangle("Power Switch", 10, 10, 10, 12)) ;
     	
     	try {
 			prj.addLayer(work);

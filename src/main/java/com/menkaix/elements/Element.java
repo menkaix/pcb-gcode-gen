@@ -8,6 +8,7 @@ import com.menkaix.project.Behaviour;
 public interface Element extends Serializable {
 	
 	public String getElementName() ;
+	public void setElementName(String name) ;
 	
 	public List<Behaviour> getBehaviours();
 	

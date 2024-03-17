@@ -9,9 +9,73 @@
     {
       "layerName": "work",
       "passes": 15,
-      "elements": []
+      "elements": [
+        {
+          "behaviours": [
+            {
+              "points": [
+                {
+                  "x": 10.0,
+                  "y": 10.0,
+                  "z": 0.0
+                },
+                {
+                  "x": 20.0,
+                  "y": 10.0,
+                  "z": 0.0
+                },
+                {
+                  "x": 20.0,
+                  "y": 22.0,
+                  "z": 0.0
+                },
+                {
+                  "x": 10.0,
+                  "y": 22.0,
+                  "z": 0.0
+                }
+              ]
+            },
+            {
+              "geometry": {
+                "points": [
+                  {
+                    "x": 10.0,
+                    "y": 10.0,
+                    "z": 0.0
+                  },
+                  {
+                    "x": 20.0,
+                    "y": 10.0,
+                    "z": 0.0
+                  },
+                  {
+                    "x": 20.0,
+                    "y": 22.0,
+                    "z": 0.0
+                  },
+                  {
+                    "x": 10.0,
+                    "y": 22.0,
+                    "z": 0.0
+                  }
+                ]
+              },
+              "feedRate": 100.0,
+              "power": 1000.0
+            }
+          ],
+          "x": 10.0,
+          "y": 10.0,
+          "width": 10.0,
+          "height": 12.0
+        }
+      ]
     }
   ],
   "projectName": "mangatsika",
-  "projectFolder": ""
+  "projectFolder": "",
+  "safeLevel": -1.0,
+  "pass": 0,
+  "passIncrement": 0.0
 }
