@@ -1,6 +1,6 @@
 package com.menkaix.project;
 
-public interface GcodeObject {
+public interface GcodeBehaviour extends Behaviour {
 	
 	public String getGcode() ;
 

@@ -20,7 +20,7 @@ public class GcodeProject {
 		gfw.initializeGcode();
 
 		for (Layer layer : layers) {
-			for (GcodeObject gcodeObject : layer.getElements()) {
+			for (GcodeBehaviour gcodeObject : layer.getElements()) {
 
 				gfw.getGcodes().add(gcodeObject.getGcode());
 

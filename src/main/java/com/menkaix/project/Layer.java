@@ -6,7 +6,7 @@ public class Layer {
 	
 	private int passes ;
 	
-	private List<GcodeObject> elements ;
+	private List<GcodeBehaviour> elements ;
 
 	public int getPasses() {
 		return passes;
@@ -16,11 +16,11 @@ public class Layer {
 		this.passes = passes;
 	}
 
-	public List<GcodeObject> getElements() {
+	public List<GcodeBehaviour> getElements() {
 		return elements;
 	}
 
-	public void setElements(List<GcodeObject> elements) {
+	public void setElements(List<GcodeBehaviour> elements) {
 		this.elements = elements;
 	}
 	

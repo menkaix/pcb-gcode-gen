@@ -6,12 +6,13 @@ import java.util.List;
 import com.menkaix.geometry.basics.SimplePoint;
 import com.menkaix.geometry.basics.Vector;
 
-public class Figure {
+public class PolygonCollider implements Collider{
 
 	
 
 	public List<Vector> edges = new ArrayList<Vector>();
 
+	@Override
 	public boolean contains(SimplePoint point) {
 		// TODO Value !!!
 		Vector probe = new Vector(point, new SimplePoint(point.getX() + 1000, point.getY(), point.getZ()));
@@ -28,7 +29,8 @@ public class Figure {
 
 	}
 
-	public boolean collides(Figure other) {
+	@Override
+	public boolean collides(PolygonCollider other) {
 
 		for (Vector myV : edges) {
 			for (Vector othV : other.edges) {

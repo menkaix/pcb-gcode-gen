@@ -3,7 +3,7 @@ package com.menkaix.geometry.figures;
 import com.menkaix.geometry.basics.SimplePoint;
 import com.menkaix.geometry.basics.Vector;
 
-public class Parallellepipede extends Figure {
+public class Parallellepipede extends PolygonCollider {
 	
 	public Parallellepipede(SimplePoint o,SimplePoint i, SimplePoint j) {
 		
