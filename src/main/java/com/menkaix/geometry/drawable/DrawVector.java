@@ -2,11 +2,14 @@ package com.menkaix.geometry.drawable;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.menkaix.geometry.basics.SimplePoint;
 import com.menkaix.geometry.basics.Vector;
+import com.menkaix.project.Behaviour;
 
-public class DrawVector extends Vector implements Drawable {
+public class DrawVector extends Vector implements Element {
 
 	/**
 	 * 
@@ -25,15 +28,15 @@ public class DrawVector extends Vector implements Drawable {
 		super(x, y, z);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public DrawVector(SimplePoint pOrigin, SimplePoint pEnd) {
-		super(pOrigin, pEnd) ;
+		super(pOrigin, pEnd);
 	}
 
 	public void draw(Graphics graphics) {
 
 		graphics.setColor(color);
-		
+
 		graphics.drawLine((int) origin.getX(), (int) origin.getY(), (int) end.getX(), (int) end.getY());
 
 		// X ey Y pour le coin supérieur gauche
@@ -59,14 +62,22 @@ public class DrawVector extends Vector implements Drawable {
 	}
 
 	public void setColor(Color color) {
-		
+
 		this.color = color;
-		
+
+	}
+
+	private ArrayList<Behaviour> behaviours = new ArrayList<Behaviour>();
+
+	@Override
+	public List<Behaviour> getBehaviours() {
+		// TODO Auto-generated method stub
+		return behaviours;
 	}
 
 	public void update() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

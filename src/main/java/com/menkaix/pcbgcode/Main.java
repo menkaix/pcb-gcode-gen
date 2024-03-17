@@ -15,6 +15,8 @@ public class Main {
     	
     	prj.writeGcode();
     	
+    	System.out.println("done");
+    	
     }
     
 }

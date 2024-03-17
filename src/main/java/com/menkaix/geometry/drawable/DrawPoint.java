@@ -2,10 +2,13 @@ package com.menkaix.geometry.drawable;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.menkaix.geometry.basics.SimplePoint;
+import com.menkaix.project.Behaviour;
 
-public class DrawPoint extends SimplePoint implements Drawable {
+public class DrawPoint extends SimplePoint implements Element {
 
 	/**
 	 * 
@@ -52,6 +55,14 @@ public class DrawPoint extends SimplePoint implements Drawable {
 	public void update() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	private ArrayList<Behaviour> behaviours = new ArrayList<Behaviour>() ;
+	
+	@Override
+	public List<Behaviour> getBehaviours() {
+		// TODO Auto-generated method stub
+		return behaviours;
 	}
 
 }

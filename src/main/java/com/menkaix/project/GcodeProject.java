@@ -1,13 +1,19 @@
 package com.menkaix.project;
 
+import java.io.Serializable;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.menkaix.geometry.drawable.Element;
 import com.menkaix.writegcode.GcodeFileWriter;
 
-public class GcodeProject {
+public class GcodeProject implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2312883204979979860L;
 	private BitHead bitHead = BitHead.LASER;
 	private List<Layer> layers = new ArrayList<Layer>();
 	private String projectName = "cool.nc";
@@ -20,9 +26,15 @@ public class GcodeProject {
 		gfw.initializeGcode();
 
 		for (Layer layer : layers) {
-			for (GcodeBehaviour gcodeObject : layer.getElements()) {
+			for (Element gcodeObject : layer.getElements()) {
+				
+				for(Behaviour behaviour : gcodeObject.getBehaviours()) {
+					if(behaviour instanceof GcodeBehaviour) {
+						gfw.getGcodes().add(((GcodeBehaviour)behaviour).getGcode());
+					}
+				}
 
-				gfw.getGcodes().add(gcodeObject.getGcode());
+				
 
 			}
 		}
