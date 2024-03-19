@@ -7,6 +7,7 @@ import java.util.List;
 import com.menkaix.geometry.basic.PolyGone;
 import com.menkaix.project.Behaviour;
 import com.menkaix.project.ClosedLineGcodePath;
+import com.menkaix.project.Geometry;
 
 /**
  * 
@@ -23,17 +24,26 @@ public class Rectangle implements Element{
 
 	ArrayList<Behaviour> behaviours = new ArrayList<Behaviour>() ;
 	
-	public String elementName ;
-	public void setBehaviours(ArrayList<Behaviour> behaviours) {
-		this.behaviours = behaviours;
-	}
-
+	private String name ;
+	
 	private double x = 0;
 	private double y = 0;
 	private double width = 10;
 	private double height = 10;
 	
+	private Geometry geometry ;
+	
 	public Rectangle() {
+		
+	}
+	
+	private void updateGeometry() {
+		
+		geometry = new PolyGone();
+		geometry.addPoint(x, y);
+		geometry.addPoint(x+width, y);
+		geometry.addPoint(x+width, y+height);
+		geometry.addPoint(x, y+height);
 		
 	}
 	
@@ -44,25 +54,21 @@ public class Rectangle implements Element{
 		setWidth(width);
 		setHeight(height);
 		
-		PolyGone polygonGeometry = new PolyGone();
-		polygonGeometry.addPoint(x, y);
-		polygonGeometry.addPoint(x+width, y);
-		polygonGeometry.addPoint(x+width, y+height);
-		polygonGeometry.addPoint(x, y+height);
+		//updateGeometry();
 		
-		behaviours.add(polygonGeometry);
-		behaviours.add(new ClosedLineGcodePath(polygonGeometry));
+		behaviours.add(geometry);
+		behaviours.add(new ClosedLineGcodePath(geometry));
 	}
 
 	@Override
 	public String getElementName() {
 		
-		return elementName;
+		return name;
 	}
 
 	@Override
 	public void setElementName(String name) {
-		elementName = name ;
+		this.name = name ;
 	}
 
 	@Override
@@ -77,6 +83,7 @@ public class Rectangle implements Element{
 
 	public void setX(double x) {
 		this.x = x;
+		updateGeometry();
 	}
 
 	public double getY() {
@@ -84,7 +91,9 @@ public class Rectangle implements Element{
 	}
 
 	public void setY(double y) {
+		
 		this.y = y;
+		updateGeometry();
 	}
 
 	public double getWidth() {
@@ -93,6 +102,7 @@ public class Rectangle implements Element{
 
 	public void setWidth(double width) {
 		this.width = width;
+		updateGeometry();
 	}
 
 	public double getHeight() {
@@ -101,6 +111,27 @@ public class Rectangle implements Element{
 
 	public void setHeight(double height) {
 		this.height = height;
+		updateGeometry();
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setBehaviours(ArrayList<Behaviour> behaviours) {
+		this.behaviours = behaviours;
+	}
+
+	public Geometry getGeometry() {
+		return geometry;
+	}
+
+	public void setGeometry(Geometry geometry) {
+		this.geometry = geometry;
 	}
 
 }
