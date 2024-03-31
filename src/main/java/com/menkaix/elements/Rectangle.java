@@ -14,23 +14,22 @@ import com.menkaix.writegcode.ClosedLineGcodePath;
  * rectangle which is drawn clockwise from origin
  * 
  */
-public class Rectangle implements Element{
+public class Rectangle extends Element{
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7163875443583767850L;
 
-	ArrayList<Behaviour> behaviours = new ArrayList<Behaviour>() ;
-	
+	private transient ArrayList<Behaviour> behaviours = new ArrayList<Behaviour>() ;	
+	private transient Geometry geometry ;
+
 	private String name = "rectangle";
 	
 	private double x = 0;
 	private double y = 0;
 	private double width = 10;
 	private double height = 10;
-	
-	private Geometry geometry ;
 	
 	private void updateGeometry() {
 		

@@ -5,12 +5,12 @@ import java.util.List;
 
 import com.menkaix.project.Behaviour;
 
-public interface Element extends Serializable {
+public abstract class Element implements Serializable {
 	
-	public String getElementName() ;
-	public void setElementName(String name) ;
+	public  abstract  String getElementName() ;
+	public abstract  void setElementName(String name) ;
 	
-	public List<Behaviour> getBehaviours();
+	public  abstract  List<Behaviour> getBehaviours();
 	
 
 }

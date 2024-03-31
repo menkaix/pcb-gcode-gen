@@ -10,20 +10,21 @@ import com.menkaix.project.Geometry;
 import com.menkaix.project.RotationDirection;
 import com.menkaix.writegcode.ArcGcodePath;
 
-public class ArcPath   implements Element{
+public class ArcPath   extends  Element{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6371348113906900012L;
+	
+	private transient List<Behaviour> behaviours = new ArrayList<Behaviour>();
+	private transient Geometry geometry ;
+	
 	private String name = "arc";
-	private List<Behaviour> behaviours = new ArrayList<Behaviour>();
 	
 	private SimplePoint from ;
 	private SimplePoint to ;
 	private double radius ;
-	
-	private Geometry geometry ;
 	
 	public ArcPath(SimplePoint from, SimplePoint to, double radius, RotationDirection direction) {
 		

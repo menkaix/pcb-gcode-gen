@@ -11,11 +11,11 @@ import com.menkaix.project.RotationDirection;
 import com.menkaix.writegcode.ArcGcodePath;
 import com.menkaix.writegcode.ClosedLineGcodePath;
 
-public class Circle implements Element {
+public class Circle extends Element {
 
 	private static final long serialVersionUID = -3192960479843484058L;
 
-	private ArrayList<Behaviour> behaviours = new ArrayList<Behaviour>();
+	private transient ArrayList<Behaviour> behaviours = new ArrayList<Behaviour>();
 
 	private String name = "circle";
 
