@@ -1,6 +1,5 @@
 package com.menkaix.writegcode;
 
-import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.project.BitHead;
 import com.menkaix.project.GcodeBehaviour;
 import com.menkaix.project.GcodeProject;
@@ -13,8 +12,8 @@ public class ArcGcodePath implements GcodeBehaviour {
 	private RotationDirection direction;
 	private double radius;
 
-	private double feedRate = 100;
-	private double power = 1000;
+	private Double feedRate;
+	private Double power;
 
 	public double getPower() {
 		return power;
@@ -41,6 +40,14 @@ public class ArcGcodePath implements GcodeBehaviour {
 	public String getGcode(GcodeProject project) {
 
 		String ans = "\n";
+		
+		if(feedRate==null) {
+			feedRate = project.getFeedRate();
+		}
+		
+		if(power==null) {
+			power = project.getPower();
+		}
 
 		// retrait ici en cas de fraiseuse (avant S0)
 		if (project.getBitHead() == BitHead.ROTOR) {
@@ -110,11 +117,15 @@ public class ArcGcodePath implements GcodeBehaviour {
 		this.radius = radius;
 	}
 
-	public double getFeedRate() {
+	public Double getFeedRate() {
 		return feedRate;
 	}
 
-	public void setFeedRate(double feedRate) {
+	public void setPower(Double power) {
+		this.power = power;
+	}
+
+	public void setFeedRate(Double feedRate) {
 		this.feedRate = feedRate;
 	}
 

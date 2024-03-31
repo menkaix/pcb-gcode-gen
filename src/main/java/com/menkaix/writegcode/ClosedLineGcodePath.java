@@ -9,8 +9,8 @@ import com.menkaix.project.Geometry;
 public class ClosedLineGcodePath implements GcodeBehaviour {
 
 	private Geometry geometry;
-	private double feedRate = 100;
-	private double power = 1000;
+	private Double feedRate;
+	private Double power;
 
 	public ClosedLineGcodePath(Geometry geometry) {
 		setGeometry(geometry);
@@ -26,6 +26,14 @@ public class ClosedLineGcodePath implements GcodeBehaviour {
 	public String getGcode(GcodeProject project) {
 
 		String ans = "\n";
+		
+		if(feedRate==null) {
+			feedRate = project.getFeedRate();
+		}
+		
+		if(power==null) {
+			power = project.getPower();
+		}
 
 		// retrait ici en cas de fraiseuse (avant S0)
 		if (project.getBitHead() == BitHead.ROTOR) {
@@ -62,19 +70,19 @@ public class ClosedLineGcodePath implements GcodeBehaviour {
 		this.geometry = geometry;
 	}
 
-	public double getFeedRate() {
+	public Double getFeedRate() {
 		return feedRate;
 	}
 
-	public void setFeedRate(double feedRate) {
+	public void setFeedRate(Double feedRate) {
 		this.feedRate = feedRate;
 	}
 
-	public double getPower() {
+	public Double getPower() {
 		return power;
 	}
 
-	public void setPower(double power) {
+	public void setPower(Double power) {
 		this.power = power;
 	}
 

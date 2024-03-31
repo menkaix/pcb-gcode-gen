@@ -30,6 +30,9 @@ public class GcodeProject implements Serializable {
 	private int pass = 0 ;
 	private double passIncrement= 0 ;
 	
+	private Double feedRate;
+	private Double power;
+	
 	
 	public void saveJson(String fileName) {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -117,6 +120,8 @@ public class GcodeProject implements Serializable {
 	public GcodeProject(String name, BitHead head) {
 		setProjectName(name);
 		setBitHead(head);
+		setFeedRate(500d);
+		setPower(1000d);
 		try {
 			addLayer(new Layer("default"));
 		} catch (DuplicateLayerNameException e) {
@@ -171,6 +176,22 @@ public class GcodeProject implements Serializable {
 
 	public void setPassIncrement(double passIncrement) {
 		this.passIncrement = passIncrement;
+	}
+
+	public Double getFeedRate() {
+		return feedRate;
+	}
+
+	public void setFeedRate(Double feedRate) {
+		this.feedRate = feedRate;
+	}
+
+	public Double getPower() {
+		return power;
+	}
+
+	public void setPower(Double power) {
+		this.power = power;
 	}
 
 }
