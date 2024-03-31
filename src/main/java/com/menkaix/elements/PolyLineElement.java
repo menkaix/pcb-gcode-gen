@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.menkaix.geometry.basic.PolyLine;
+import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.project.Behaviour;
 import com.menkaix.project.Geometry;
 import com.menkaix.project.LineGcodePath;
@@ -21,6 +22,28 @@ public class PolyLineElement  implements Element {
 	private Geometry geometry ;
 	
 	
+	public void addPoint(double x, double y) {
+		geometry.addPoint(x, y);
+	}
+	
+	public void removePointAt(int index) {
+		try {
+			geometry.getPoints().remove(index);
+		}
+		catch(IndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void addPointAt(double x, double y, int index) {
+		try {
+			geometry.getPoints().add(index, new SimplePoint(x, y));
+		}
+		catch(IndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 	public PolyLineElement() {
 		
@@ -33,7 +56,7 @@ public class PolyLineElement  implements Element {
 	
 	@Override
 	public String getElementName() {
-		// TODO Auto-generated method stub
+		
 		return name;
 	}
 

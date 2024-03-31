@@ -1,6 +1,5 @@
 package com.menkaix.elements;
 
-import java.awt.Polygon;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,10 +32,6 @@ public class Rectangle implements Element{
 	
 	private Geometry geometry ;
 	
-	public Rectangle() {
-		
-	}
-	
 	private void updateGeometry() {
 		
 		geometry = new PolyGone();
@@ -44,6 +39,10 @@ public class Rectangle implements Element{
 		geometry.addPoint(x+width, y);
 		geometry.addPoint(x+width, y+height);
 		geometry.addPoint(x, y+height);
+		
+	}
+
+	public Rectangle() {
 		
 	}
 	
