@@ -16,7 +16,7 @@ public class ArcPath   implements Element{
 	 * 
 	 */
 	private static final long serialVersionUID = -6371348113906900012L;
-	private String name;
+	private String name = "arc";
 	private List<Behaviour> behaviours = new ArrayList<Behaviour>();
 	
 	private SimplePoint from ;
@@ -27,7 +27,8 @@ public class ArcPath   implements Element{
 	
 	public ArcPath(SimplePoint from, SimplePoint to, double radius, RotationDirection direction) {
 		
-		setGeometry(new PointCouple(from, to));
+		geometry = new PointCouple(from, to);
+				
 		
 		behaviours.add(geometry);
 		behaviours.add(new ArcGcodePath(geometry, direction, radius));

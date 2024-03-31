@@ -23,7 +23,7 @@ public class Rectangle implements Element{
 
 	ArrayList<Behaviour> behaviours = new ArrayList<Behaviour>() ;
 	
-	private String name ;
+	private String name = "rectangle";
 	
 	private double x = 0;
 	private double y = 0;

@@ -28,7 +28,7 @@ public class Main {
 		
 		ArcPath arc = new ArcPath(
 				new SimplePoint(25,30), 
-				new SimplePoint(34,14), 200, RotationDirection.CLOCKWISE);
+				new SimplePoint(34,14), 20, RotationDirection.CLOCKWISE);
 				
 
 		PolyLineElement line = new PolyLineElement();

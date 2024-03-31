@@ -16,7 +16,7 @@ public class GcodeFileWriter {
 		gcodes.add("M3 S0"); //set rotation clockwise, no spin
 //		gcodes.add("S0");
 		gcodes.add("G0 X0 Y0"); //
-		gcodes.add("S1000");
+//		gcodes.add("S1000");
 
 	}
 

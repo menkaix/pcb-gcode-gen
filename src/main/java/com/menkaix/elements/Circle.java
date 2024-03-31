@@ -17,7 +17,7 @@ public class Circle implements Element {
 
 	private ArrayList<Behaviour> behaviours = new ArrayList<Behaviour>();
 
-	private String name;
+	private String name = "circle";
 
 	private SimplePoint center;
 	private double radius;

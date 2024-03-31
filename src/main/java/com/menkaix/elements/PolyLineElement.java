@@ -15,7 +15,7 @@ public class PolyLineElement  implements Element {
 	 * 
 	 */
 	private static final long serialVersionUID = 3991844004612215411L;
-	private String name ;
+	private String name = "polyline" ;
 	
 	private List<Behaviour> behaviours = new ArrayList<Behaviour>();
 	

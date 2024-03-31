@@ -195,7 +195,7 @@
                 ]
               },
               "direction": "CLOCKWISE",
-              "radius": 200.0,
+              "radius": 20.0,
               "feedRate": 100.0,
               "power": 1000.0
             }
