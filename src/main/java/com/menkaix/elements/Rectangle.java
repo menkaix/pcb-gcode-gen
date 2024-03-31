@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.menkaix.geometry.basic.PolyGone;
 import com.menkaix.project.Behaviour;
-import com.menkaix.project.ClosedLineGcodePath;
 import com.menkaix.project.Geometry;
+import com.menkaix.writegcode.ClosedLineGcodePath;
 
 /**
  * 

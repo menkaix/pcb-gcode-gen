@@ -7,7 +7,7 @@ import com.menkaix.geometry.basic.PolyLine;
 import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.project.Behaviour;
 import com.menkaix.project.Geometry;
-import com.menkaix.project.LineGcodePath;
+import com.menkaix.writegcode.LineGcodePath;
 
 public class PolyLineElement  implements Element {
 
