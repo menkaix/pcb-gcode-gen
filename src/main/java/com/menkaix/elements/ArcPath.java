@@ -1,11 +1,7 @@
 package com.menkaix.elements;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.menkaix.geometry.basic.PointCouple;
 import com.menkaix.geometry.components.SimplePoint;
-import com.menkaix.project.Behaviour;
 import com.menkaix.project.Geometry;
 import com.menkaix.project.RotationDirection;
 import com.menkaix.writegcode.ArcGcodePath;
@@ -17,19 +13,21 @@ public class ArcPath   extends  Element{
 	 */
 	private static final long serialVersionUID = -6371348113906900012L;
 	
-	private transient List<Behaviour> behaviours = new ArrayList<Behaviour>();
 	private transient Geometry geometry ;
 	
-	private String name = "arc";
-	
-	private SimplePoint from ;
-	private SimplePoint to ;
-	private double radius ;
+//	private SimplePoint from ;
+//	private SimplePoint to ;
+//	private double radius ;
 	
 	public ArcPath(SimplePoint from, SimplePoint to, double radius, RotationDirection direction) {
 		
+		setProperty("from", from);
+		setProperty("to", to);
+		setProperty("radius", radius);
+		setProperty("direction", direction);
+		
+		
 		geometry = new PointCouple(from, to);
-				
 		
 		behaviours.add(geometry);
 		behaviours.add(new ArcGcodePath(geometry, direction, radius));
@@ -37,46 +35,28 @@ public class ArcPath   extends  Element{
 		
 	}
 
-	@Override
-	public String getElementName() {
-		
-		return this.name;
-	}
-
-	@Override
-	public void setElementName(String name) {
-		this.name = name ;
-		
-	}
-
-	@Override
-	public List<Behaviour> getBehaviours() {
-		
-		return this.behaviours  ;
-	}
-
 	public SimplePoint getFrom() {
-		return from;
+		return (SimplePoint)getProperty("from");
 	}
 
 	public void setFrom(SimplePoint from) {
-		this.from = from;
+		setProperty("from", from); 
 	}
 
 	public SimplePoint getTo() {
-		return to;
+		return (SimplePoint)getProperty("to");
 	}
 
 	public void setTo(SimplePoint to) {
-		this.to = to;
+		setProperty("to", to); 
 	}
 
 	public double getRadius() {
-		return radius;
+		return (Double)getProperty("radius");
 	}
 
 	public void setRadius(double radius) {
-		this.radius = radius;
+		setProperty("radius", radius); 
 	}
 
 	public Geometry getGeometry() {

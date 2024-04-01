@@ -21,13 +21,14 @@ public class GcodeProject implements Serializable {
 	 */
 	private static final long serialVersionUID = 2312883204979979860L;
 	
+	private transient int pass = 0 ;
+
 	private BitHead bitHead = BitHead.LASER;
 	private List<Layer> layers = new ArrayList<Layer>();
 	private String projectName = "cool";
 	private String projectFolder = "";
 
 	private double safeLevel = -1 ;
-	private int pass = 0 ;
 	private double passIncrement= 0 ;
 	
 	private Double feedRate;
@@ -192,6 +193,17 @@ public class GcodeProject implements Serializable {
 
 	public void setPower(Double power) {
 		this.power = power;
+	}
+
+	public Layer getLayer(String string) {
+		
+		for (Layer layer : layers) {
+			if(layer.getLayerName().equalsIgnoreCase(string)) {
+				return layer ;
+			}
+		}
+		
+		return null;
 	}
 
 }

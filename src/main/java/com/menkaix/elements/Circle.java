@@ -17,10 +17,8 @@ public class Circle extends Element {
 
 	private transient ArrayList<Behaviour> behaviours = new ArrayList<Behaviour>();
 
-	private String name = "circle";
-
-	private SimplePoint center;
-	private double radius;
+//	private SimplePoint center;
+//	private double radius;
 
 	public Circle(SimplePoint center, double radius) {
 
@@ -38,26 +36,16 @@ public class Circle extends Element {
 			}
 		}
 		
-		SimplePoint p1 = new SimplePoint(center.getX()-radius, center.getY());
-		SimplePoint p2 = new SimplePoint(center.getX()+radius, center.getY());
+		SimplePoint p1 = new SimplePoint(getCenter().getX()-getRadius(), getCenter().getY());
+		SimplePoint p2 = new SimplePoint(getCenter().getX()+getRadius(), getCenter().getY());
 		
 		PointCouple points = new PointCouple(p1, p2);
 		
-		behaviours.add(new ArcGcodePath(points, RotationDirection.CLOCKWISE, radius));
-		behaviours.add(new ArcGcodePath(points, RotationDirection.COUNTER_CLOCKWISE, radius));
+		behaviours.add(new ArcGcodePath(points, RotationDirection.CLOCKWISE, getRadius()));
+		behaviours.add(new ArcGcodePath(points, RotationDirection.COUNTER_CLOCKWISE, getRadius()));
 
 	}
 
-	@Override
-	public String getElementName() {
-
-		return name;
-	}
-
-	@Override
-	public void setElementName(String name) {
-		this.name = name;
-	}
 
 	@Override
 	public List<Behaviour> getBehaviours() {
@@ -66,19 +54,19 @@ public class Circle extends Element {
 	}
 
 	public SimplePoint getCenter() {
-		return center;
+		return (SimplePoint)getProperty("center") ;
 	}
 
 	public void setCenter(SimplePoint center) {
-		this.center = center;
+		setProperty("center", center); 
 	}
 
 	public double getRadius() {
-		return radius;
+		return (Double)getProperty("radius") ;
 	}
 
 	public void setRadius(double radius) {
-		this.radius = radius;
+		setProperty("radius", radius); 
 	}
 
 }

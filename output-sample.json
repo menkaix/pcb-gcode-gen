@@ -1,0 +1,42 @@
+{
+  "bitHead": "LASER",
+  "layers": [
+    {
+      "layerName": "default",
+      "passes": 15,
+      "elements": [
+        {
+          "name": "rectangle",
+          "subType": "Rectangle",
+          "properties": {
+            "width": 12.5,
+            "corner": {
+              "x": 10.0,
+              "y": 5.0,
+              "z": 0.0
+            },
+            "height": 17.5
+          }
+        },
+        {
+          "name": "Circle",
+          "subType": "Circle",
+          "properties": {
+            "radius": 1.5,
+            "center": {
+              "x": 30.0,
+              "y": 21.0,
+              "z": 0.0
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "projectName": "output-sample",
+  "projectFolder": "",
+  "safeLevel": -1.0,
+  "passIncrement": 0.0,
+  "feedRate": 500.0,
+  "power": 1000.0
+}

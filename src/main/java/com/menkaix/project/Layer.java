@@ -6,24 +6,27 @@ import java.util.List;
 
 import com.menkaix.elements.Element;
 
-public class Layer  implements Serializable{
-	
+public class Layer implements Serializable {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2179868110874128997L;
-	
-	private String layerName ;
 
-	private int passes ;
-	
+	private String layerName;
+
+	private int passes;
+
 	private List<Element> elements = new ArrayList<Element>();
 
-	
+	public void addElement(Element elt) {
+		elements.add(elt);
+	}
+
 	public Layer(String name) {
 		setLayerName(name);
 	}
-	
+
 	public int getPasses() {
 		return passes;
 	}
@@ -47,6 +50,5 @@ public class Layer  implements Serializable{
 	public void setLayerName(String layerName) {
 		this.layerName = layerName;
 	}
-	
 
 }

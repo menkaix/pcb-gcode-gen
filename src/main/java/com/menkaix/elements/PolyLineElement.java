@@ -16,10 +16,7 @@ public class PolyLineElement extends Element {
 	 */
 	private static final long serialVersionUID = 3991844004612215411L;
 
-	private transient List<Behaviour> behaviours = new ArrayList<Behaviour>();
 	private transient Geometry geometry;
-
-	private String name = "polyline";
 
 	public void addPoint(double x, double y) {
 		geometry.addPoint(x, y);
@@ -49,30 +46,9 @@ public class PolyLineElement extends Element {
 
 	}
 
-	@Override
-	public String getElementName() {
+	
+	
 
-		return name;
-	}
-
-	@Override
-	public void setElementName(String name) {
-
-		this.name = name;
-	}
-
-	@Override
-	public List<Behaviour> getBehaviours() {
-
-		return behaviours;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
+	
 
 }

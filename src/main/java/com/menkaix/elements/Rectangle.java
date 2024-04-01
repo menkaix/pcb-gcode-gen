@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.menkaix.geometry.basic.PolyGone;
+import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.project.Behaviour;
 import com.menkaix.project.Geometry;
 import com.menkaix.writegcode.ClosedLineGcodePath;
@@ -14,110 +15,55 @@ import com.menkaix.writegcode.ClosedLineGcodePath;
  * rectangle which is drawn clockwise from origin
  * 
  */
-public class Rectangle extends Element{
-	
+public class Rectangle extends Element {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -7163875443583767850L;
 
-	private transient ArrayList<Behaviour> behaviours = new ArrayList<Behaviour>() ;	
-	private transient Geometry geometry ;
+	private transient Geometry geometry;
 
-	private String name = "rectangle";
-	
-	private double x = 0;
-	private double y = 0;
-	private double width = 10;
-	private double height = 10;
-	
+//	private double x = 0;
+//	private double y = 0;
+//	private double width = 10;
+//	private double height = 10;
+
 	private void updateGeometry() {
-		
+
 		geometry = new PolyGone();
-		geometry.addPoint(x, y);
-		geometry.addPoint(x+width, y);
-		geometry.addPoint(x+width, y+height);
-		geometry.addPoint(x, y+height);
 		
+		SimplePoint corner = (SimplePoint)getProperty("corner");
+		Double width = (Double) getProperty("width");
+		Double height = (Double) getProperty("height");
+		
+		geometry.addPoint(corner.getX(), corner.getY());
+		geometry.addPoint(corner.getX(), corner.getY()+height);
+		geometry.addPoint(corner.getX()+width, corner.getY()+height);
+		geometry.addPoint(corner.getX()+width, corner.getY());
+
 	}
 
 	public Rectangle() {
 		
+		super() ;
+
 	}
-	
-	public Rectangle(String name, double x, double y, double width, double height) {
+
+	public Rectangle(String name, SimplePoint corner, double width, double height) {
 		
-		setX(x);
-		setY(y);
-		setWidth(width);
-		setHeight(height);
+		this();
 		
-		//updateGeometry();
-		
+		setElementName(name);
+
+		setProperty("corner", corner);
+		setProperty("width", width);
+		setProperty("height", height);
+
+		updateGeometry();
+
 		behaviours.add(geometry);
 		behaviours.add(new ClosedLineGcodePath(geometry));
-	}
-
-	@Override
-	public String getElementName() {
-		
-		return name;
-	}
-
-	@Override
-	public void setElementName(String name) {
-		this.name = name ;
-	}
-
-	@Override
-	public List<Behaviour> getBehaviours() {
-		
-		return behaviours;
-	}
-
-	public double getX() {
-		return x;
-	}
-
-	public void setX(double x) {
-		this.x = x;
-		updateGeometry();
-	}
-
-	public double getY() {
-		return y;
-	}
-
-	public void setY(double y) {
-		
-		this.y = y;
-		updateGeometry();
-	}
-
-	public double getWidth() {
-		return width;
-	}
-
-	public void setWidth(double width) {
-		this.width = width;
-		updateGeometry();
-	}
-
-	public double getHeight() {
-		return height;
-	}
-
-	public void setHeight(double height) {
-		this.height = height;
-		updateGeometry();
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public void setBehaviours(ArrayList<Behaviour> behaviours) {
