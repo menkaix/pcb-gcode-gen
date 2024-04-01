@@ -28,7 +28,7 @@ public class GcodeProject implements Serializable {
 	private String projectName = "cool";
 	private String projectFolder = "";
 
-	private double safeLevel = -1 ;
+	private double safeLevel = 1 ;
 	private double passIncrement= 0 ;
 	
 	private Double feedRate;

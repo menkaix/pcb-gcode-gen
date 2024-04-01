@@ -16,7 +16,16 @@ public class PolyLineElement extends Element {
 	 */
 	private static final long serialVersionUID = 3991844004612215411L;
 
-	private transient Geometry geometry;
+	private transient PolyLine geometry;
+	
+	private List<SimplePoint> points = new ArrayList<SimplePoint>() ;
+	
+	private void updateGeometry() {
+		
+		geometry = new PolyLine();
+		geometry.getPoints().addAll(points);
+		
+	}
 
 	public void addPoint(double x, double y) {
 		geometry.addPoint(x, y);
@@ -40,9 +49,11 @@ public class PolyLineElement extends Element {
 
 	public PolyLineElement() {
 
-		geometry = new PolyLine();
-		behaviours.add(geometry);
-		behaviours.add(new LineGcodePath(geometry));
+		updateGeometry();
+		
+		
+		getBehaviours().add(geometry);
+		getBehaviours().add(new LineGcodePath(geometry));
 
 	}
 

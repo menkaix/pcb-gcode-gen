@@ -31,11 +31,41 @@
           }
         }
       ]
+    },
+    {
+      "layerName": "labels",
+      "passes": 1,
+      "elements": [
+        {
+          "name": "ArcPath",
+          "subType": "ArcPath",
+          "properties": {
+            "from": {
+              "x": 30.0,
+              "y": 10.0,
+              "z": 0.0
+            },
+            "radius": 12.0,
+            "direction": "CLOCKWISE",
+            "to": {
+              "x": 35.0,
+              "y": 15.0,
+              "z": 0.0
+            }
+          }
+        },
+        {
+          "points": [],
+          "name": "PolyLineElement",
+          "subType": "PolyLineElement",
+          "properties": {}
+        }
+      ]
     }
   ],
   "projectName": "output-sample",
   "projectFolder": "",
-  "safeLevel": -1.0,
+  "safeLevel": 1.0,
   "passIncrement": 0.0,
   "feedRate": 500.0,
   "power": 1000.0

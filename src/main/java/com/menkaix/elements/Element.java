@@ -14,10 +14,15 @@ public class Element implements Serializable {
 	private String name;
 	private String subType;
 	
-	protected transient List<Behaviour> behaviours = new ArrayList<Behaviour>();
-	
 	private WeakHashMap<String, Object> properties = new WeakHashMap<String, Object>() ;
+
+	private transient List<Behaviour> behaviours = new ArrayList<Behaviour>();
 	
+	public Element() {
+		setElementName(this.getClass().getSimpleName());
+		setSubType(this.getClass().getSimpleName());
+	}
+
 	public Object getProperty(String key) {
 		return properties.get(key);
 	}
@@ -26,11 +31,6 @@ public class Element implements Serializable {
 		properties.put(k, value);
 	}
 
-	
-	public Element() {
-		setElementName(this.getClass().getSimpleName());
-		setSubType(this.getClass().getSimpleName());
-	}
 	
 	public List<Behaviour> getBehaviours() {
 

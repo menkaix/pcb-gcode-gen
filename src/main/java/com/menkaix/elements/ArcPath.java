@@ -29,8 +29,8 @@ public class ArcPath   extends  Element{
 		
 		geometry = new PointCouple(from, to);
 		
-		behaviours.add(geometry);
-		behaviours.add(new ArcGcodePath(geometry, direction, radius));
+		getBehaviours().add(geometry);
+		getBehaviours().add(new ArcGcodePath(geometry, direction, radius));
 		
 		
 	}

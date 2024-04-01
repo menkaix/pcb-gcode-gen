@@ -56,8 +56,7 @@ public class LineGcodePath implements GcodeBehaviour {
 		}
 		ans += "S0\n";
 
-		ans += "G0 X" + geometry.getPoints().get(0).getX() + " Y" + geometry.getPoints().get(0).getY() + " Z"
-				+  project.getSafeLevel() +"\n";
+		ans += "G0 X" + geometry.getPoints().get(0).getX() + " Y" + geometry.getPoints().get(0).getY()  +"\n";
 		ans += "S" + power + "\n";
 
 		for (int i = 0; i < geometry.getPoints().size(); i++) {

@@ -62,12 +62,12 @@ public class Rectangle extends Element {
 
 		updateGeometry();
 
-		behaviours.add(geometry);
-		behaviours.add(new ClosedLineGcodePath(geometry));
+		getBehaviours().add(geometry);
+		getBehaviours().add(new ClosedLineGcodePath(geometry));
 	}
 
 	public void setBehaviours(ArrayList<Behaviour> behaviours) {
-		this.behaviours = behaviours;
+		setBehaviours(behaviours); 
 	}
 
 	public Geometry getGeometry() {
