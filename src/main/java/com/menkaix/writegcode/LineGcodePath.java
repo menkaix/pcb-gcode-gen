@@ -40,6 +40,8 @@ public class LineGcodePath implements GcodeBehaviour {
 	@Override
 	public String getGcode(GcodeProject project) {
 
+		try {
+		
 		String ans = "\n";
 		
 		if(feedRate==null) {
@@ -73,6 +75,15 @@ public class LineGcodePath implements GcodeBehaviour {
 		}
 		ans += "S0\n";
 		return ans;
+		}
+		catch (NullPointerException e) {
+			e.printStackTrace();
+			return "" ;
+		}
+		catch (IndexOutOfBoundsException e) {
+			e.printStackTrace();
+			return "" ;
+		}
 	}
 
 	public Geometry getGeometry() {

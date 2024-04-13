@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.WeakHashMap;
 
+import com.menkaix.pcbgcode.utilities.MissingPropertyException;
+import com.menkaix.pcbgcode.utilities.UnknownElementException;
 import com.menkaix.project.Behaviour;
 
 public class Element implements Serializable {
@@ -18,10 +20,17 @@ public class Element implements Serializable {
 
 	private transient List<Behaviour> behaviours = new ArrayList<Behaviour>();
 	
+	public void reloadBehaviour() throws MissingPropertyException, UnknownElementException {
+		
+		throw new UnknownElementException();
+	}
+	
 	public Element() {
 		setElementName(this.getClass().getSimpleName());
 		setSubType(this.getClass().getSimpleName());
 	}
+	
+	
 
 	public Object getProperty(String key) {
 		return properties.get(key);

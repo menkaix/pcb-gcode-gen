@@ -20,21 +20,20 @@ public class GcodeProject implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 2312883204979979860L;
-	
-	private transient int pass = 0 ;
+
+	private transient int pass = 0;
 
 	private BitHead bitHead = BitHead.LASER;
 	private List<Layer> layers = new ArrayList<Layer>();
 	private String projectName = "cool";
 	private String projectFolder = "";
 
-	private double safeLevel = 1 ;
-	private double passIncrement= 0 ;
-	
+	private double safeLevel = 1;
+	private double passIncrement = 0;
+
 	private Double feedRate;
 	private Double power;
-	
-	
+
 	public void saveJson(String fileName) {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -62,11 +61,31 @@ public class GcodeProject implements Serializable {
 
 		gfw.initializeGcode();
 
+		int maxPasses = 0;
+
 		for (Layer layer : layers) {
 
-			for (pass = 0; pass < layer.getPasses(); pass++) {
+			maxPasses = Math.max(maxPasses, layer.getPasses());
 
+		}
+
+		for (pass = 0; pass < maxPasses; pass++) {
+
+			for (Layer layer : layers) {
+
+				if(pass>layer.getPasses()) continue ;
+				
 				for (Element gcodeObject : layer.getElements()) {
+					
+					if(gcodeObject==null) {
+						System.err.println("err: gcodeObject list is null");
+						continue ;
+					}
+					
+					if(gcodeObject.getBehaviours()==null) {
+						System.err.println(gcodeObject.getElementName()+": err: behaviour list is null");
+						continue ;
+					}
 
 					for (Behaviour behaviour : gcodeObject.getBehaviours()) {
 						if (behaviour instanceof GcodeBehaviour) {
@@ -196,13 +215,13 @@ public class GcodeProject implements Serializable {
 	}
 
 	public Layer getLayer(String string) {
-		
+
 		for (Layer layer : layers) {
-			if(layer.getLayerName().equalsIgnoreCase(string)) {
-				return layer ;
+			if (layer.getLayerName().equalsIgnoreCase(string)) {
+				return layer;
 			}
 		}
-		
+
 		return null;
 	}
 

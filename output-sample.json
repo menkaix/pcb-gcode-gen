@@ -3,10 +3,10 @@
   "layers": [
     {
       "layerName": "default",
-      "passes": 15,
+      "passes": 100,
       "elements": [
         {
-          "name": "rectangle",
+          "name": "Rectangle",
           "subType": "Rectangle",
           "properties": {
             "width": 12.5,
@@ -66,7 +66,7 @@
   "projectName": "output-sample",
   "projectFolder": "",
   "safeLevel": 1.0,
-  "passIncrement": 0.0,
+  "passIncrement": -0.15,
   "feedRate": 500.0,
   "power": 1000.0
 }

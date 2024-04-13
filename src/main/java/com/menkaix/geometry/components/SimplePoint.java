@@ -8,9 +8,9 @@ public class SimplePoint implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -8529482457454328700L;
-	protected double x;
-	protected double y;
-	protected double z;
+	protected Double x;
+	protected Double y;
+	protected Double z;
 
 	public SimplePoint() {
 
@@ -25,31 +25,31 @@ public class SimplePoint implements Serializable{
 	public SimplePoint(double x, double y) {
 		this.x = x;
 		this.y = y;
-		this.z = 0;
+		this.z = Double.valueOf(0);
 	}
 
 
-	public double getX() {
+	public Double getX() {
 		return x;
 	}
 
-	public void setX(double x) {
+	public void setX(Double x) {
 		this.x = x;
 	}
 
-	public double getY() {
+	public Double getY() {
 		return y;
 	}
 
-	public void setY(double y) {
+	public void setY(Double y) {
 		this.y = y;
 	}
 
-	public double getZ() {
+	public Double getZ() {
 		return z;
 	}
 
-	public void setZ(double z) {
+	public void setZ(Double z) {
 		this.z = z;
 	}
 

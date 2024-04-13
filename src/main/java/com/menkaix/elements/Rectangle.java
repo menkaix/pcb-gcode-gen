@@ -2,9 +2,11 @@ package com.menkaix.elements;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.menkaix.geometry.basic.PolyGone;
 import com.menkaix.geometry.components.SimplePoint;
+import com.menkaix.pcbgcode.utilities.MissingPropertyException;
 import com.menkaix.project.Behaviour;
 import com.menkaix.project.Geometry;
 import com.menkaix.writegcode.ClosedLineGcodePath;
@@ -32,28 +34,39 @@ public class Rectangle extends Element {
 	private void updateGeometry() {
 
 		geometry = new PolyGone();
+
+		SimplePoint corner = null ;
 		
-		SimplePoint corner = (SimplePoint)getProperty("corner");
+		try {
+			corner = (SimplePoint) getProperty("corner");
+		}catch(ClassCastException e) {
+			Map<String, Double> cornerMap = (Map<String, Double>)getProperty("corner");
+			
+			corner = new SimplePoint(cornerMap.get("x"), cornerMap.get("y"));
+			
+		}
+		
+		
 		Double width = (Double) getProperty("width");
 		Double height = (Double) getProperty("height");
-		
+
 		geometry.addPoint(corner.getX(), corner.getY());
-		geometry.addPoint(corner.getX(), corner.getY()+height);
-		geometry.addPoint(corner.getX()+width, corner.getY()+height);
-		geometry.addPoint(corner.getX()+width, corner.getY());
+		geometry.addPoint(corner.getX(), corner.getY() + height);
+		geometry.addPoint(corner.getX() + width, corner.getY() + height);
+		geometry.addPoint(corner.getX() + width, corner.getY());
 
 	}
 
 	public Rectangle() {
-		
-		super() ;
+
+		super();
 
 	}
 
 	public Rectangle(String name, SimplePoint corner, double width, double height) {
-		
+
 		this();
-		
+
 		setElementName(name);
 
 		setProperty("corner", corner);
@@ -67,7 +80,7 @@ public class Rectangle extends Element {
 	}
 
 	public void setBehaviours(ArrayList<Behaviour> behaviours) {
-		setBehaviours(behaviours); 
+		setBehaviours(behaviours);
 	}
 
 	public Geometry getGeometry() {
@@ -76,6 +89,24 @@ public class Rectangle extends Element {
 
 	public void setGeometry(Geometry geometry) {
 		this.geometry = geometry;
+	}
+
+	@Override
+	public void reloadBehaviour() throws MissingPropertyException {
+
+		if (!getProperties().containsKey("corner"))
+			throw new MissingPropertyException();
+		if (!getProperties().containsKey("width"))
+			throw new MissingPropertyException();
+		if (!getProperties().containsKey("height"))
+			throw new MissingPropertyException();
+
+		updateGeometry();
+
+		getBehaviours().clear();
+		getBehaviours().add(geometry);
+		getBehaviours().add(new ClosedLineGcodePath(geometry));
+
 	}
 
 }

@@ -5,9 +5,12 @@ import java.util.List;
 
 import com.menkaix.geometry.basic.PolyLine;
 import com.menkaix.geometry.components.SimplePoint;
+import com.menkaix.pcbgcode.utilities.MissingPropertyException;
 import com.menkaix.project.Behaviour;
 import com.menkaix.project.Geometry;
 import com.menkaix.writegcode.LineGcodePath;
+
+//TODO
 
 public class PolyLineElement extends Element {
 
@@ -55,6 +58,12 @@ public class PolyLineElement extends Element {
 		getBehaviours().add(geometry);
 		getBehaviours().add(new LineGcodePath(geometry));
 
+	}
+
+	@Override
+	public void reloadBehaviour() throws MissingPropertyException {
+		// TODO Auto-generated method stub
+		
 	}
 
 	
