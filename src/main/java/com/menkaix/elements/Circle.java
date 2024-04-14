@@ -17,30 +17,16 @@ public class Circle extends Element {
 
 	private static final long serialVersionUID = -3192960479843484058L;
 
-	private transient ArrayList<Behaviour> behaviours = new ArrayList<Behaviour>();
-
 //	private SimplePoint center;
 //	private double radius;
 
-	public Circle() {
-		super();
-	}
-
-	public Circle(SimplePoint center, double radius) {
-
-		this();
-
-		setCenter(center);
-		setRadius(radius);
-
-		updateGeomtry();
-	}
-
 	private void updateGeomtry() {
 
-		for (Behaviour behaviour : behaviours) {
+		//System.out.println("update Geometry for "+getElementName());
+		
+		for (Behaviour behaviour : getBehaviours()) {
 			if (behaviour instanceof Geometry) {
-				behaviours.remove(behaviour);
+				getBehaviours().remove(behaviour);
 			}
 		}
 
@@ -48,16 +34,36 @@ public class Circle extends Element {
 		SimplePoint p2 = new SimplePoint(getCenter().getX() + getRadius(), getCenter().getY());
 
 		PointCouple points = new PointCouple(p1, p2);
+		
+		//System.out.println(points);
+		
+		ArcGcodePath first = new ArcGcodePath(points, RotationDirection.CLOCKWISE, getRadius()) ;
+		ArcGcodePath second = new ArcGcodePath(points, RotationDirection.COUNTER_CLOCKWISE, getRadius()) ;
+		
 
-		behaviours.add(new ArcGcodePath(points, RotationDirection.CLOCKWISE, getRadius()));
-		behaviours.add(new ArcGcodePath(points, RotationDirection.COUNTER_CLOCKWISE, getRadius()));
+		getBehaviours().add(first);
+		getBehaviours().add(second);
+		
+		//System.out.println("preview GCode : \n"+previewGcode());
+		
 
 	}
 
 	@Override
-	public List<Behaviour> getBehaviours() {
+	public void reloadBehaviour() throws MissingPropertyException {
+		
+		checkMandatoryProperties("radius", "center");
 
-		return behaviours;
+		SimplePoint center = pointFromMap(getProperty("center"));
+		Double radius = (Double) getProperty("radius") ;
+		
+		System.out.println("center x "+center.getX()+", center y "+center.getY()+" radius "+radius);
+		
+		setCenter(center);		
+		setRadius(radius);
+
+		updateGeomtry();
+
 	}
 
 	public SimplePoint getCenter() {
@@ -76,29 +82,24 @@ public class Circle extends Element {
 		setProperty("radius", radius);
 	}
 
-	@Override
-	public void reloadBehaviour() throws MissingPropertyException {
+	// private SimplePoint center;
+	// private double radius;
 
-		if (!getProperties().containsKey("radius"))
-			throw new MissingPropertyException();
-		if (!getProperties().containsKey("center"))
-			throw new MissingPropertyException();
+	public Circle() {
+		super();
+	}
 
-		SimplePoint center = null;
-		try {
-			center = (SimplePoint) getProperty("center");
-		} catch (ClassCastException e) {
-			Map<String, Double> cornerMap = (Map<String, Double>) getProperty("center");
+	// private SimplePoint center;
+	// private double radius;
 
-			center = new SimplePoint(cornerMap.get("x"), cornerMap.get("y"));
+	public Circle(SimplePoint center, double radius) {
 
-		}
+		this();
 
 		setCenter(center);
-		setRadius((Double) getProperty("radius"));
+		setRadius(radius);
 
 		updateGeomtry();
-
 	}
 
 }

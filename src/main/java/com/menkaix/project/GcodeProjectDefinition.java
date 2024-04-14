@@ -68,7 +68,7 @@ public class GcodeProjectDefinition implements Serializable {
 
 	public GcodeProject generate() {
 
-		ExecutorService executorService = Executors.newFixedThreadPool(30);
+		ExecutorService executorService = Executors.newCachedThreadPool();
 
 		GcodeProject ans = new GcodeProject(projectName, bitHead);
 		ans.setProjectFolder(projectFolder);

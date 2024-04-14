@@ -39,6 +39,14 @@ public class LineGcodePath implements GcodeBehaviour {
 
 	@Override
 	public String getGcode(GcodeProject project) {
+		
+		if(geometry==null) {
+			return "(null geometry in line)";
+		}
+		
+		if(geometry.getPoints().size()<=0) {
+			return "(empty geometry in line)";
+		}
 
 		try {
 		

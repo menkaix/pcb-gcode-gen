@@ -34,6 +34,96 @@ public class GcodeProject implements Serializable {
 	private Double feedRate;
 	private Double power;
 
+	public void writeGcode() {
+	
+		GcodeFileWriter gfw = new GcodeFileWriter(Paths.get(projectFolder, projectName + ".nc").toString());
+	
+		gfw.initializeGcode();
+	
+		int maxPasses = 0;
+	
+		for (Layer layer : layers) {
+	
+			maxPasses = Math.max(maxPasses, layer.getPasses());
+	
+		}
+	
+		for (pass = 0; pass < maxPasses; pass++) {
+	
+			for (Layer layer : layers) {
+	
+				if(pass>layer.getPasses()) continue ;
+				
+				//gfw.getGcodes().add("("+layer.getLayerName()+")");
+				
+				for (Element gcodeObject : layer.getElements()) {
+					
+					if(gcodeObject==null) {
+						System.err.println("err: gcodeObject list is null");
+						continue ;
+					}
+					
+					if(gcodeObject.getBehaviours()==null) {
+						System.err.println(gcodeObject.getElementName()+": err: behaviour list is null");
+						continue ;
+					}
+	
+					//gfw.getGcodes().add("("+layer.getLayerName()+"/"+gcodeObject.getElementName()+")");
+					
+					for (Behaviour behaviour : gcodeObject.getBehaviours()) {
+						if (behaviour instanceof GcodeBehaviour) {
+							gfw.getGcodes().add(((GcodeBehaviour) behaviour).getGcode(this));
+						}
+					}
+					
+					//gfw.getGcodes().add("(end "+layer.getLayerName()+"/"+gcodeObject.getElementName()+")");
+	
+				}
+				
+				//gfw.getGcodes().add("(end "+layer.getLayerName()+")");
+	
+			}
+	
+		}
+	
+		gfw.finalizeGcode();
+	
+		gfw.write();
+	
+	}
+
+	public void addLayer(Layer newLayer) throws DuplicateLayerNameException {
+		if (layers == null) {
+			layers = new ArrayList<Layer>();
+		}
+	
+		for (Layer layer : layers) {
+			if (layer.getLayerName().equalsIgnoreCase(newLayer.getLayerName())) {
+				throw new DuplicateLayerNameException();
+			}
+		}
+	
+		layers.add(newLayer);
+	
+	}
+
+	public void removeLayer(Layer newLayer) {
+		if (layers == null) {
+			layers = new ArrayList<Layer>();
+		}
+	
+		for (int i = 0; i < layers.size(); i++) {
+			Layer layer = layers.get(i);
+			if (layer.getLayerName().equalsIgnoreCase(newLayer.getLayerName())) {
+				layers.remove(i);
+				break;
+			}
+		}
+	
+		layers.add(newLayer);
+	
+	}
+
 	public void saveJson(String fileName) {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -53,101 +143,6 @@ public class GcodeProject implements Serializable {
 
 	public void setPass(int pass) {
 		this.pass = pass;
-	}
-
-	public void writeGcode() {
-
-		GcodeFileWriter gfw = new GcodeFileWriter(Paths.get(projectFolder, projectName + ".nc").toString());
-
-		gfw.initializeGcode();
-
-		int maxPasses = 0;
-
-		for (Layer layer : layers) {
-
-			maxPasses = Math.max(maxPasses, layer.getPasses());
-
-		}
-
-		for (pass = 0; pass < maxPasses; pass++) {
-
-			for (Layer layer : layers) {
-
-				if(pass>layer.getPasses()) continue ;
-				
-				for (Element gcodeObject : layer.getElements()) {
-					
-					if(gcodeObject==null) {
-						System.err.println("err: gcodeObject list is null");
-						continue ;
-					}
-					
-					if(gcodeObject.getBehaviours()==null) {
-						System.err.println(gcodeObject.getElementName()+": err: behaviour list is null");
-						continue ;
-					}
-
-					for (Behaviour behaviour : gcodeObject.getBehaviours()) {
-						if (behaviour instanceof GcodeBehaviour) {
-							gfw.getGcodes().add(((GcodeBehaviour) behaviour).getGcode(this));
-						}
-					}
-
-				}
-
-			}
-
-		}
-
-		gfw.finalizeGcode();
-
-		gfw.write();
-
-	}
-
-	public void addLayer(Layer newLayer) throws DuplicateLayerNameException {
-		if (layers == null) {
-			layers = new ArrayList<Layer>();
-		}
-
-		for (Layer layer : layers) {
-			if (layer.getLayerName().equalsIgnoreCase(newLayer.getLayerName())) {
-				throw new DuplicateLayerNameException();
-			}
-		}
-
-		layers.add(newLayer);
-
-	}
-
-	public void removeLayer(Layer newLayer) {
-		if (layers == null) {
-			layers = new ArrayList<Layer>();
-		}
-
-		for (int i = 0; i < layers.size(); i++) {
-			Layer layer = layers.get(i);
-			if (layer.getLayerName().equalsIgnoreCase(newLayer.getLayerName())) {
-				layers.remove(i);
-				break;
-			}
-		}
-
-		layers.add(newLayer);
-
-	}
-
-	public GcodeProject(String name, BitHead head) {
-		setProjectName(name);
-		setBitHead(head);
-		setFeedRate(500d);
-		setPower(1000d);
-		try {
-			addLayer(new Layer("default"));
-		} catch (DuplicateLayerNameException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	public BitHead getBitHead() {
@@ -223,6 +218,19 @@ public class GcodeProject implements Serializable {
 		}
 
 		return null;
+	}
+
+	public GcodeProject(String name, BitHead head) {
+		setProjectName(name);
+		setBitHead(head);
+		setFeedRate(500d);
+		setPower(1000d);
+		try {
+			addLayer(new Layer("default"));
+		} catch (DuplicateLayerNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

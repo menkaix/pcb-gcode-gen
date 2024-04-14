@@ -39,5 +39,9 @@ public class PointCouple implements Geometry {
 		points.add(new SimplePoint(x,y)) ;
 		
 	}
+	
+	public String toString() {
+		return "["+points.get(0)+","+points.get(1)+"]" ;
+	}
 
 }

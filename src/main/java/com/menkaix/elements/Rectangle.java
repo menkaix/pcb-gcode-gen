@@ -35,18 +35,17 @@ public class Rectangle extends Element {
 
 		geometry = new PolyGone();
 
-		SimplePoint corner = null ;
-		
+		SimplePoint corner = null;
+
 		try {
 			corner = (SimplePoint) getProperty("corner");
-		}catch(ClassCastException e) {
-			Map<String, Double> cornerMap = (Map<String, Double>)getProperty("corner");
-			
+		} catch (ClassCastException e) {
+			Map<String, Double> cornerMap = (Map<String, Double>) getProperty("corner");
+
 			corner = new SimplePoint(cornerMap.get("x"), cornerMap.get("y"));
-			
+
 		}
-		
-		
+
 		Double width = (Double) getProperty("width");
 		Double height = (Double) getProperty("height");
 
@@ -94,12 +93,7 @@ public class Rectangle extends Element {
 	@Override
 	public void reloadBehaviour() throws MissingPropertyException {
 
-		if (!getProperties().containsKey("corner"))
-			throw new MissingPropertyException();
-		if (!getProperties().containsKey("width"))
-			throw new MissingPropertyException();
-		if (!getProperties().containsKey("height"))
-			throw new MissingPropertyException();
+		checkMandatoryProperties("corner", "width", "height");
 
 		updateGeometry();
 

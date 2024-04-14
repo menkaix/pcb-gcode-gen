@@ -15,21 +15,6 @@ public class ArcGcodePath implements GcodeBehaviour {
 	private Double feedRate;
 	private Double power;
 
-	public double getPower() {
-		return power;
-	}
-
-	public void setPower(double power) {
-		this.power = power;
-	}
-
-	public ArcGcodePath(Geometry geometry, RotationDirection direction, double radius) {
-		this.setGeometry(geometry);
-		this.setDirection(direction);
-		this.setRadius(radius);
-
-	}
-
 	@Override
 	public void update() {
 		// TODO Auto-generated method stub
@@ -39,87 +24,74 @@ public class ArcGcodePath implements GcodeBehaviour {
 	@Override
 	public String getGcode(GcodeProject project) {
 
-		try {
+		//System.out.println("----- arc gcode ------");
 
-			String ans = "\n";
+		String ans = "\n";
 
-			if (feedRate == null) {
-				feedRate = project.getFeedRate();
-			}
-
-			if (power == null) {
-				power = project.getPower();
-			}
-
-			// retrait ici en cas de fraiseuse (avant S0)
-			if (project.getBitHead() == BitHead.ROTOR) {
-				ans += "G0 Z" + project.getSafeLevel() + "\n";
-			}
-
-			try {
-
-				if (geometry == null)
-					return "";
-				if (geometry.getPoints() == null)
-					return "";
-				
-				if (geometry.getPoints().size() <= 0)
-					return "";
-				
-				if (geometry.getPoints().get(0) == null)
-					return "";
-				
-				if (geometry.getPoints().get(0).getX() == null || geometry.getPoints().get(0).getY()==null)
-					return "";
-
-				ans += "G0 X" + geometry.getPoints().get(0).getX() + " Y" + geometry.getPoints().get(0).getY() + "\n";
-
-				ans += "S" + power + "\n";
-
-				ans += "G1 X" + geometry.getPoints().get(0).getX() + " Y" + geometry.getPoints().get(0).getY() + " Z"
-						+ (project.getPass() * project.getPassIncrement()) + " F" + feedRate + "\n";
-
-				for (int i = 1; i < geometry.getPoints().size(); i++) {
-					
-					if (geometry.getPoints().get(i) == null)
-						return "";
-					
-					if (geometry.getPoints().get(i).getX() == null || geometry.getPoints().get(i).getY()==null)
-						return "";
-
-					String gcodeDirection = "";
-
-					if (direction == RotationDirection.CLOCKWISE) {
-						gcodeDirection = "G2";
-					} else if (direction == RotationDirection.COUNTER_CLOCKWISE) {
-						gcodeDirection = "G3";
-					}
-
-					String path = " X" + geometry.getPoints().get(i).getX() + " Y" + geometry.getPoints().get(i).getY()
-							+ " Z" + (project.getPass() * project.getPassIncrement()) + " F" + feedRate + " R" + radius
-							+ "\n";
-
-					ans += gcodeDirection + path;
-
-				}
-			} catch (NullPointerException e) {
-				e.printStackTrace();
-				return "";
-			}
-
-			// retrait ici en cas de fraiseuse (avant S0)
-			if (project.getBitHead() == BitHead.ROTOR) {
-				ans += "G0 Z" + project.getSafeLevel() + "\n";
-			}
-			ans += "S0\n";
-
-			return ans;
-
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-			return "";
+		if (feedRate == null) {
+			feedRate = project.getFeedRate();
 		}
 
+		if (power == null) {
+			power = project.getPower();
+		}
+
+		// retrait ici en cas de fraiseuse (avant S0)
+		if (project.getBitHead() == BitHead.ROTOR) {
+			ans += "G0 Z" + project.getSafeLevel() + "\n";
+		}
+
+		ans += "G0 X" + geometry.getPoints().get(0).getX() + " Y" + geometry.getPoints().get(0).getY() + "\n";
+
+		ans += "S" + power + "\n";
+
+		ans += "G1 X" + geometry.getPoints().get(0).getX() + " Y" + geometry.getPoints().get(0).getY() + " Z"
+				+ (project.getPass() * project.getPassIncrement()) + " F" + feedRate + "\n";
+
+		for (int i = 1; i < geometry.getPoints().size(); i++) {
+
+			if (geometry.getPoints().get(i) == null) {
+				return "(err this point is null)";
+			}
+
+			if (geometry.getPoints().get(i).getX() == null || geometry.getPoints().get(i).getY() == null) {
+				return "(X or Y is null)";
+			}
+
+			String gcodeDirection = "";
+
+			if (direction == RotationDirection.CLOCKWISE) {
+				gcodeDirection = "G2";
+			} else if (direction == RotationDirection.COUNTER_CLOCKWISE) {
+				gcodeDirection = "G3";
+			}
+
+			String path = " X" + geometry.getPoints().get(i).getX() + " Y" + geometry.getPoints().get(i).getY() + " Z"
+					+ (project.getPass() * project.getPassIncrement()) + " F" + feedRate + " R" + radius + "\n";
+
+			ans += gcodeDirection + path;
+
+		}
+
+		// retrait ici en cas de fraiseuse (avant S0)
+		if (project.getBitHead() == BitHead.ROTOR) {
+			ans += "G0 Z" + project.getSafeLevel() + "\n";
+		}
+		ans += "S0\n";
+		
+		//System.out.println("ans =" + ans);
+		//System.out.println("----- end arc gcode ------");
+
+		return ans;
+
+	}
+
+	public double getPower() {
+		return power;
+	}
+
+	public void setPower(double power) {
+		this.power = power;
 	}
 
 	public Geometry getGeometry() {
@@ -156,6 +128,14 @@ public class ArcGcodePath implements GcodeBehaviour {
 
 	public void setFeedRate(Double feedRate) {
 		this.feedRate = feedRate;
+	}
+
+	public ArcGcodePath(Geometry geometry, RotationDirection direction, double radius) {
+
+		this.setGeometry(geometry);
+		this.setDirection(direction);
+		this.setRadius(radius);
+
 	}
 
 }

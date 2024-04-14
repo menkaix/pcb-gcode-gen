@@ -24,6 +24,14 @@ public class ClosedLineGcodePath implements GcodeBehaviour {
 
 	@Override
 	public String getGcode(GcodeProject project) {
+		
+		if(geometry==null) {
+			return "(null geometry in polygon)";
+		}
+		
+		if(geometry.getPoints().size()<=0) {
+			return "(empty geometry in polygon)";
+		}
 
 		String ans = "\n";
 		

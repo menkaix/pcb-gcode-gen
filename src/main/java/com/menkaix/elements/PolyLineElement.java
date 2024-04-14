@@ -30,6 +30,12 @@ public class PolyLineElement extends Element {
 		
 	}
 
+	@Override
+	public void reloadBehaviour() throws MissingPropertyException {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public void addPoint(double x, double y) {
 		geometry.addPoint(x, y);
 	}
@@ -58,12 +64,6 @@ public class PolyLineElement extends Element {
 		getBehaviours().add(geometry);
 		getBehaviours().add(new LineGcodePath(geometry));
 
-	}
-
-	@Override
-	public void reloadBehaviour() throws MissingPropertyException {
-		// TODO Auto-generated method stub
-		
 	}
 
 	
