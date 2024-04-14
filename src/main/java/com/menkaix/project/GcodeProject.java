@@ -12,6 +12,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.menkaix.elements.Element;
 import com.menkaix.pcbgcode.utilities.DuplicateLayerNameException;
+import com.menkaix.project.behaviours.Behaviour;
+import com.menkaix.project.behaviours.GcodeBehaviour;
+import com.menkaix.project.values.BitHead;
 import com.menkaix.writegcode.GcodeFileWriter;
 
 public class GcodeProject implements Serializable {

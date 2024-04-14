@@ -1,10 +1,10 @@
 package com.menkaix.writegcode;
 
 import com.menkaix.geometry.components.SimplePoint;
-import com.menkaix.project.BitHead;
-import com.menkaix.project.GcodeBehaviour;
 import com.menkaix.project.GcodeProject;
-import com.menkaix.project.Geometry;
+import com.menkaix.project.behaviours.GcodeBehaviour;
+import com.menkaix.project.behaviours.Geometry;
+import com.menkaix.project.values.BitHead;
 
 public class ClosedLineGcodePath implements GcodeBehaviour {
 

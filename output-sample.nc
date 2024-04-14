@@ -1,7 +1,5 @@
 M3 S0
 G0 X0 Y0
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -12,8 +10,6 @@ G1 X22.5 Y5.0 Z-0.0 F500.0
 G1 X10.0 Y5.0 Z-0.0 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -28,10 +24,6 @@ G1 X28.5 Y21.0 Z-0.0 F500.0
 G3 X31.5 Y21.0 Z-0.0 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(labels)
-(labels/ArcPath)
 
 G0 X30.0 Y10.0
 S1000.0
@@ -39,13 +31,15 @@ G1 X30.0 Y10.0 Z-0.0 F500.0
 G2 X35.0 Y15.0 Z-0.0 F500.0 R12.0
 S0
 
-(end labels/ArcPath)
-(labels/PolyLineElement)
-(empty geometry in line)
-(end labels/PolyLineElement)
-(end labels)
-(default)
-(default/Rectangle)
+
+S0
+G0 X30.0 Y10.0
+S1000.0
+G1 X30.0 Y10.0 Z-0.0 F500.0
+G1 X45.0 Y12.0 Z-0.0 F500.0
+G1 X35.0 Y15.0 Z-0.0 F500.0
+S0
+
 
 G0 X10.0 Y5.0
 S1000.0
@@ -56,8 +50,6 @@ G1 X22.5 Y5.0 Z-0.15 F500.0
 G1 X10.0 Y5.0 Z-0.15 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -72,10 +64,6 @@ G1 X28.5 Y21.0 Z-0.15 F500.0
 G3 X31.5 Y21.0 Z-0.15 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(labels)
-(labels/ArcPath)
 
 G0 X30.0 Y10.0
 S1000.0
@@ -83,13 +71,15 @@ G1 X30.0 Y10.0 Z-0.15 F500.0
 G2 X35.0 Y15.0 Z-0.15 F500.0 R12.0
 S0
 
-(end labels/ArcPath)
-(labels/PolyLineElement)
-(empty geometry in line)
-(end labels/PolyLineElement)
-(end labels)
-(default)
-(default/Rectangle)
+
+S0
+G0 X30.0 Y10.0
+S1000.0
+G1 X30.0 Y10.0 Z-0.15 F500.0
+G1 X45.0 Y12.0 Z-0.15 F500.0
+G1 X35.0 Y15.0 Z-0.15 F500.0
+S0
+
 
 G0 X10.0 Y5.0
 S1000.0
@@ -100,8 +90,6 @@ G1 X22.5 Y5.0 Z-0.3 F500.0
 G1 X10.0 Y5.0 Z-0.3 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -116,10 +104,6 @@ G1 X28.5 Y21.0 Z-0.3 F500.0
 G3 X31.5 Y21.0 Z-0.3 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -130,8 +114,6 @@ G1 X22.5 Y5.0 Z-0.44999999999999996 F500.0
 G1 X10.0 Y5.0 Z-0.44999999999999996 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -146,10 +128,6 @@ G1 X28.5 Y21.0 Z-0.44999999999999996 F500.0
 G3 X31.5 Y21.0 Z-0.44999999999999996 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -160,8 +138,6 @@ G1 X22.5 Y5.0 Z-0.6 F500.0
 G1 X10.0 Y5.0 Z-0.6 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -176,10 +152,6 @@ G1 X28.5 Y21.0 Z-0.6 F500.0
 G3 X31.5 Y21.0 Z-0.6 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -190,8 +162,6 @@ G1 X22.5 Y5.0 Z-0.75 F500.0
 G1 X10.0 Y5.0 Z-0.75 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -206,10 +176,6 @@ G1 X28.5 Y21.0 Z-0.75 F500.0
 G3 X31.5 Y21.0 Z-0.75 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -220,8 +186,6 @@ G1 X22.5 Y5.0 Z-0.8999999999999999 F500.0
 G1 X10.0 Y5.0 Z-0.8999999999999999 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -236,10 +200,6 @@ G1 X28.5 Y21.0 Z-0.8999999999999999 F500.0
 G3 X31.5 Y21.0 Z-0.8999999999999999 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -250,8 +210,6 @@ G1 X22.5 Y5.0 Z-1.05 F500.0
 G1 X10.0 Y5.0 Z-1.05 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -266,10 +224,6 @@ G1 X28.5 Y21.0 Z-1.05 F500.0
 G3 X31.5 Y21.0 Z-1.05 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -280,8 +234,6 @@ G1 X22.5 Y5.0 Z-1.2 F500.0
 G1 X10.0 Y5.0 Z-1.2 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -296,10 +248,6 @@ G1 X28.5 Y21.0 Z-1.2 F500.0
 G3 X31.5 Y21.0 Z-1.2 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -310,8 +258,6 @@ G1 X22.5 Y5.0 Z-1.3499999999999999 F500.0
 G1 X10.0 Y5.0 Z-1.3499999999999999 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -326,10 +272,6 @@ G1 X28.5 Y21.0 Z-1.3499999999999999 F500.0
 G3 X31.5 Y21.0 Z-1.3499999999999999 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -340,8 +282,6 @@ G1 X22.5 Y5.0 Z-1.5 F500.0
 G1 X10.0 Y5.0 Z-1.5 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -356,10 +296,6 @@ G1 X28.5 Y21.0 Z-1.5 F500.0
 G3 X31.5 Y21.0 Z-1.5 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -370,8 +306,6 @@ G1 X22.5 Y5.0 Z-1.65 F500.0
 G1 X10.0 Y5.0 Z-1.65 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -386,10 +320,6 @@ G1 X28.5 Y21.0 Z-1.65 F500.0
 G3 X31.5 Y21.0 Z-1.65 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -400,8 +330,6 @@ G1 X22.5 Y5.0 Z-1.7999999999999998 F500.0
 G1 X10.0 Y5.0 Z-1.7999999999999998 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -416,10 +344,6 @@ G1 X28.5 Y21.0 Z-1.7999999999999998 F500.0
 G3 X31.5 Y21.0 Z-1.7999999999999998 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -430,8 +354,6 @@ G1 X22.5 Y5.0 Z-1.95 F500.0
 G1 X10.0 Y5.0 Z-1.95 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -446,10 +368,6 @@ G1 X28.5 Y21.0 Z-1.95 F500.0
 G3 X31.5 Y21.0 Z-1.95 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -460,8 +378,6 @@ G1 X22.5 Y5.0 Z-2.1 F500.0
 G1 X10.0 Y5.0 Z-2.1 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -476,10 +392,6 @@ G1 X28.5 Y21.0 Z-2.1 F500.0
 G3 X31.5 Y21.0 Z-2.1 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -490,8 +402,6 @@ G1 X22.5 Y5.0 Z-2.25 F500.0
 G1 X10.0 Y5.0 Z-2.25 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -506,10 +416,6 @@ G1 X28.5 Y21.0 Z-2.25 F500.0
 G3 X31.5 Y21.0 Z-2.25 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -520,8 +426,6 @@ G1 X22.5 Y5.0 Z-2.4 F500.0
 G1 X10.0 Y5.0 Z-2.4 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -536,10 +440,6 @@ G1 X28.5 Y21.0 Z-2.4 F500.0
 G3 X31.5 Y21.0 Z-2.4 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -550,8 +450,6 @@ G1 X22.5 Y5.0 Z-2.55 F500.0
 G1 X10.0 Y5.0 Z-2.55 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -566,10 +464,6 @@ G1 X28.5 Y21.0 Z-2.55 F500.0
 G3 X31.5 Y21.0 Z-2.55 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -580,8 +474,6 @@ G1 X22.5 Y5.0 Z-2.6999999999999997 F500.0
 G1 X10.0 Y5.0 Z-2.6999999999999997 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -596,10 +488,6 @@ G1 X28.5 Y21.0 Z-2.6999999999999997 F500.0
 G3 X31.5 Y21.0 Z-2.6999999999999997 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -610,8 +498,6 @@ G1 X22.5 Y5.0 Z-2.85 F500.0
 G1 X10.0 Y5.0 Z-2.85 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -626,10 +512,6 @@ G1 X28.5 Y21.0 Z-2.85 F500.0
 G3 X31.5 Y21.0 Z-2.85 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -640,8 +522,6 @@ G1 X22.5 Y5.0 Z-3.0 F500.0
 G1 X10.0 Y5.0 Z-3.0 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -656,10 +536,6 @@ G1 X28.5 Y21.0 Z-3.0 F500.0
 G3 X31.5 Y21.0 Z-3.0 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -670,8 +546,6 @@ G1 X22.5 Y5.0 Z-3.15 F500.0
 G1 X10.0 Y5.0 Z-3.15 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -686,10 +560,6 @@ G1 X28.5 Y21.0 Z-3.15 F500.0
 G3 X31.5 Y21.0 Z-3.15 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -700,8 +570,6 @@ G1 X22.5 Y5.0 Z-3.3 F500.0
 G1 X10.0 Y5.0 Z-3.3 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -716,10 +584,6 @@ G1 X28.5 Y21.0 Z-3.3 F500.0
 G3 X31.5 Y21.0 Z-3.3 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -730,8 +594,6 @@ G1 X22.5 Y5.0 Z-3.4499999999999997 F500.0
 G1 X10.0 Y5.0 Z-3.4499999999999997 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -746,10 +608,6 @@ G1 X28.5 Y21.0 Z-3.4499999999999997 F500.0
 G3 X31.5 Y21.0 Z-3.4499999999999997 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -760,8 +618,6 @@ G1 X22.5 Y5.0 Z-3.5999999999999996 F500.0
 G1 X10.0 Y5.0 Z-3.5999999999999996 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -776,10 +632,6 @@ G1 X28.5 Y21.0 Z-3.5999999999999996 F500.0
 G3 X31.5 Y21.0 Z-3.5999999999999996 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -790,8 +642,6 @@ G1 X22.5 Y5.0 Z-3.75 F500.0
 G1 X10.0 Y5.0 Z-3.75 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -806,10 +656,6 @@ G1 X28.5 Y21.0 Z-3.75 F500.0
 G3 X31.5 Y21.0 Z-3.75 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -820,8 +666,6 @@ G1 X22.5 Y5.0 Z-3.9 F500.0
 G1 X10.0 Y5.0 Z-3.9 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -836,10 +680,6 @@ G1 X28.5 Y21.0 Z-3.9 F500.0
 G3 X31.5 Y21.0 Z-3.9 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -850,8 +690,6 @@ G1 X22.5 Y5.0 Z-4.05 F500.0
 G1 X10.0 Y5.0 Z-4.05 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -866,10 +704,6 @@ G1 X28.5 Y21.0 Z-4.05 F500.0
 G3 X31.5 Y21.0 Z-4.05 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -880,8 +714,6 @@ G1 X22.5 Y5.0 Z-4.2 F500.0
 G1 X10.0 Y5.0 Z-4.2 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -896,10 +728,6 @@ G1 X28.5 Y21.0 Z-4.2 F500.0
 G3 X31.5 Y21.0 Z-4.2 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -910,8 +738,6 @@ G1 X22.5 Y5.0 Z-4.35 F500.0
 G1 X10.0 Y5.0 Z-4.35 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -926,10 +752,6 @@ G1 X28.5 Y21.0 Z-4.35 F500.0
 G3 X31.5 Y21.0 Z-4.35 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -940,8 +762,6 @@ G1 X22.5 Y5.0 Z-4.5 F500.0
 G1 X10.0 Y5.0 Z-4.5 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -956,10 +776,6 @@ G1 X28.5 Y21.0 Z-4.5 F500.0
 G3 X31.5 Y21.0 Z-4.5 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -970,8 +786,6 @@ G1 X22.5 Y5.0 Z-4.6499999999999995 F500.0
 G1 X10.0 Y5.0 Z-4.6499999999999995 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -986,10 +800,6 @@ G1 X28.5 Y21.0 Z-4.6499999999999995 F500.0
 G3 X31.5 Y21.0 Z-4.6499999999999995 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1000,8 +810,6 @@ G1 X22.5 Y5.0 Z-4.8 F500.0
 G1 X10.0 Y5.0 Z-4.8 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1016,10 +824,6 @@ G1 X28.5 Y21.0 Z-4.8 F500.0
 G3 X31.5 Y21.0 Z-4.8 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1030,8 +834,6 @@ G1 X22.5 Y5.0 Z-4.95 F500.0
 G1 X10.0 Y5.0 Z-4.95 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1046,10 +848,6 @@ G1 X28.5 Y21.0 Z-4.95 F500.0
 G3 X31.5 Y21.0 Z-4.95 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1060,8 +858,6 @@ G1 X22.5 Y5.0 Z-5.1 F500.0
 G1 X10.0 Y5.0 Z-5.1 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1076,10 +872,6 @@ G1 X28.5 Y21.0 Z-5.1 F500.0
 G3 X31.5 Y21.0 Z-5.1 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1090,8 +882,6 @@ G1 X22.5 Y5.0 Z-5.25 F500.0
 G1 X10.0 Y5.0 Z-5.25 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1106,10 +896,6 @@ G1 X28.5 Y21.0 Z-5.25 F500.0
 G3 X31.5 Y21.0 Z-5.25 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1120,8 +906,6 @@ G1 X22.5 Y5.0 Z-5.3999999999999995 F500.0
 G1 X10.0 Y5.0 Z-5.3999999999999995 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1136,10 +920,6 @@ G1 X28.5 Y21.0 Z-5.3999999999999995 F500.0
 G3 X31.5 Y21.0 Z-5.3999999999999995 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1150,8 +930,6 @@ G1 X22.5 Y5.0 Z-5.55 F500.0
 G1 X10.0 Y5.0 Z-5.55 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1166,10 +944,6 @@ G1 X28.5 Y21.0 Z-5.55 F500.0
 G3 X31.5 Y21.0 Z-5.55 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1180,8 +954,6 @@ G1 X22.5 Y5.0 Z-5.7 F500.0
 G1 X10.0 Y5.0 Z-5.7 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1196,10 +968,6 @@ G1 X28.5 Y21.0 Z-5.7 F500.0
 G3 X31.5 Y21.0 Z-5.7 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1210,8 +978,6 @@ G1 X22.5 Y5.0 Z-5.85 F500.0
 G1 X10.0 Y5.0 Z-5.85 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1226,10 +992,6 @@ G1 X28.5 Y21.0 Z-5.85 F500.0
 G3 X31.5 Y21.0 Z-5.85 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1240,8 +1002,6 @@ G1 X22.5 Y5.0 Z-6.0 F500.0
 G1 X10.0 Y5.0 Z-6.0 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1256,10 +1016,6 @@ G1 X28.5 Y21.0 Z-6.0 F500.0
 G3 X31.5 Y21.0 Z-6.0 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1270,8 +1026,6 @@ G1 X22.5 Y5.0 Z-6.1499999999999995 F500.0
 G1 X10.0 Y5.0 Z-6.1499999999999995 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1286,10 +1040,6 @@ G1 X28.5 Y21.0 Z-6.1499999999999995 F500.0
 G3 X31.5 Y21.0 Z-6.1499999999999995 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1300,8 +1050,6 @@ G1 X22.5 Y5.0 Z-6.3 F500.0
 G1 X10.0 Y5.0 Z-6.3 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1316,10 +1064,6 @@ G1 X28.5 Y21.0 Z-6.3 F500.0
 G3 X31.5 Y21.0 Z-6.3 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1330,8 +1074,6 @@ G1 X22.5 Y5.0 Z-6.45 F500.0
 G1 X10.0 Y5.0 Z-6.45 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1346,10 +1088,6 @@ G1 X28.5 Y21.0 Z-6.45 F500.0
 G3 X31.5 Y21.0 Z-6.45 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1360,8 +1098,6 @@ G1 X22.5 Y5.0 Z-6.6 F500.0
 G1 X10.0 Y5.0 Z-6.6 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1376,10 +1112,6 @@ G1 X28.5 Y21.0 Z-6.6 F500.0
 G3 X31.5 Y21.0 Z-6.6 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1390,8 +1122,6 @@ G1 X22.5 Y5.0 Z-6.75 F500.0
 G1 X10.0 Y5.0 Z-6.75 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1406,10 +1136,6 @@ G1 X28.5 Y21.0 Z-6.75 F500.0
 G3 X31.5 Y21.0 Z-6.75 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1420,8 +1146,6 @@ G1 X22.5 Y5.0 Z-6.8999999999999995 F500.0
 G1 X10.0 Y5.0 Z-6.8999999999999995 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1436,10 +1160,6 @@ G1 X28.5 Y21.0 Z-6.8999999999999995 F500.0
 G3 X31.5 Y21.0 Z-6.8999999999999995 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1450,8 +1170,6 @@ G1 X22.5 Y5.0 Z-7.05 F500.0
 G1 X10.0 Y5.0 Z-7.05 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1466,10 +1184,6 @@ G1 X28.5 Y21.0 Z-7.05 F500.0
 G3 X31.5 Y21.0 Z-7.05 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1480,8 +1194,6 @@ G1 X22.5 Y5.0 Z-7.199999999999999 F500.0
 G1 X10.0 Y5.0 Z-7.199999999999999 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1496,10 +1208,6 @@ G1 X28.5 Y21.0 Z-7.199999999999999 F500.0
 G3 X31.5 Y21.0 Z-7.199999999999999 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1510,8 +1218,6 @@ G1 X22.5 Y5.0 Z-7.35 F500.0
 G1 X10.0 Y5.0 Z-7.35 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1526,10 +1232,6 @@ G1 X28.5 Y21.0 Z-7.35 F500.0
 G3 X31.5 Y21.0 Z-7.35 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1540,8 +1242,6 @@ G1 X22.5 Y5.0 Z-7.5 F500.0
 G1 X10.0 Y5.0 Z-7.5 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1556,10 +1256,6 @@ G1 X28.5 Y21.0 Z-7.5 F500.0
 G3 X31.5 Y21.0 Z-7.5 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1570,8 +1266,6 @@ G1 X22.5 Y5.0 Z-7.6499999999999995 F500.0
 G1 X10.0 Y5.0 Z-7.6499999999999995 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1586,10 +1280,6 @@ G1 X28.5 Y21.0 Z-7.6499999999999995 F500.0
 G3 X31.5 Y21.0 Z-7.6499999999999995 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1600,8 +1290,6 @@ G1 X22.5 Y5.0 Z-7.8 F500.0
 G1 X10.0 Y5.0 Z-7.8 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1616,10 +1304,6 @@ G1 X28.5 Y21.0 Z-7.8 F500.0
 G3 X31.5 Y21.0 Z-7.8 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1630,8 +1314,6 @@ G1 X22.5 Y5.0 Z-7.949999999999999 F500.0
 G1 X10.0 Y5.0 Z-7.949999999999999 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1646,10 +1328,6 @@ G1 X28.5 Y21.0 Z-7.949999999999999 F500.0
 G3 X31.5 Y21.0 Z-7.949999999999999 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1660,8 +1338,6 @@ G1 X22.5 Y5.0 Z-8.1 F500.0
 G1 X10.0 Y5.0 Z-8.1 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1676,10 +1352,6 @@ G1 X28.5 Y21.0 Z-8.1 F500.0
 G3 X31.5 Y21.0 Z-8.1 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1690,8 +1362,6 @@ G1 X22.5 Y5.0 Z-8.25 F500.0
 G1 X10.0 Y5.0 Z-8.25 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1706,10 +1376,6 @@ G1 X28.5 Y21.0 Z-8.25 F500.0
 G3 X31.5 Y21.0 Z-8.25 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1720,8 +1386,6 @@ G1 X22.5 Y5.0 Z-8.4 F500.0
 G1 X10.0 Y5.0 Z-8.4 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1736,10 +1400,6 @@ G1 X28.5 Y21.0 Z-8.4 F500.0
 G3 X31.5 Y21.0 Z-8.4 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1750,8 +1410,6 @@ G1 X22.5 Y5.0 Z-8.549999999999999 F500.0
 G1 X10.0 Y5.0 Z-8.549999999999999 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1766,10 +1424,6 @@ G1 X28.5 Y21.0 Z-8.549999999999999 F500.0
 G3 X31.5 Y21.0 Z-8.549999999999999 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1780,8 +1434,6 @@ G1 X22.5 Y5.0 Z-8.7 F500.0
 G1 X10.0 Y5.0 Z-8.7 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1796,10 +1448,6 @@ G1 X28.5 Y21.0 Z-8.7 F500.0
 G3 X31.5 Y21.0 Z-8.7 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1810,8 +1458,6 @@ G1 X22.5 Y5.0 Z-8.85 F500.0
 G1 X10.0 Y5.0 Z-8.85 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1826,10 +1472,6 @@ G1 X28.5 Y21.0 Z-8.85 F500.0
 G3 X31.5 Y21.0 Z-8.85 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1840,8 +1482,6 @@ G1 X22.5 Y5.0 Z-9.0 F500.0
 G1 X10.0 Y5.0 Z-9.0 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1856,10 +1496,6 @@ G1 X28.5 Y21.0 Z-9.0 F500.0
 G3 X31.5 Y21.0 Z-9.0 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1870,8 +1506,6 @@ G1 X22.5 Y5.0 Z-9.15 F500.0
 G1 X10.0 Y5.0 Z-9.15 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1886,10 +1520,6 @@ G1 X28.5 Y21.0 Z-9.15 F500.0
 G3 X31.5 Y21.0 Z-9.15 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1900,8 +1530,6 @@ G1 X22.5 Y5.0 Z-9.299999999999999 F500.0
 G1 X10.0 Y5.0 Z-9.299999999999999 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1916,10 +1544,6 @@ G1 X28.5 Y21.0 Z-9.299999999999999 F500.0
 G3 X31.5 Y21.0 Z-9.299999999999999 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1930,8 +1554,6 @@ G1 X22.5 Y5.0 Z-9.45 F500.0
 G1 X10.0 Y5.0 Z-9.45 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1946,10 +1568,6 @@ G1 X28.5 Y21.0 Z-9.45 F500.0
 G3 X31.5 Y21.0 Z-9.45 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1960,8 +1578,6 @@ G1 X22.5 Y5.0 Z-9.6 F500.0
 G1 X10.0 Y5.0 Z-9.6 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -1976,10 +1592,6 @@ G1 X28.5 Y21.0 Z-9.6 F500.0
 G3 X31.5 Y21.0 Z-9.6 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -1990,8 +1602,6 @@ G1 X22.5 Y5.0 Z-9.75 F500.0
 G1 X10.0 Y5.0 Z-9.75 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2006,10 +1616,6 @@ G1 X28.5 Y21.0 Z-9.75 F500.0
 G3 X31.5 Y21.0 Z-9.75 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2020,8 +1626,6 @@ G1 X22.5 Y5.0 Z-9.9 F500.0
 G1 X10.0 Y5.0 Z-9.9 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2036,10 +1640,6 @@ G1 X28.5 Y21.0 Z-9.9 F500.0
 G3 X31.5 Y21.0 Z-9.9 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2050,8 +1650,6 @@ G1 X22.5 Y5.0 Z-10.049999999999999 F500.0
 G1 X10.0 Y5.0 Z-10.049999999999999 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2066,10 +1664,6 @@ G1 X28.5 Y21.0 Z-10.049999999999999 F500.0
 G3 X31.5 Y21.0 Z-10.049999999999999 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2080,8 +1674,6 @@ G1 X22.5 Y5.0 Z-10.2 F500.0
 G1 X10.0 Y5.0 Z-10.2 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2096,10 +1688,6 @@ G1 X28.5 Y21.0 Z-10.2 F500.0
 G3 X31.5 Y21.0 Z-10.2 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2110,8 +1698,6 @@ G1 X22.5 Y5.0 Z-10.35 F500.0
 G1 X10.0 Y5.0 Z-10.35 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2126,10 +1712,6 @@ G1 X28.5 Y21.0 Z-10.35 F500.0
 G3 X31.5 Y21.0 Z-10.35 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2140,8 +1722,6 @@ G1 X22.5 Y5.0 Z-10.5 F500.0
 G1 X10.0 Y5.0 Z-10.5 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2156,10 +1736,6 @@ G1 X28.5 Y21.0 Z-10.5 F500.0
 G3 X31.5 Y21.0 Z-10.5 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2170,8 +1746,6 @@ G1 X22.5 Y5.0 Z-10.65 F500.0
 G1 X10.0 Y5.0 Z-10.65 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2186,10 +1760,6 @@ G1 X28.5 Y21.0 Z-10.65 F500.0
 G3 X31.5 Y21.0 Z-10.65 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2200,8 +1770,6 @@ G1 X22.5 Y5.0 Z-10.799999999999999 F500.0
 G1 X10.0 Y5.0 Z-10.799999999999999 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2216,10 +1784,6 @@ G1 X28.5 Y21.0 Z-10.799999999999999 F500.0
 G3 X31.5 Y21.0 Z-10.799999999999999 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2230,8 +1794,6 @@ G1 X22.5 Y5.0 Z-10.95 F500.0
 G1 X10.0 Y5.0 Z-10.95 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2246,10 +1808,6 @@ G1 X28.5 Y21.0 Z-10.95 F500.0
 G3 X31.5 Y21.0 Z-10.95 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2260,8 +1818,6 @@ G1 X22.5 Y5.0 Z-11.1 F500.0
 G1 X10.0 Y5.0 Z-11.1 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2276,10 +1832,6 @@ G1 X28.5 Y21.0 Z-11.1 F500.0
 G3 X31.5 Y21.0 Z-11.1 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2290,8 +1842,6 @@ G1 X22.5 Y5.0 Z-11.25 F500.0
 G1 X10.0 Y5.0 Z-11.25 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2306,10 +1856,6 @@ G1 X28.5 Y21.0 Z-11.25 F500.0
 G3 X31.5 Y21.0 Z-11.25 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2320,8 +1866,6 @@ G1 X22.5 Y5.0 Z-11.4 F500.0
 G1 X10.0 Y5.0 Z-11.4 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2336,10 +1880,6 @@ G1 X28.5 Y21.0 Z-11.4 F500.0
 G3 X31.5 Y21.0 Z-11.4 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2350,8 +1890,6 @@ G1 X22.5 Y5.0 Z-11.549999999999999 F500.0
 G1 X10.0 Y5.0 Z-11.549999999999999 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2366,10 +1904,6 @@ G1 X28.5 Y21.0 Z-11.549999999999999 F500.0
 G3 X31.5 Y21.0 Z-11.549999999999999 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2380,8 +1914,6 @@ G1 X22.5 Y5.0 Z-11.7 F500.0
 G1 X10.0 Y5.0 Z-11.7 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2396,10 +1928,6 @@ G1 X28.5 Y21.0 Z-11.7 F500.0
 G3 X31.5 Y21.0 Z-11.7 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2410,8 +1938,6 @@ G1 X22.5 Y5.0 Z-11.85 F500.0
 G1 X10.0 Y5.0 Z-11.85 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2426,10 +1952,6 @@ G1 X28.5 Y21.0 Z-11.85 F500.0
 G3 X31.5 Y21.0 Z-11.85 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2440,8 +1962,6 @@ G1 X22.5 Y5.0 Z-12.0 F500.0
 G1 X10.0 Y5.0 Z-12.0 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2456,10 +1976,6 @@ G1 X28.5 Y21.0 Z-12.0 F500.0
 G3 X31.5 Y21.0 Z-12.0 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2470,8 +1986,6 @@ G1 X22.5 Y5.0 Z-12.15 F500.0
 G1 X10.0 Y5.0 Z-12.15 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2486,10 +2000,6 @@ G1 X28.5 Y21.0 Z-12.15 F500.0
 G3 X31.5 Y21.0 Z-12.15 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2500,8 +2010,6 @@ G1 X22.5 Y5.0 Z-12.299999999999999 F500.0
 G1 X10.0 Y5.0 Z-12.299999999999999 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2516,10 +2024,6 @@ G1 X28.5 Y21.0 Z-12.299999999999999 F500.0
 G3 X31.5 Y21.0 Z-12.299999999999999 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2530,8 +2034,6 @@ G1 X22.5 Y5.0 Z-12.45 F500.0
 G1 X10.0 Y5.0 Z-12.45 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2546,10 +2048,6 @@ G1 X28.5 Y21.0 Z-12.45 F500.0
 G3 X31.5 Y21.0 Z-12.45 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2560,8 +2058,6 @@ G1 X22.5 Y5.0 Z-12.6 F500.0
 G1 X10.0 Y5.0 Z-12.6 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2576,10 +2072,6 @@ G1 X28.5 Y21.0 Z-12.6 F500.0
 G3 X31.5 Y21.0 Z-12.6 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2590,8 +2082,6 @@ G1 X22.5 Y5.0 Z-12.75 F500.0
 G1 X10.0 Y5.0 Z-12.75 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2606,10 +2096,6 @@ G1 X28.5 Y21.0 Z-12.75 F500.0
 G3 X31.5 Y21.0 Z-12.75 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2620,8 +2106,6 @@ G1 X22.5 Y5.0 Z-12.9 F500.0
 G1 X10.0 Y5.0 Z-12.9 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2636,10 +2120,6 @@ G1 X28.5 Y21.0 Z-12.9 F500.0
 G3 X31.5 Y21.0 Z-12.9 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2650,8 +2130,6 @@ G1 X22.5 Y5.0 Z-13.049999999999999 F500.0
 G1 X10.0 Y5.0 Z-13.049999999999999 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2666,10 +2144,6 @@ G1 X28.5 Y21.0 Z-13.049999999999999 F500.0
 G3 X31.5 Y21.0 Z-13.049999999999999 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2680,8 +2154,6 @@ G1 X22.5 Y5.0 Z-13.2 F500.0
 G1 X10.0 Y5.0 Z-13.2 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2696,10 +2168,6 @@ G1 X28.5 Y21.0 Z-13.2 F500.0
 G3 X31.5 Y21.0 Z-13.2 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2710,8 +2178,6 @@ G1 X22.5 Y5.0 Z-13.35 F500.0
 G1 X10.0 Y5.0 Z-13.35 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2726,10 +2192,6 @@ G1 X28.5 Y21.0 Z-13.35 F500.0
 G3 X31.5 Y21.0 Z-13.35 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2740,8 +2202,6 @@ G1 X22.5 Y5.0 Z-13.5 F500.0
 G1 X10.0 Y5.0 Z-13.5 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2756,10 +2216,6 @@ G1 X28.5 Y21.0 Z-13.5 F500.0
 G3 X31.5 Y21.0 Z-13.5 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2770,8 +2226,6 @@ G1 X22.5 Y5.0 Z-13.65 F500.0
 G1 X10.0 Y5.0 Z-13.65 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2786,10 +2240,6 @@ G1 X28.5 Y21.0 Z-13.65 F500.0
 G3 X31.5 Y21.0 Z-13.65 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2800,8 +2250,6 @@ G1 X22.5 Y5.0 Z-13.799999999999999 F500.0
 G1 X10.0 Y5.0 Z-13.799999999999999 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2816,10 +2264,6 @@ G1 X28.5 Y21.0 Z-13.799999999999999 F500.0
 G3 X31.5 Y21.0 Z-13.799999999999999 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2830,8 +2274,6 @@ G1 X22.5 Y5.0 Z-13.95 F500.0
 G1 X10.0 Y5.0 Z-13.95 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2846,10 +2288,6 @@ G1 X28.5 Y21.0 Z-13.95 F500.0
 G3 X31.5 Y21.0 Z-13.95 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2860,8 +2298,6 @@ G1 X22.5 Y5.0 Z-14.1 F500.0
 G1 X10.0 Y5.0 Z-14.1 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2876,10 +2312,6 @@ G1 X28.5 Y21.0 Z-14.1 F500.0
 G3 X31.5 Y21.0 Z-14.1 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2890,8 +2322,6 @@ G1 X22.5 Y5.0 Z-14.25 F500.0
 G1 X10.0 Y5.0 Z-14.25 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2906,10 +2336,6 @@ G1 X28.5 Y21.0 Z-14.25 F500.0
 G3 X31.5 Y21.0 Z-14.25 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2920,8 +2346,6 @@ G1 X22.5 Y5.0 Z-14.399999999999999 F500.0
 G1 X10.0 Y5.0 Z-14.399999999999999 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2936,10 +2360,6 @@ G1 X28.5 Y21.0 Z-14.399999999999999 F500.0
 G3 X31.5 Y21.0 Z-14.399999999999999 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2950,8 +2370,6 @@ G1 X22.5 Y5.0 Z-14.549999999999999 F500.0
 G1 X10.0 Y5.0 Z-14.549999999999999 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2966,10 +2384,6 @@ G1 X28.5 Y21.0 Z-14.549999999999999 F500.0
 G3 X31.5 Y21.0 Z-14.549999999999999 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -2980,8 +2394,6 @@ G1 X22.5 Y5.0 Z-14.7 F500.0
 G1 X10.0 Y5.0 Z-14.7 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -2996,10 +2408,6 @@ G1 X28.5 Y21.0 Z-14.7 F500.0
 G3 X31.5 Y21.0 Z-14.7 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
-(default)
-(default/Rectangle)
 
 G0 X10.0 Y5.0
 S1000.0
@@ -3010,8 +2418,6 @@ G1 X22.5 Y5.0 Z-14.85 F500.0
 G1 X10.0 Y5.0 Z-14.85 F500.0
 S0
 
-(end default/Rectangle)
-(default/Circle)
 
 G0 X28.5 Y21.0
 S1000.0
@@ -3026,7 +2432,5 @@ G1 X28.5 Y21.0 Z-14.85 F500.0
 G3 X31.5 Y21.0 Z-14.85 F500.0 R1.5
 S0
 
-(end default/Circle)
-(end default)
 S0
 M5 S0

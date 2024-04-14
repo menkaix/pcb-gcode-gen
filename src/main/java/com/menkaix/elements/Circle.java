@@ -7,9 +7,9 @@ import java.util.Map;
 import com.menkaix.geometry.basic.PointCouple;
 import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.pcbgcode.utilities.MissingPropertyException;
-import com.menkaix.project.Behaviour;
-import com.menkaix.project.Geometry;
 import com.menkaix.project.RotationDirection;
+import com.menkaix.project.behaviours.Behaviour;
+import com.menkaix.project.behaviours.Geometry;
 import com.menkaix.writegcode.ArcGcodePath;
 import com.menkaix.writegcode.ClosedLineGcodePath;
 
@@ -57,7 +57,7 @@ public class Circle extends Element {
 		SimplePoint center = pointFromMap(getProperty("center"));
 		Double radius = (Double) getProperty("radius") ;
 		
-		System.out.println("center x "+center.getX()+", center y "+center.getY()+" radius "+radius);
+		//System.out.println("center x "+center.getX()+", center y "+center.getY()+" radius "+radius);
 		
 		setCenter(center);		
 		setRadius(radius);

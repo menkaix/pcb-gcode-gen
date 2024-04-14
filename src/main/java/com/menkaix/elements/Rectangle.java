@@ -7,8 +7,8 @@ import java.util.Map;
 import com.menkaix.geometry.basic.PolyGone;
 import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.pcbgcode.utilities.MissingPropertyException;
-import com.menkaix.project.Behaviour;
-import com.menkaix.project.Geometry;
+import com.menkaix.project.behaviours.Behaviour;
+import com.menkaix.project.behaviours.Geometry;
 import com.menkaix.writegcode.ClosedLineGcodePath;
 
 /**

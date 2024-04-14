@@ -1,4 +1,4 @@
-package com.menkaix.project;
+package com.menkaix.project.values;
 
 public enum BitHead {
 	

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.menkaix.geometry.components.SimplePoint;
-import com.menkaix.project.Geometry;
+import com.menkaix.project.behaviours.Geometry;
 
 public class PolyGone implements Geometry {
 

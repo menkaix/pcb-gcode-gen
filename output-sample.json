@@ -55,10 +55,27 @@
           }
         },
         {
-          "points": [],
           "name": "PolyLineElement",
           "subType": "PolyLineElement",
-          "properties": {}
+          "properties": {
+            "points": [
+              {
+                "x": 30.0,
+                "y": 10.0,
+                "z": 0.0
+              },
+              {
+                "x": 45.0,
+                "y": 12.0,
+                "z": 0.0
+              },
+              {
+                "x": 35.0,
+                "y": 15.0,
+                "z": 0.0
+              }
+            ]
+          }
         }
       ]
     }

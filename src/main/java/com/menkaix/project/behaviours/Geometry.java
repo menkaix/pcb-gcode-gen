@@ -1,4 +1,4 @@
-package com.menkaix.project;
+package com.menkaix.project.behaviours;
 
 import java.util.List;
 

@@ -9,10 +9,10 @@ import java.util.WeakHashMap;
 import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.pcbgcode.utilities.MissingPropertyException;
 import com.menkaix.pcbgcode.utilities.UnknownElementException;
-import com.menkaix.project.Behaviour;
-import com.menkaix.project.BitHead;
-import com.menkaix.project.GcodeBehaviour;
 import com.menkaix.project.GcodeProject;
+import com.menkaix.project.behaviours.Behaviour;
+import com.menkaix.project.behaviours.GcodeBehaviour;
+import com.menkaix.project.values.BitHead;
 
 public class Element implements Serializable {
 
@@ -48,6 +48,10 @@ public class Element implements Serializable {
 	}
 
 	protected SimplePoint pointFromMap(Object mapIn) throws MissingPropertyException {
+		
+		if(mapIn instanceof SimplePoint) {
+			return (SimplePoint) mapIn ;
+		}
 
 		Map<String, Double> map = (Map<String, Double>) mapIn;
 

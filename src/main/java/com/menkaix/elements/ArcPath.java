@@ -6,8 +6,8 @@ import java.util.Properties;
 import com.menkaix.geometry.basic.PointCouple;
 import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.pcbgcode.utilities.MissingPropertyException;
-import com.menkaix.project.Geometry;
 import com.menkaix.project.RotationDirection;
+import com.menkaix.project.behaviours.Geometry;
 import com.menkaix.writegcode.ArcGcodePath;
 
 public class ArcPath extends Element {

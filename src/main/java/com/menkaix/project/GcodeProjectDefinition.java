@@ -12,6 +12,7 @@ import com.menkaix.elements.factory.ElementFactory;
 import com.menkaix.pcbgcode.utilities.DuplicateLayerNameException;
 import com.menkaix.pcbgcode.utilities.MissingPropertyException;
 import com.menkaix.pcbgcode.utilities.UnknownElementException;
+import com.menkaix.project.values.BitHead;
 
 public class GcodeProjectDefinition implements Serializable {
 

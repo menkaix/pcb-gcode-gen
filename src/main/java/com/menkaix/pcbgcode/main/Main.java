@@ -12,11 +12,11 @@ import com.menkaix.elements.PolyLineElement;
 import com.menkaix.elements.Rectangle;
 import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.pcbgcode.utilities.DuplicateLayerNameException;
-import com.menkaix.project.BitHead;
 import com.menkaix.project.GcodeProject;
 import com.menkaix.project.GcodeProjectDefinition;
 import com.menkaix.project.Layer;
 import com.menkaix.project.RotationDirection;
+import com.menkaix.project.values.BitHead;
 
 /**
  *
@@ -84,6 +84,7 @@ public class Main {
 	public static void main(String[] args) {
 
 		jsonContent();
+		//staticContent();
 
 		System.out.println("done");
 
