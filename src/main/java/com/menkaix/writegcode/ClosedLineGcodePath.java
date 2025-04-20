@@ -44,7 +44,7 @@ public class ClosedLineGcodePath implements GcodeBehaviour {
 		}
 
 		// retrait ici en cas de fraiseuse (avant S0)
-		if (project.getBitHead() == BitHead.ROTOR) {
+		if (project.getBitHead() == BitHead.ROUTER) {
 			ans += "G0 Z" + project.getSafeLevel() + "\n";
 		}
 
@@ -63,7 +63,7 @@ public class ClosedLineGcodePath implements GcodeBehaviour {
 				+ (project.getPass() * project.getPassIncrement()) + " F" + feedRate + "\n";
 
 		// retrait ici en cas de fraiseuse (avant S0)
-		if (project.getBitHead() == BitHead.ROTOR) {
+		if (project.getBitHead() == BitHead.ROUTER) {
 			ans += "G0 Z" + project.getSafeLevel() + "\n";
 		}
 		ans += "S0\n";

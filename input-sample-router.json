@@ -6,7 +6,7 @@
       "passes": 100,
       "elements": [
         {
-          "name": "Rectangle",
+          "name": "rectangle",
           "subType": "Rectangle",
           "properties": {
             "width": 12.5,
@@ -55,6 +55,7 @@
           }
         },
         {
+          
           "name": "PolyLineElement",
           "subType": "PolyLineElement",
           "properties": {
@@ -80,10 +81,10 @@
       ]
     }
   ],
-  "projectName": "output-sample",
+  "projectName": "output-sample-router",
   "projectFolder": "",
   "safeLevel": 1.0,
   "passIncrement": -0.035,
-  "feedRate": 500.0,
+  "feedRate": 100.0,
   "power": 1000.0
 }

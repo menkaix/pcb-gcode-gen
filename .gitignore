@@ -1,10 +1,11 @@
 *.swp
 nbactions.xml
 nbproject
-.settings
+.settings/
 .project
 .classpath
 *.class
 target/
 .idea
 *.iml
+.gradle/

@@ -37,7 +37,7 @@ public class ArcGcodePath implements GcodeBehaviour {
 		}
 
 		// retrait ici en cas de fraiseuse (avant S0)
-		if (project.getBitHead() == BitHead.ROTOR) {
+		if (project.getBitHead() == BitHead.ROUTER) {
 			ans += "G0 Z" + project.getSafeLevel() + "\n";
 		}
 
@@ -74,7 +74,7 @@ public class ArcGcodePath implements GcodeBehaviour {
 		}
 
 		// retrait ici en cas de fraiseuse (avant S0)
-		if (project.getBitHead() == BitHead.ROTOR) {
+		if (project.getBitHead() == BitHead.ROUTER) {
 			ans += "G0 Z" + project.getSafeLevel() + "\n";
 		}
 		ans += "S0\n";

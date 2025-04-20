@@ -80,10 +80,10 @@
       ]
     }
   ],
-  "projectName": "output-sample",
+  "projectName": "output-sample-router",
   "projectFolder": "",
   "safeLevel": 1.0,
   "passIncrement": -0.035,
-  "feedRate": 500.0,
+  "feedRate": 100.0,
   "power": 1000.0
 }

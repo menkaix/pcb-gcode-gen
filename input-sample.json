@@ -22,7 +22,7 @@
           "name": "Circle",
           "subType": "Circle",
           "properties": {
-            "radius": 1.5,
+            "radius": 2.5,
             "center": {
               "x": 30.0,
               "y": 21.0,
@@ -84,7 +84,7 @@
   "projectName": "output-sample",
   "projectFolder": "",
   "safeLevel": 1.0,
-  "passIncrement": -0.15,
+  "passIncrement": -0.0,
   "feedRate": 500.0,
   "power": 1000.0
 }

@@ -64,7 +64,7 @@ public class Main {
 	private static void jsonContent() {
 		String s;
 		try {
-			s = Files.readString(Path.of("input-sample.json"));
+			s = Files.readString(Path.of("input-sample-router.json"));
 
 			Gson gson = (new GsonBuilder()).create();
 
