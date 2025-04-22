@@ -6,7 +6,12 @@ import com.menkaix.project.behaviours.GcodeBehaviour;
 import com.menkaix.project.behaviours.Geometry;
 import com.menkaix.project.values.BitHead;
 
+import org.slf4j.Logger; // Added
+import org.slf4j.LoggerFactory; // Added
+
 public class LineGcodePath implements GcodeBehaviour {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(LineGcodePath.class); // Added logger
 
 	private Geometry geometry;
 	private Double feedRate;
@@ -84,11 +89,14 @@ public class LineGcodePath implements GcodeBehaviour {
 			ans += "S0\n";
 			return ans;
 		} catch (NullPointerException e) {
-			e.printStackTrace();
-			return "";
+			LOGGER.error("Null pointer exception during G-code generation for line path. Project: {}, Geometry: {}",
+					project, geometry, e);
+			return "(error: null pointer)";
 		} catch (IndexOutOfBoundsException e) {
-			e.printStackTrace();
-			return "";
+			LOGGER.error(
+					"Index out of bounds exception during G-code generation for line path. Project: {}, Geometry points size: {}",
+					project, (geometry != null ? geometry.getPoints().size() : "null"), e);
+			return "(error: index out of bounds)";
 		}
 	}
 

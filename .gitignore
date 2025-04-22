@@ -9,3 +9,5 @@ target/
 .idea
 *.iml
 .gradle/
+bin/
+.vscode/

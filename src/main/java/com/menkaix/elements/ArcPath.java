@@ -7,10 +7,15 @@ import com.menkaix.project.RotationDirection;
 import com.menkaix.project.behaviours.Geometry;
 import com.menkaix.writegcode.ArcGcodePath;
 
+import org.slf4j.Logger; // Added
+import org.slf4j.LoggerFactory; // Added
+
 public class ArcPath extends Element {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(ArcPath.class); // Added
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -6371348113906900012L;
 
@@ -111,8 +116,12 @@ public class ArcPath extends Element {
 		try {
 			init();
 		} catch (MissingPropertyException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// This error during construction might leave the object in an inconsistent
+			// state.
+			LOGGER.error(
+					"Failed to initialize ArcPath due to missing properties. From: {}, To: {}, Radius: {}, Direction: {}",
+					from, to, radius, direction, e);
+			// Consider re-throwing as a runtime exception or handling more gracefully.
 		}
 
 		// geometry = new PointCouple(from, to);

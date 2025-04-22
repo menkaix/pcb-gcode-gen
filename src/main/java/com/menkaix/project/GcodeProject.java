@@ -17,10 +17,15 @@ import com.menkaix.project.behaviours.GcodeBehaviour;
 import com.menkaix.project.values.BitHead;
 import com.menkaix.writegcode.GcodeFileWriter;
 
+import org.slf4j.Logger; // Added
+import org.slf4j.LoggerFactory; // Added
+
 public class GcodeProject implements Serializable {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(GcodeProject.class); // Added
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2312883204979979860L;
 
@@ -38,83 +43,87 @@ public class GcodeProject implements Serializable {
 	private Double power;
 
 	public void writeGcode() {
-	
+
 		GcodeFileWriter gfw = new GcodeFileWriter(Paths.get(projectFolder, projectName + ".nc").toString());
-	
+
 		gfw.initializeGcode();
-	
+
 		int maxPasses = 0;
-	
+
 		for (Layer layer : layers) {
-	
+
 			maxPasses = Math.max(maxPasses, layer.getPasses());
-	
+
 		}
-	
+
 		for (pass = 0; pass < maxPasses; pass++) {
-	
+
 			for (Layer layer : layers) {
-	
-				if(pass>layer.getPasses()) continue ;
-				
-				//gfw.getGcodes().add("("+layer.getLayerName()+")");
-				
+
+				if (pass > layer.getPasses())
+					continue;
+
+				// gfw.getGcodes().add("("+layer.getLayerName()+")");
+
 				for (Element gcodeObject : layer.getElements()) {
-					
-					if(gcodeObject==null) {
-						System.err.println("err: gcodeObject list is null");
-						continue ;
+
+					if (gcodeObject == null) {
+						LOGGER.error("Encountered null element in layer '{}' during G-code generation.",
+								layer.getLayerName());
+						continue;
 					}
-					
-					if(gcodeObject.getBehaviours()==null) {
-						System.err.println(gcodeObject.getElementName()+": err: behaviour list is null");
-						continue ;
+
+					if (gcodeObject.getBehaviours() == null) {
+						LOGGER.error("Element '{}' in layer '{}' has null behaviours list.",
+								gcodeObject.getElementName(), layer.getLayerName());
+						continue;
 					}
-	
-					//gfw.getGcodes().add("("+layer.getLayerName()+"/"+gcodeObject.getElementName()+")");
-					
+
+					// gfw.getGcodes().add("("+layer.getLayerName()+"/"+gcodeObject.getElementName()+")");
+
 					for (Behaviour behaviour : gcodeObject.getBehaviours()) {
 						if (behaviour instanceof GcodeBehaviour) {
 							gfw.getGcodes().add(((GcodeBehaviour) behaviour).getGcode(this));
 						}
 					}
-					
-					//gfw.getGcodes().add("(end "+layer.getLayerName()+"/"+gcodeObject.getElementName()+")");
-	
+
+					// gfw.getGcodes().add("(end
+					// "+layer.getLayerName()+"/"+gcodeObject.getElementName()+")");
+
 				}
-				
-				//gfw.getGcodes().add("(end "+layer.getLayerName()+")");
-	
+
+				// gfw.getGcodes().add("(end "+layer.getLayerName()+")");
+
 			}
-	
+
 		}
-	
+
 		gfw.finalizeGcode();
-	
+
 		gfw.write();
-	
+
 	}
 
 	public void addLayer(Layer newLayer) throws DuplicateLayerNameException {
 		if (layers == null) {
 			layers = new ArrayList<Layer>();
 		}
-	
+
 		for (Layer layer : layers) {
 			if (layer.getLayerName().equalsIgnoreCase(newLayer.getLayerName())) {
 				throw new DuplicateLayerNameException();
 			}
 		}
-	
+
 		layers.add(newLayer);
-	
+
 	}
 
 	public void removeLayer(Layer newLayer) {
 		if (layers == null) {
 			layers = new ArrayList<Layer>();
 		}
-	
+
 		for (int i = 0; i < layers.size(); i++) {
 			Layer layer = layers.get(i);
 			if (layer.getLayerName().equalsIgnoreCase(newLayer.getLayerName())) {
@@ -122,9 +131,9 @@ public class GcodeProject implements Serializable {
 				break;
 			}
 		}
-	
+
 		layers.add(newLayer);
-	
+
 	}
 
 	public void saveJson(String fileName) {
@@ -132,11 +141,12 @@ public class GcodeProject implements Serializable {
 
 		String jsonProject = gson.toJson(this);
 
+		String fullPath = Path.of(fileName, projectName + ".json").toString();
 		try {
-			Files.writeString(Path.of(fileName, projectName + ".json"), jsonProject);
+			Files.writeString(Path.of(fullPath), jsonProject);
+			LOGGER.info("Successfully saved project JSON to: {}", fullPath);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Failed to save project JSON to: {}", fullPath, e);
 		}
 	}
 
@@ -231,8 +241,9 @@ public class GcodeProject implements Serializable {
 		try {
 			addLayer(new Layer("default"));
 		} catch (DuplicateLayerNameException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			// This should ideally not happen with a "default" layer unless it's added
+			// twice.
+			LOGGER.error("Failed to add default layer during project initialization. This might indicate an issue.", e);
 		}
 	}
 

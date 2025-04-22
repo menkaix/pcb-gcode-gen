@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors; // Added for stream operations in logging
+
+import org.slf4j.Logger; // Added
+import org.slf4j.LoggerFactory; // Added
 
 import com.menkaix.elements.Element;
 import com.menkaix.elements.factory.ElementFactory;
@@ -16,8 +20,10 @@ import com.menkaix.project.values.BitHead;
 
 public class GcodeProjectDefinition implements Serializable {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(GcodeProjectDefinition.class); // Added logger
+
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2312883204979979860L;
 
@@ -54,11 +60,9 @@ public class GcodeProjectDefinition implements Serializable {
 				}
 
 			} catch (MissingPropertyException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("Missing property while creating element from base: {}", baseElement, e);
 			} catch (UnknownElementException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.error("Unknown element type encountered for base: {}", baseElement, e);
 			}
 
 		}
@@ -66,7 +70,7 @@ public class GcodeProjectDefinition implements Serializable {
 	}
 
 	public GcodeProject generate() {
-
+		LOGGER.info("Generating GcodeProject '{}'...", projectName);
 		ExecutorService executorService = Executors.newCachedThreadPool();
 
 		GcodeProject ans = new GcodeProject(projectName, bitHead);
@@ -77,37 +81,66 @@ public class GcodeProjectDefinition implements Serializable {
 		ans.setPower(power);
 
 		ans.getLayers().clear();
+		LOGGER.debug("Cleared existing layers for project generation.");
 
 		for (Layer layer : layers) {
-
+			LOGGER.debug("Processing layer: {}", layer.getLayerName());
 			Layer newLayer = new Layer(layer.getLayerName());
 			newLayer.setPasses(layer.getPasses());
 
 			for (Element elt : layer.getElements()) {
-				// newLayer.addElement(ElementFactory.create(elt));
+				LOGGER.trace("Submitting element for creation: {}", elt);
 				executorService.execute(new FactoryElementsRunnable(newLayer.getElements(), elt));
 			}
 
+			// Shutdown the executor service and wait for tasks to complete for this layer
+			executorService.shutdown();
 			try {
-				if (!executorService.awaitTermination(1, TimeUnit.SECONDS)) {
-
+				LOGGER.debug("Waiting for element creation tasks to complete for layer: {}", layer.getLayerName());
+				if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) { // Increased timeout
+					LOGGER.warn(
+							"Element creation thread pool did not terminate in time for layer: {}. Forcing shutdown.",
+							layer.getLayerName());
+					executorService.shutdownNow();
+				} else {
+					LOGGER.debug("Element creation tasks completed for layer: {}", layer.getLayerName());
 				}
 			} catch (InterruptedException e) {
-
-				e.printStackTrace();
+				LOGGER.warn("Element creation thread pool termination interrupted for layer: {}", layer.getLayerName(),
+						e);
+				executorService.shutdownNow(); // Force shutdown on interrupt
+				// Restore the interrupted status
+				Thread.currentThread().interrupt();
 			}
+			// Re-initialize executor for the next layer if needed (or move outside loop if
+			// shared)
+			// For now, assuming a new pool per layer might be intended, but let's re-init
+			executorService = Executors.newCachedThreadPool(); // Re-initialize for next layer
 
 			try {
 				ans.addLayer(newLayer);
+				LOGGER.debug("Added layer '{}' to the project.", newLayer.getLayerName());
 			} catch (DuplicateLayerNameException e) {
-				System.out.println("err new Layer: " + newLayer.getLayerName());
-				for (Layer layer2 : ans.getLayers()) {
-					System.out.println(layer2.getLayerName());
-				}
-				e.printStackTrace();
+				// Log the error and existing layer names for debugging
+				String existingLayers = ans.getLayers().stream()
+						.map(Layer::getLayerName)
+						.collect(Collectors.joining(", "));
+				LOGGER.error("Attempted to add duplicate layer name: {}. Existing layers: [{}]. Skipping this layer.",
+						newLayer.getLayerName(), existingLayers, e);
 			}
 		}
+		// Final shutdown for the last executor instance
+		executorService.shutdown();
+		try {
+			if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+				executorService.shutdownNow();
+			}
+		} catch (InterruptedException e) {
+			executorService.shutdownNow();
+			Thread.currentThread().interrupt();
+		}
 
+		LOGGER.info("GcodeProject '{}' generation complete.", projectName);
 		return ans;
 	}
 
@@ -176,13 +209,14 @@ public class GcodeProjectDefinition implements Serializable {
 	}
 
 	public Layer getLayer(String string) {
-
+		LOGGER.trace("Searching for layer with name: {}", string);
 		for (Layer layer : layers) {
 			if (layer.getLayerName().equalsIgnoreCase(string)) {
+				LOGGER.trace("Found layer: {}", string);
 				return layer;
 			}
 		}
-
+		LOGGER.trace("Layer not found: {}", string);
 		return null;
 	}
 

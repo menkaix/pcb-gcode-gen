@@ -1,4 +1,6 @@
 plugins {
+    id 'org.springframework.boot' version '3.2.3'
+    id 'io.spring.dependency-management' version '1.1.4'
     id 'java'
 }
 
@@ -13,8 +15,18 @@ repositories {
 }
 
 dependencies {
-    // Ajoutez vos dépendances ici
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-logging'
+
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    implementation 'com.google.code.gson:gson:2.12.1'
+
+    // Spring Boot automatically manages SLF4J and Logback versions,
+    // so these explicit dependencies can be removed or kept as is
+    // implementation 'org.slf4j:slf4j-api:2.0.13'
+    // implementation 'ch.qos.logback:logback-classic:1.5.6'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 test {
