@@ -24,35 +24,35 @@ public class Element implements Serializable {
 	private WeakHashMap<String, Object> properties = new WeakHashMap<String, Object>();
 
 	private transient List<Behaviour> behaviours = new ArrayList<Behaviour>();
-	
-	
 
 	protected void checkMandatoryProperties(String... propertyNames) throws MissingPropertyException {
-		
-		ArrayList<String> missing = new ArrayList<String>() ;
-		
+
+		ArrayList<String> missing = new ArrayList<String>();
+
 		for (String string : propertyNames) {
-			
-			if(!properties.containsKey(string)) missing.add(string) ;
-			
+
+			if (!properties.containsKey(string))
+				missing.add(string);
+
 		}
-		
-		if(missing.size()>0) {
-			String message = "missing property " ;
+
+		if (missing.size() > 0) {
+			String message = "missing property ";
 			for (String string : missing) {
-				message += " -"+string ;
+				message += " -" + string;
 			}
 			throw new MissingPropertyException(message);
 		}
-		
+
 	}
 
 	protected SimplePoint pointFromMap(Object mapIn) throws MissingPropertyException {
-		
-		if(mapIn instanceof SimplePoint) {
-			return (SimplePoint) mapIn ;
+
+		if (mapIn instanceof SimplePoint) {
+			return (SimplePoint) mapIn;
 		}
 
+		@SuppressWarnings("unchecked")
 		Map<String, Double> map = (Map<String, Double>) mapIn;
 
 		if (!map.containsKey("x"))
@@ -73,21 +73,21 @@ public class Element implements Serializable {
 		return ans;
 
 	}
-	
+
 	public String previewGcode() {
-		String ans = "----- GCode preveiw for "+getElementName();
-		int i = 0 ;
-		System.out.println(getBehaviours().size()+ " behaviours total");
+		String ans = "----- GCode preveiw for " + getElementName();
+		int i = 0;
+		System.out.println(getBehaviours().size() + " behaviours total");
 		for (Behaviour behaviour : getBehaviours()) {
-			System.out.println("#"+i++);
-			if(behaviour instanceof GcodeBehaviour) {
-				ans += ((GcodeBehaviour) behaviour).getGcode(new GcodeProject("test", BitHead.LASER))+"\n";
+			System.out.println("#" + i++);
+			if (behaviour instanceof GcodeBehaviour) {
+				ans += ((GcodeBehaviour) behaviour).getGcode(new GcodeProject("test", BitHead.LASER)) + "\n";
 			}
 		}
-		
-		 ans += "----- end GCode preveiw for "+getElementName();
-		
-		return ans ;
+
+		ans += "----- end GCode preveiw for " + getElementName();
+
+		return ans;
 	}
 
 	public void reloadBehaviour() throws MissingPropertyException, UnknownElementException {

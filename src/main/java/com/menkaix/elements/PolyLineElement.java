@@ -6,8 +6,6 @@ import java.util.List;
 import com.menkaix.geometry.basic.PolyLine;
 import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.pcbgcode.utilities.MissingPropertyException;
-import com.menkaix.project.behaviours.Behaviour;
-import com.menkaix.project.behaviours.Geometry;
 import com.menkaix.writegcode.LineGcodePath;
 
 //TODO
@@ -30,9 +28,9 @@ public class PolyLineElement extends Element {
 		geometry.getPoints().addAll(points);
 
 		getProperties().put("points", points);
-		
+
 		getBehaviours().clear();
-		
+
 		getBehaviours().add(geometry);
 		getBehaviours().add(new LineGcodePath(geometry));
 
@@ -43,16 +41,17 @@ public class PolyLineElement extends Element {
 
 		checkMandatoryProperties("points");
 		points.clear();
-		
-		//points = (List<SimplePoint>) getProperty("points") ;
-		
-		ArrayList<Object> objs = (ArrayList<Object>) getProperty("points") ;
-		
+
+		// points = (List<SimplePoint>) getProperty("points") ;
+
+		@SuppressWarnings("unchecked")
+		ArrayList<Object> objs = (ArrayList<Object>) getProperty("points");
+
 		for (Object object : objs) {
-			SimplePoint pt = pointFromMap(object) ;
+			SimplePoint pt = pointFromMap(object);
 			points.add(pt);
 		}
-		
+
 		updateGeometry();
 
 	}
@@ -83,8 +82,6 @@ public class PolyLineElement extends Element {
 	public PolyLineElement() {
 
 		updateGeometry();
-
-		
 
 	}
 

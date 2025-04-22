@@ -1,6 +1,6 @@
 package com.menkaix.writegcode;
 
-import com.menkaix.geometry.components.SimplePoint;
+//import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.project.GcodeProject;
 import com.menkaix.project.behaviours.GcodeBehaviour;
 import com.menkaix.project.behaviours.Geometry;
@@ -24,22 +24,22 @@ public class ClosedLineGcodePath implements GcodeBehaviour {
 
 	@Override
 	public String getGcode(GcodeProject project) {
-		
-		if(geometry==null) {
+
+		if (geometry == null) {
 			return "(null geometry in polygon)";
 		}
-		
-		if(geometry.getPoints().size()<=0) {
+
+		if (geometry.getPoints().size() <= 0) {
 			return "(empty geometry in polygon)";
 		}
 
 		String ans = "\n";
-		
-		if(feedRate==null) {
+
+		if (feedRate == null) {
 			feedRate = project.getFeedRate();
 		}
-		
-		if(power==null) {
+
+		if (power == null) {
 			power = project.getPower();
 		}
 
@@ -49,11 +49,11 @@ public class ClosedLineGcodePath implements GcodeBehaviour {
 		}
 
 		ans += "G0 X" + geometry.getPoints().get(0).getX() + " Y" + geometry.getPoints().get(0).getY() + "\n";
-		
+
 		ans += "S" + power + "\n";
 
 		for (int i = 0; i < geometry.getPoints().size(); i++) {
-			
+
 			ans += "G1 X" + geometry.getPoints().get(i).getX() + " Y" + geometry.getPoints().get(i).getY() + " Z"
 					+ (project.getPass() * project.getPassIncrement()) + " F" + feedRate + "\n";
 

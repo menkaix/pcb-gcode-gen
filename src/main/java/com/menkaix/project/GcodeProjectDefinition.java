@@ -21,8 +21,6 @@ public class GcodeProjectDefinition implements Serializable {
 	 */
 	private static final long serialVersionUID = 2312883204979979860L;
 
-	private transient int pass = 0;
-
 	private BitHead bitHead = BitHead.LASER; //
 	private List<Layer> layers = new ArrayList<Layer>(); //
 	private String projectName = "cool"; //

@@ -1,8 +1,5 @@
 package com.menkaix.elements;
 
-import java.util.Map;
-import java.util.Properties;
-
 import com.menkaix.geometry.basic.PointCouple;
 import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.pcbgcode.utilities.MissingPropertyException;
@@ -19,43 +16,43 @@ public class ArcPath extends Element {
 
 	private transient Geometry geometry;
 
-//	private SimplePoint from ;
-//	private SimplePoint to ;
-//	private double radius ;
+	// private SimplePoint from ;
+	// private SimplePoint to ;
+	// private double radius ;
 
 	private void init() throws MissingPropertyException {
-		
+
 		SimplePoint from = pointFromMap(getProperty("from"));
 		SimplePoint to = pointFromMap(getProperty("to"));
-	
+
 		geometry = new PointCouple(from, to);
-	
+
 		// setRadius((Double)getProperty("radius"));
 		// set((RotationDirection)getProperty("direction"));
-	
+
 		getBehaviours().clear();
 		getBehaviours().add(geometry);
 		getBehaviours()
 				.add(new ArcGcodePath(geometry, RotationDirection.valueOf(this.getProperty("direction").toString()),
 						Double.parseDouble(this.getProperty("radius").toString())));
-	
+
 	}
 
 	// private SimplePoint from ;
 	// private SimplePoint to ;
 	// private double radius ;
-	
+
 	// private SimplePoint from ;
 	// private SimplePoint to ;
 	// private double radius ;
-	
+
 	@Override
 	public void reloadBehaviour() throws MissingPropertyException {
-	
+
 		checkMandatoryProperties("from", "to", "radius", "direction");
-	
+
 		init();
-	
+
 	}
 
 	public SimplePoint getFrom() {

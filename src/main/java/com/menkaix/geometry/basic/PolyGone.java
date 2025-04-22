@@ -8,11 +8,6 @@ import com.menkaix.project.behaviours.Geometry;
 
 public class PolyGone implements Geometry {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 7648952201152086454L;
-
 	private List<SimplePoint> points;
 
 	public void addPoint(double x, double y) {

@@ -1,7 +1,6 @@
 package com.menkaix.elements;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import com.menkaix.geometry.basic.PolyGone;
@@ -26,10 +25,10 @@ public class Rectangle extends Element {
 
 	private transient Geometry geometry;
 
-//	private double x = 0;
-//	private double y = 0;
-//	private double width = 10;
-//	private double height = 10;
+	// private double x = 0;
+	// private double y = 0;
+	// private double width = 10;
+	// private double height = 10;
 
 	private void updateGeometry() {
 
@@ -40,6 +39,7 @@ public class Rectangle extends Element {
 		try {
 			corner = (SimplePoint) getProperty("corner");
 		} catch (ClassCastException e) {
+			@SuppressWarnings("unchecked")
 			Map<String, Double> cornerMap = (Map<String, Double>) getProperty("corner");
 
 			corner = new SimplePoint(cornerMap.get("x"), cornerMap.get("y"));

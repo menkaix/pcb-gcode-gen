@@ -1,6 +1,6 @@
 package com.menkaix.writegcode;
 
-import com.menkaix.geometry.components.SimplePoint;
+//import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.project.GcodeProject;
 import com.menkaix.project.behaviours.GcodeBehaviour;
 import com.menkaix.project.behaviours.Geometry;
@@ -39,58 +39,56 @@ public class LineGcodePath implements GcodeBehaviour {
 
 	@Override
 	public String getGcode(GcodeProject project) {
-		
-		if(geometry==null) {
+
+		if (geometry == null) {
 			return "(null geometry in line)";
 		}
-		
-		if(geometry.getPoints().size()<=0) {
+
+		if (geometry.getPoints().size() <= 0) {
 			return "(empty geometry in line)";
 		}
 
 		try {
-		
-		String ans = "\n";
-		
-		if(feedRate==null) {
-			feedRate = project.getFeedRate();
-		}
-		
-		if(power==null) {
-			power = project.getPower();
-		}
 
-		// retrait ici en cas de fraiseuse (avant S0)
-		if (project.getBitHead() == BitHead.ROUTER) {
-			ans += "G0 Z" + project.getSafeLevel() + "\n";
-		}
-		ans += "S0\n";
+			String ans = "\n";
 
-		ans += "G0 X" + geometry.getPoints().get(0).getX() + " Y" + geometry.getPoints().get(0).getY()  +"\n";
-		ans += "S" + power + "\n";
+			if (feedRate == null) {
+				feedRate = project.getFeedRate();
+			}
 
-		for (int i = 0; i < geometry.getPoints().size(); i++) {
-			SimplePoint point = geometry.getPoints().get(i);
+			if (power == null) {
+				power = project.getPower();
+			}
 
-			ans += "G1 X" + geometry.getPoints().get(i).getX() + " Y" + geometry.getPoints().get(i).getY() + " Z"
-					+ (project.getPass() * project.getPassIncrement()) + " F" + feedRate + "\n";
+			// retrait ici en cas de fraiseuse (avant S0)
+			if (project.getBitHead() == BitHead.ROUTER) {
+				ans += "G0 Z" + project.getSafeLevel() + "\n";
+			}
+			ans += "S0\n";
 
-		}
+			ans += "G0 X" + geometry.getPoints().get(0).getX() + " Y" + geometry.getPoints().get(0).getY() + "\n";
+			ans += "S" + power + "\n";
 
-		// retrait ici en cas de fraiseuse (avant S0)
-		if (project.getBitHead() == BitHead.ROUTER) {
-			ans += "G0 Z" + project.getSafeLevel() + "\n";
-		}
-		ans += "S0\n";
-		return ans;
-		}
-		catch (NullPointerException e) {
+			for (int i = 0; i < geometry.getPoints().size(); i++) {
+				// SimplePoint point = geometry.getPoints().get(i);
+
+				ans += "G1 X" + geometry.getPoints().get(i).getX() + " Y" + geometry.getPoints().get(i).getY() + " Z"
+						+ (project.getPass() * project.getPassIncrement()) + " F" + feedRate + "\n";
+
+			}
+
+			// retrait ici en cas de fraiseuse (avant S0)
+			if (project.getBitHead() == BitHead.ROUTER) {
+				ans += "G0 Z" + project.getSafeLevel() + "\n";
+			}
+			ans += "S0\n";
+			return ans;
+		} catch (NullPointerException e) {
 			e.printStackTrace();
-			return "" ;
-		}
-		catch (IndexOutOfBoundsException e) {
+			return "";
+		} catch (IndexOutOfBoundsException e) {
 			e.printStackTrace();
-			return "" ;
+			return "";
 		}
 	}
 
@@ -101,7 +99,5 @@ public class LineGcodePath implements GcodeBehaviour {
 	public void setGeometry(Geometry geometry) {
 		this.geometry = geometry;
 	}
-
-	
 
 }
