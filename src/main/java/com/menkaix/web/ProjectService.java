@@ -62,6 +62,20 @@ public class ProjectService {
 		}
 	}
 
+	/**
+	 * Wholesale replace of the editable project, used by the "import a project
+	 * JSON" feature. Unvalidated on purpose, same as {@link #loadFromFile}: an
+	 * uploaded file gets the same trust as one passed on the command line,
+	 * with per-element validation deferred to {@link ElementFactory#create}
+	 * (via the preview/save/generate endpoints), not enforced up front.
+	 */
+	public GcodeProjectDefinition replaceDefinition(GcodeProjectDefinition newDefinition) {
+		synchronized (lock) {
+			definition = newDefinition;
+			return definition;
+		}
+	}
+
 	public GcodeProjectDefinition updateMeta(GcodeProjectDefinition meta) {
 		synchronized (lock) {
 			if (meta.getBitHead() != null) {
@@ -234,6 +248,17 @@ public class ProjectService {
 			ans.put("layerCount", project.getLayers().size());
 			ans.put("elementCount", countElements(project));
 			return ans;
+		}
+	}
+
+	/**
+	 * Resolves the project (same as the first step of {@link #save()}) without
+	 * writing anything to disk, for the "download the generated JSON" feature:
+	 * a pure export, decoupled from the server's own save/generate actions.
+	 */
+	public GcodeProject buildResolvedProject() {
+		synchronized (lock) {
+			return definition.generate();
 		}
 	}
 

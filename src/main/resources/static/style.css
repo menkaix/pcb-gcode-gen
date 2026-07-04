@@ -54,6 +54,7 @@ header#project-meta h1 {
 
 .actions {
 	display: flex;
+	flex-wrap: wrap;
 	gap: 0.5rem;
 }
 

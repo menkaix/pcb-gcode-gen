@@ -9,12 +9,12 @@
           "name": "Rectangle",
           "subType": "Rectangle",
           "properties": {
-            "width": 12.5,
             "corner": {
               "x": 10.0,
               "y": 5.0,
               "z": 0.0
             },
+            "width": 12.5,
             "height": 17.5
           }
         },
@@ -22,12 +22,12 @@
           "name": "Circle",
           "subType": "Circle",
           "properties": {
-            "radius": 2.5,
             "center": {
               "x": 30.0,
               "y": 21.0,
               "z": 0.0
-            }
+            },
+            "radius": 2.5
           }
         }
       ]
@@ -45,13 +45,13 @@
               "y": 10.0,
               "z": 0.0
             },
-            "radius": 12.0,
-            "direction": "CLOCKWISE",
             "to": {
               "x": 35.0,
               "y": 15.0,
               "z": 0.0
-            }
+            },
+            "radius": 12.0,
+            "direction": "CLOCKWISE"
           }
         },
         {

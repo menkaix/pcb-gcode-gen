@@ -43,10 +43,29 @@ public class GcodeProject implements Serializable {
 	private Double power;
 
 	public void writeGcode() {
+		buildGcodeFileWriter().write();
+	}
+
+	/**
+	 * Same G-code this project would write to disk, without touching the
+	 * filesystem — for callers that just want the text (e.g. a browser
+	 * download of the generated .nc, decoupled from the server's own
+	 * save/generate actions).
+	 */
+	public String getGcodeText() {
+		return String.join("\n", buildGcodeFileWriter().getGcodes()) + "\n";
+	}
+
+	private GcodeFileWriter buildGcodeFileWriter() {
 
 		GcodeFileWriter gfw = new GcodeFileWriter(Paths.get(projectFolder, projectName + ".nc").toString());
 
-		gfw.initializeGcode();
+		// Router: spin the spindle up once at the configured power and leave it
+		// running for the whole job (see GcodeFileWriter.initializeGcode). Laser:
+		// start at 0 and let each shape's GcodeBehaviour switch S on/off around
+		// its own cut.
+		double startPower = (bitHead == BitHead.ROUTER && power != null) ? power : 0;
+		gfw.initializeGcode(startPower);
 
 		int maxPasses = 0;
 
@@ -100,8 +119,7 @@ public class GcodeProject implements Serializable {
 
 		gfw.finalizeGcode();
 
-		gfw.write();
-
+		return gfw;
 	}
 
 	public void addLayer(Layer newLayer) throws DuplicateLayerNameException {

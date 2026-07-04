@@ -17,12 +17,21 @@ public class GcodeFileWriter {
 	private String filePath;
 	private List<String> gcodes;
 
-	public void initializeGcode() {
+	/**
+	 * @param startPower spindle/laser power to command in the initial M3. Router
+	 *                   jobs pass the project's configured power here and never
+	 *                   touch S again until the final M5, since a physical
+	 *                   spindle should spin continuously rather than stop/start
+	 *                   between every cut; laser jobs pass 0 and modulate S
+	 *                   per-shape instead (see ArcGcodePath/LineGcodePath/
+	 *                   ClosedLineGcodePath/CircleGcodePath).
+	 */
+	public void initializeGcode(double startPower) {
 		gcodes.add("G21"); // explicit metric mode: all coordinates and feed rates are in millimeters
-		gcodes.add("M3 S0"); // set rotation clockwise, no spin
-		// gcodes.add("S0");
+		gcodes.add("G90"); // absolute positioning: X/Y/Z are absolute coordinates, not deltas
+		gcodes.add("G17"); // XY plane: required for G2/G3 arcs to be interpreted correctly
+		gcodes.add("M3 S" + startPower); // set rotation clockwise, at the given starting power
 		gcodes.add("G0 X0 Y0"); //
-		// gcodes.add("S1000");
 
 	}
 
@@ -30,6 +39,7 @@ public class GcodeFileWriter {
 
 		gcodes.add("S0");
 		gcodes.add("M5 S0");
+		gcodes.add("M30"); // end of program (and rewind), so senders/controllers see an explicit finish
 
 	}
 

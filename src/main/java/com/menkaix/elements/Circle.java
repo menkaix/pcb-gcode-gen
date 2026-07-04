@@ -1,12 +1,9 @@
 package com.menkaix.elements;
 
-import com.menkaix.geometry.basic.PointCouple;
 import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.pcbgcode.utilities.MissingPropertyException;
 import com.menkaix.project.RotationDirection;
-import com.menkaix.project.behaviours.Behaviour;
-import com.menkaix.project.behaviours.Geometry;
-import com.menkaix.writegcode.ArcGcodePath;
+import com.menkaix.writegcode.CircleGcodePath;
 
 public class Circle extends Element {
 
@@ -16,30 +13,8 @@ public class Circle extends Element {
 	// private double radius;
 
 	private void updateGeometry() {
-
-		// System.out.println("update Geometry for "+getElementName());
-
-		for (Behaviour behaviour : getBehaviours()) {
-			if (behaviour instanceof Geometry) {
-				getBehaviours().remove(behaviour);
-			}
-		}
-
-		SimplePoint p1 = new SimplePoint(getCenter().getX() - getRadius(), getCenter().getY());
-		SimplePoint p2 = new SimplePoint(getCenter().getX() + getRadius(), getCenter().getY());
-
-		PointCouple points = new PointCouple(p1, p2);
-
-		// System.out.println(points);
-
-		ArcGcodePath first = new ArcGcodePath(points, RotationDirection.CLOCKWISE, getRadius());
-		ArcGcodePath second = new ArcGcodePath(points, RotationDirection.COUNTER_CLOCKWISE, getRadius());
-
-		getBehaviours().add(first);
-		getBehaviours().add(second);
-
-		// System.out.println("preview GCode : \n"+previewGcode());
-
+		getBehaviours().clear();
+		getBehaviours().add(new CircleGcodePath(getCenter(), getRadius(), RotationDirection.CLOCKWISE));
 	}
 
 	@Override

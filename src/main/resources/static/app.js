@@ -1161,6 +1161,48 @@ function setupCanvasInteraction() {
 	});
 }
 
+// ---------------- Import / export ----------------
+
+function downloadBlob(filename, blob) {
+	const url = URL.createObjectURL(blob);
+	const link = document.createElement('a');
+	link.href = url;
+	link.download = filename;
+	document.body.appendChild(link);
+	link.click();
+	link.remove();
+	URL.revokeObjectURL(url);
+}
+
+function downloadJson(filename, data) {
+	downloadBlob(filename, new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+}
+
+function downloadText(filename, text) {
+	downloadBlob(filename, new Blob([text], { type: 'text/plain' }));
+}
+
+async function importProjectFile(file) {
+	let parsed;
+	try {
+		parsed = JSON.parse(await file.text());
+	} catch (e) {
+		toast(`Fichier JSON invalide : ${e.message}`, true);
+		return;
+	}
+	try {
+		await apiFetch('/api/project', { method: 'PUT', body: JSON.stringify(parsed) });
+		// Layer/element indices from before the import may no longer point to
+		// anything meaningful, so drop any open selection instead of trying to
+		// keep it.
+		cancelForm();
+		await refresh();
+		toast('Projet importé.');
+	} catch (e) {
+		toast(e.message, true);
+	}
+}
+
 // ---------------- Wiring ----------------
 
 document.getElementById('btn-add-layer').onclick = addLayer;
@@ -1178,6 +1220,39 @@ document.getElementById('btn-save-meta').onclick = async () => {
 		await apiFetch('/api/project/meta', { method: 'PUT', body: JSON.stringify(meta) });
 		toast('Métadonnées mises à jour.');
 		await refresh();
+	} catch (e) {
+		toast(e.message, true);
+	}
+};
+
+document.getElementById('btn-import').onclick = () => document.getElementById('file-import').click();
+
+document.getElementById('file-import').onchange = async (e) => {
+	const file = e.target.files[0];
+	e.target.value = ''; // allow re-selecting the same file later
+	if (file) {
+		await importProjectFile(file);
+	}
+};
+
+document.getElementById('btn-export-project').onclick = () => {
+	const name = (state.project && state.project.projectName) || 'projet';
+	downloadJson(`${name}.json`, state.project);
+};
+
+document.getElementById('btn-export-generated').onclick = async () => {
+	try {
+		const generated = await apiFetch('/api/project/generated');
+		downloadJson(`${generated.projectName || 'projet'}-generated.json`, generated);
+	} catch (e) {
+		toast(e.message, true);
+	}
+};
+
+document.getElementById('btn-export-gcode').onclick = async () => {
+	try {
+		const result = await apiFetch('/api/project/gcode');
+		downloadText(`${result.projectName || 'projet'}.nc`, result.gcode);
 	} catch (e) {
 		toast(e.message, true);
 	}

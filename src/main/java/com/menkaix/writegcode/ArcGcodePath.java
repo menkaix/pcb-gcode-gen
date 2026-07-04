@@ -36,6 +36,11 @@ public class ArcGcodePath implements GcodeBehaviour {
 			power = project.getPower();
 		}
 
+		// A router's spindle is already spinning continuously at the configured
+		// power from the initial M3 (see GcodeProject/GcodeFileWriter) — only a
+		// laser needs its power switched on/off around each individual cut.
+		boolean toggleSpindle = project.getBitHead() != BitHead.ROUTER;
+
 		// retrait ici en cas de fraiseuse (avant S0)
 		if (project.getBitHead() == BitHead.ROUTER) {
 			ans += "G0 Z" + project.getSafeLevel() + "\n";
@@ -43,7 +48,9 @@ public class ArcGcodePath implements GcodeBehaviour {
 
 		ans += "G0 X" + geometry.getPoints().get(0).getX() + " Y" + geometry.getPoints().get(0).getY() + "\n";
 
-		ans += "S" + power + "\n";
+		if (toggleSpindle) {
+			ans += "S" + power + "\n";
+		}
 
 		ans += "G1 X" + geometry.getPoints().get(0).getX() + " Y" + geometry.getPoints().get(0).getY() + " Z"
 				+ (project.getPass() * project.getPassIncrement()) + " F" + feedRate + "\n";
@@ -77,8 +84,10 @@ public class ArcGcodePath implements GcodeBehaviour {
 		if (project.getBitHead() == BitHead.ROUTER) {
 			ans += "G0 Z" + project.getSafeLevel() + "\n";
 		}
-		ans += "S0\n";
-		
+		if (toggleSpindle) {
+			ans += "S0\n";
+		}
+
 		//System.out.println("ans =" + ans);
 		//System.out.println("----- end arc gcode ------");
 
