@@ -25,19 +25,22 @@ public class Main {
 		SpringApplication.run(Main.class, args);
 	}
 
+	private static final String DEFAULT_INPUT_FILE = "input-sample-router.json";
+
 	@Bean
 	public CommandLineRunner run() {
 		return args -> {
-			jsonContent();
+			String inputFile = args.length > 0 ? args[0] : DEFAULT_INPUT_FILE;
+			jsonContent(inputFile);
 			LOGGER.info("Processing finished.");
 		};
 	}
 
-	private void jsonContent() {
-		LOGGER.info("Starting JSON content processing...");
+	private void jsonContent(String inputFile) {
+		LOGGER.info("Starting JSON content processing for file: {}", inputFile);
 		String s;
 		try {
-			s = Files.readString(Path.of("input-sample-router.json"));
+			s = Files.readString(Path.of(inputFile));
 
 			Gson gson = (new GsonBuilder()).create();
 
