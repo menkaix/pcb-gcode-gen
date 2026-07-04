@@ -15,7 +15,7 @@ public class Circle extends Element {
 	// private SimplePoint center;
 	// private double radius;
 
-	private void updateGeomtry() {
+	private void updateGeometry() {
 
 		// System.out.println("update Geometry for "+getElementName());
 
@@ -56,7 +56,7 @@ public class Circle extends Element {
 		setCenter(center);
 		setRadius(radius);
 
-		updateGeomtry();
+		updateGeometry();
 
 	}
 
@@ -93,7 +93,7 @@ public class Circle extends Element {
 		setCenter(center);
 		setRadius(radius);
 
-		updateGeomtry();
+		updateGeometry();
 	}
 
 }

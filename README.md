@@ -1,35 +1,65 @@
-DevDungeon Project
-==================
+pcb-gcode-gen
+=============
 
-This is a Java project by DevDungeon.com. Written in Java.
+Générateur de G-code pour l'usinage de PCB (laser ou fraiseuse/routeur CNC), à partir d'une description de projet au format JSON.
 
-[![Maven metadata URI](https://img.shields.io/maven-metadata/v/http/central.maven.org/maven2/com/devdungeon/apps/pcb-gcode-gen/maven-metadata.xml.svg)]()
+Fonctionnement
+--------------
 
-To do
------
+L'application lit un fichier JSON décrivant un projet (tête d'outil, calques, éléments géométriques), génère les objets correspondants, puis produit :
 
-- Add the proper package and Main file, update pom.xml
-- Configure log4j2.properties if needed
-- Configure project license, add to pom.xml, add LICENSE.txt
-- Update the README.md
-- Update dependency versions in pom.xml
-- Delete icons/images if they are not needed (console apps)
+- un fichier `<projectName>.json` (relecture du projet généré)
+- un fichier `<projectName>.nc` (G-code prêt pour la machine)
 
-Features
--------
+### Format du JSON d'entrée
 
-* x
-* y
-* z
+```json
+{
+  "bitHead": "ROUTER",
+  "projectName": "mon-projet",
+  "projectFolder": "",
+  "safeLevel": 1.0,
+  "passIncrement": -0.035,
+  "feedRate": 100.0,
+  "power": 1000.0,
+  "layers": [
+    {
+      "layerName": "default",
+      "passes": 100,
+      "elements": [ ... ]
+    }
+  ]
+}
+```
 
+- `bitHead` : `LASER` ou `ROUTER`
+- `safeLevel` : hauteur Z de sécurité (retrait de l'outil entre déplacements)
+- `passIncrement` : incrément de profondeur Z ajouté à chaque passe
+- `feedRate` / `power` : vitesse d'avance (F) et puissance (S)
+- chaque calque (`layer`) est rejoué `passes` fois, en approfondissant le Z à chaque passe
 
-Running
--------
+### Éléments géométriques disponibles (`subType`)
 
-    java -jar <file>
+- **Rectangle** : `corner {x,y,z}`, `width`, `height`
+- **Circle** : `center {x,y,z}`, `radius`
+- **ArcPath** : `from {x,y,z}`, `to {x,y,z}`, `radius`, `direction` (`CLOCKWISE`/`COUNTER_CLOCKWISE`)
+- **PolyLineElement** : `points: [{x,y,z}, ...]`
 
+Voir `input-sample.json` et `input-sample-router.json` pour des exemples complets.
+
+Compilation et exécution
+-------------------------
+
+Projet Gradle, nécessite Java 21.
+
+```bash
+./gradlew build
+java -jar build/libs/pcb-gcode-gen.jar [chemin/vers/projet.json]
+```
+
+Si aucun argument n'est fourni, `input-sample-router.json` est utilisé par défaut.
 
 Contact
 -------
 
-NanoDano <nanodano@devdungeon.com>
+menkaix

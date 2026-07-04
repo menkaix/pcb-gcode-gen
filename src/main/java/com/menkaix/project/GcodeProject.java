@@ -119,20 +119,18 @@ public class GcodeProject implements Serializable {
 
 	}
 
-	public void removeLayer(Layer newLayer) {
+	public void removeLayer(Layer layerToRemove) {
 		if (layers == null) {
 			layers = new ArrayList<Layer>();
 		}
 
 		for (int i = 0; i < layers.size(); i++) {
 			Layer layer = layers.get(i);
-			if (layer.getLayerName().equalsIgnoreCase(newLayer.getLayerName())) {
+			if (layer.getLayerName().equalsIgnoreCase(layerToRemove.getLayerName())) {
 				layers.remove(i);
 				break;
 			}
 		}
-
-		layers.add(newLayer);
 
 	}
 

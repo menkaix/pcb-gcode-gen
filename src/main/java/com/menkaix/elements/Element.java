@@ -2,9 +2,9 @@ package com.menkaix.elements;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.pcbgcode.utilities.MissingPropertyException;
@@ -26,7 +26,7 @@ public class Element implements Serializable {
 	private String name;
 	private String subType;
 
-	private WeakHashMap<String, Object> properties = new WeakHashMap<String, Object>();
+	private HashMap<String, Object> properties = new HashMap<String, Object>();
 
 	private transient List<Behaviour> behaviours = new ArrayList<Behaviour>();
 
@@ -146,11 +146,11 @@ public class Element implements Serializable {
 
 	}
 
-	public WeakHashMap<String, Object> getProperties() {
+	public HashMap<String, Object> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(WeakHashMap<String, Object> properties) {
+	public void setProperties(HashMap<String, Object> properties) {
 		this.properties = properties;
 	}
 

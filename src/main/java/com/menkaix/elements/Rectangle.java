@@ -1,6 +1,5 @@
 package com.menkaix.elements;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 import com.menkaix.geometry.basic.PolyGone;
@@ -76,10 +75,6 @@ public class Rectangle extends Element {
 
 		getBehaviours().add(geometry);
 		getBehaviours().add(new ClosedLineGcodePath(geometry));
-	}
-
-	public void setBehaviours(ArrayList<Behaviour> behaviours) {
-		setBehaviours(behaviours);
 	}
 
 	public Geometry getGeometry() {
