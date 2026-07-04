@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>pcb-gcode-gen</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+	<header id="project-meta">
+		<h1>pcb-gcode-gen</h1>
+		<div class="meta-fields">
+			<label>Nom du projet
+				<input id="meta-projectName" type="text" />
+			</label>
+			<label>Tête
+				<select id="meta-bitHead">
+					<option value="LASER">Laser</option>
+					<option value="ROUTER">Routeur</option>
+				</select>
+			</label>
+			<label>Safe level (mm)
+				<input id="meta-safeLevel" type="number" step="any" />
+			</label>
+			<label>Incrément de passe (mm)
+				<input id="meta-passIncrement" type="number" step="any" />
+			</label>
+			<label>Feed rate
+				<input id="meta-feedRate" type="number" step="any" />
+			</label>
+			<label>Power
+				<input id="meta-power" type="number" step="any" />
+			</label>
+			<button id="btn-save-meta">Mettre à jour</button>
+		</div>
+		<div class="actions">
+			<button id="btn-save">Enregistrer le projet</button>
+			<button id="btn-generate" class="primary">Générer le G-code</button>
+		</div>
+	</header>
+
+	<main>
+		<section id="tree-panel">
+			<div class="panel-header">
+				<h2>Couches</h2>
+				<button id="btn-add-layer">+ Couche</button>
+			</div>
+			<div id="layer-tree"></div>
+		</section>
+
+		<section id="preview-panel">
+			<h2>Prévisualisation (mm)</h2>
+			<svg id="preview-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+		</section>
+
+		<section id="form-panel">
+			<h2 id="form-title">Sélectionnez ou ajoutez une forme</h2>
+			<div id="element-form"></div>
+		</section>
+	</main>
+
+	<div id="toast" class="hidden"></div>
+
+	<script src="app.js"></script>
+</body>
+</html>

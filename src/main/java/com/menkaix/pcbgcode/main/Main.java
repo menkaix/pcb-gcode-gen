@@ -1,62 +1,66 @@
 package com.menkaix.pcbgcode.main;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.menkaix.project.GcodeProject;
-import com.menkaix.project.GcodeProjectDefinition;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import com.menkaix.web.ProjectService;
 
 @SpringBootApplication
+@ComponentScan(basePackages = "com.menkaix")
 public class Main {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
+	private static final String DEFAULT_INPUT_FILE = "input-sample-router.json";
+	private static final String HEADLESS_FLAG = "--headless";
+
 	public static void main(String[] args) {
-		SpringApplication.run(Main.class, args);
+		boolean headless = Arrays.asList(args).contains(HEADLESS_FLAG);
+
+		SpringApplicationBuilder builder = new SpringApplicationBuilder(Main.class);
+		if (headless) {
+			// Preserves the original CLI behavior: process once and exit, no embedded
+			// web server.
+			builder.web(WebApplicationType.NONE);
+		}
+		builder.run(args);
 	}
 
-	private static final String DEFAULT_INPUT_FILE = "input-sample-router.json";
-
 	@Bean
-	public CommandLineRunner run() {
+	public CommandLineRunner run(ProjectService projectService) {
 		return args -> {
-			String inputFile = args.length > 0 ? args[0] : DEFAULT_INPUT_FILE;
-			jsonContent(inputFile);
-			LOGGER.info("Processing finished.");
+			boolean headless = Arrays.asList(args).contains(HEADLESS_FLAG);
+			String inputFile = firstNonFlagArg(args).orElse(DEFAULT_INPUT_FILE);
+
+			projectService.loadFromFile(inputFile);
+
+			if (headless) {
+				LOGGER.info("Running in headless mode for file: {}", inputFile);
+				projectService.generateAndWrite();
+				LOGGER.info("Processing finished.");
+			} else {
+				LOGGER.info("Web GUI ready: open http://127.0.0.1:8080 in your browser (loaded project: {})",
+						inputFile);
+			}
 		};
 	}
 
-	private void jsonContent(String inputFile) {
-		LOGGER.info("Starting JSON content processing for file: {}", inputFile);
-		String s;
-		try {
-			s = Files.readString(Path.of(inputFile));
-
-			Gson gson = (new GsonBuilder()).create();
-
-			GcodeProjectDefinition prjDef = gson.fromJson(s, GcodeProjectDefinition.class);
-
-			GcodeProject prj = prjDef.generate();
-
-			prj.saveJson("");
-			LOGGER.info("JSON output saved.");
-			prj.writeGcode();
-			LOGGER.info("G-code output saved.");
-
-		} catch (IOException e) {
-			LOGGER.error("Failed to read or process input JSON file", e);
-		} catch (Exception e) { // Catch other potential exceptions during generation/saving
-			LOGGER.error("An unexpected error occurred during project processing", e);
+	private Optional<String> firstNonFlagArg(String[] args) {
+		for (String arg : args) {
+			if (!arg.startsWith("--")) {
+				return Optional.of(arg);
+			}
 		}
+		return Optional.empty();
 	}
+
 }

@@ -220,4 +220,27 @@ public class GcodeProjectDefinition implements Serializable {
 		return null;
 	}
 
+	public void addLayer(Layer newLayer) throws DuplicateLayerNameException {
+		if (layers == null) {
+			layers = new ArrayList<Layer>();
+		}
+
+		for (Layer layer : layers) {
+			if (layer.getLayerName().equalsIgnoreCase(newLayer.getLayerName())) {
+				throw new DuplicateLayerNameException();
+			}
+		}
+
+		layers.add(newLayer);
+	}
+
+	public void removeLayerAt(int index) {
+		if (layers == null) {
+			layers = new ArrayList<Layer>();
+			return;
+		}
+
+		layers.remove(index);
+	}
+
 }

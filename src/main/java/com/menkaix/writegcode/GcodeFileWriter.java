@@ -18,6 +18,7 @@ public class GcodeFileWriter {
 	private List<String> gcodes;
 
 	public void initializeGcode() {
+		gcodes.add("G21"); // explicit metric mode: all coordinates and feed rates are in millimeters
 		gcodes.add("M3 S0"); // set rotation clockwise, no spin
 		// gcodes.add("S0");
 		gcodes.add("G0 X0 Y0"); //
