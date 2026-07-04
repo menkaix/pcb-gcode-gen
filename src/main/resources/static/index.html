@@ -49,8 +49,20 @@
 		</section>
 
 		<section id="preview-panel">
-			<h2>Prévisualisation (mm)</h2>
-			<svg id="preview-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+			<div class="preview-header">
+				<h2>Prévisualisation (mm)</h2>
+				<div class="preview-controls">
+					<button id="btn-zoom-out" title="Zoom arrière">−</button>
+					<button id="btn-zoom-in" title="Zoom avant">+</button>
+					<button id="btn-zoom-reset" title="Cadrer sur le contenu">Réinitialiser la vue</button>
+				</div>
+			</div>
+			<div id="canvas-wrap">
+				<div id="ruler-corner"></div>
+				<svg id="ruler-top" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"></svg>
+				<svg id="ruler-left" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"></svg>
+				<svg id="preview-svg" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"></svg>
+			</div>
 		</section>
 
 		<section id="form-panel">
