@@ -1,10 +1,12 @@
 package com.menkaix.elements.factory;
 
 import com.menkaix.elements.ArcPath;
+import com.menkaix.elements.BezierElement;
 import com.menkaix.elements.Circle;
 import com.menkaix.elements.Element;
 import com.menkaix.elements.PolyLineElement;
 import com.menkaix.elements.Rectangle;
+import com.menkaix.elements.TextElement;
 import com.menkaix.pcbgcode.utilities.MissingPropertyException;
 import com.menkaix.pcbgcode.utilities.UnknownElementException;
 
@@ -29,6 +31,16 @@ public class ElementFactory {
 			return ans;
 		} else if (base.getSubType().equals(Rectangle.class.getSimpleName())) {
 			Rectangle ans = new Rectangle();
+			ans.setProperties(base.getProperties());
+			ans.reloadBehaviour();
+			return ans;
+		} else if (base.getSubType().equals(BezierElement.class.getSimpleName())) {
+			BezierElement ans = new BezierElement();
+			ans.setProperties(base.getProperties());
+			ans.reloadBehaviour();
+			return ans;
+		} else if (base.getSubType().equals(TextElement.class.getSimpleName())) {
+			TextElement ans = new TextElement();
 			ans.setProperties(base.getProperties());
 			ans.reloadBehaviour();
 			return ans;

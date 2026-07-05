@@ -15,10 +15,12 @@ import org.springframework.stereotype.Service;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.menkaix.elements.ArcPath;
+import com.menkaix.elements.BezierElement;
 import com.menkaix.elements.Circle;
 import com.menkaix.elements.Element;
 import com.menkaix.elements.PolyLineElement;
 import com.menkaix.elements.Rectangle;
+import com.menkaix.elements.TextElement;
 import com.menkaix.elements.factory.ElementFactory;
 import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.pcbgcode.utilities.DuplicateLayerNameException;
@@ -342,6 +344,20 @@ public class ProjectService {
 			List<SimplePoint> points = (List<SimplePoint>) resolved.getProperty("points");
 			shape.put("type", "polyline");
 			shape.put("points", toPointMaps(points));
+
+		} else if (resolved instanceof BezierElement) {
+			BezierElement bezier = (BezierElement) resolved;
+			shape.put("type", "bezier");
+			shape.put("points", toPointMaps(bezier.getGeometry().getControlPoints()));
+
+		} else if (resolved instanceof TextElement) {
+			TextElement textElement = (TextElement) resolved;
+			List<List<Map<String, Double>>> contours = new ArrayList<>();
+			for (List<SimplePoint> contour : textElement.getContours()) {
+				contours.add(toPointMaps(contour));
+			}
+			shape.put("type", "text");
+			shape.put("contours", contours);
 
 		} else {
 			shape.put("type", "unknown");

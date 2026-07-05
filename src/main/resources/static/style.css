@@ -279,6 +279,12 @@ button:disabled {
 	flex-direction: column;
 }
 
+.checkbox-field label {
+	flex-direction: row;
+	align-items: center;
+	gap: 0.4rem;
+}
+
 .point-field input {
 	width: 5rem;
 	margin-right: 0.3rem;

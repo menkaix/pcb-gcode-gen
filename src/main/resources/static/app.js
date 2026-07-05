@@ -19,6 +19,22 @@ const DEFAULT_PROPERTIES = {
 	Circle: { center: { x: 0, y: 0, z: 0 }, radius: 5 },
 	ArcPath: { from: { x: 0, y: 0, z: 0 }, to: { x: 10, y: 0, z: 0 }, radius: 10, direction: 'CLOCKWISE' },
 	PolyLineElement: { points: [{ x: 0, y: 0, z: 0 }, { x: 10, y: 0, z: 0 }] },
+	BezierElement: {
+		points: [
+			{ x: 0, y: 0, z: 0 },
+			{ x: 5, y: 15, z: 0 },
+			{ x: 15, y: 15, z: 0 },
+			{ x: 20, y: 0, z: 0 },
+		],
+	},
+	TextElement: {
+		position: { x: 0, y: 0, z: 0 },
+		text: 'Texte',
+		fontSize: 10,
+		fontFamily: 'SansSerif',
+		bold: false,
+		italic: false,
+	},
 };
 
 const FORM_SCHEMAS = {
@@ -45,6 +61,21 @@ const FORM_SCHEMAS = {
 	},
 	PolyLineElement: {
 		fields: [{ key: 'points', label: 'Points (mm)', type: 'pointList' }],
+	},
+	BezierElement: {
+		fields: [
+			{ key: 'points', label: 'Points de contrôle (mm) : ancre, ctrl1, ctrl2, ancre, ...', type: 'pointList' },
+		],
+	},
+	TextElement: {
+		fields: [
+			{ key: 'position', label: 'Position (mm, origine du texte)', type: 'point' },
+			{ key: 'text', label: 'Texte', type: 'text' },
+			{ key: 'fontSize', label: 'Taille de police (mm)', type: 'number' },
+			{ key: 'fontFamily', label: 'Police (nom système ou chemin .ttf/.otf)', type: 'text', datalist: 'font-list' },
+			{ key: 'bold', label: 'Gras', type: 'checkbox' },
+			{ key: 'italic', label: 'Italique', type: 'checkbox' },
+		],
 	},
 };
 
@@ -97,6 +128,24 @@ async function refresh() {
 	renderMeta();
 	renderTree();
 	renderPreview();
+}
+
+// Populated once at startup; only used to suggest values for the TextElement
+// fontFamily field via a <datalist>, so a stale list across a long session is
+// harmless (worst case: a newly-installed font is missing from suggestions).
+async function loadFontList() {
+	try {
+		const fonts = await apiFetch('/api/fonts');
+		const datalist = document.getElementById('font-list');
+		datalist.innerHTML = '';
+		fonts.forEach((name) => {
+			const option = document.createElement('option');
+			option.value = name;
+			datalist.appendChild(option);
+		});
+	} catch (e) {
+		// Non-critical: the fontFamily field still works as a plain text input.
+	}
 }
 
 function renderMeta() {
@@ -378,6 +427,8 @@ function renderForm() {
 		else if (f.type === 'number') renderNumberField(container, f.label, props, f.key, livePreview);
 		else if (f.type === 'select') renderSelectField(container, f.label, props, f.key, f.options, livePreview);
 		else if (f.type === 'pointList') renderPointListField(container, f.label, props[f.key], livePreview);
+		else if (f.type === 'text') renderTextField(container, f.label, props, f.key, livePreview, f.datalist);
+		else if (f.type === 'checkbox') renderCheckboxField(container, f.label, props, f.key, livePreview);
 	});
 
 	const feedback = document.createElement('div');
@@ -430,6 +481,39 @@ function renderNumberField(container, label, obj, key, onChange) {
 		onChange();
 	};
 	wrap.append(lbl, input);
+	container.appendChild(wrap);
+}
+
+function renderTextField(container, label, obj, key, onChange, datalistId) {
+	const wrap = document.createElement('div');
+	wrap.className = 'field';
+	const lbl = document.createElement('label');
+	lbl.textContent = label;
+	const input = document.createElement('input');
+	input.type = 'text';
+	input.value = obj[key] ?? '';
+	if (datalistId) input.setAttribute('list', datalistId);
+	input.oninput = () => {
+		obj[key] = input.value;
+		onChange();
+	};
+	wrap.append(lbl, input);
+	container.appendChild(wrap);
+}
+
+function renderCheckboxField(container, label, obj, key, onChange) {
+	const wrap = document.createElement('div');
+	wrap.className = 'field checkbox-field';
+	const lbl = document.createElement('label');
+	const input = document.createElement('input');
+	input.type = 'checkbox';
+	input.checked = !!obj[key];
+	input.onchange = () => {
+		obj[key] = input.checked;
+		onChange();
+	};
+	lbl.append(input, document.createTextNode(label));
+	wrap.appendChild(lbl);
 	container.appendChild(wrap);
 }
 
@@ -580,7 +664,13 @@ function computeBBox(shapes) {
 		} else if (shp.type === 'arc') {
 			extend(shp.from.x, shp.from.y, shp.radius);
 			extend(shp.to.x, shp.to.y, shp.radius);
+		} else if (shp.type === 'text') {
+			(shp.contours || []).forEach((contour) => contour.forEach((p) => extend(p.x, p.y)));
 		} else if (shp.points) {
+			// Covers polygons, polylines, and bezier control points; a cubic
+			// Bezier curve always stays within its control points' convex hull,
+			// so bounding the raw control points is a safe (if slightly loose)
+			// bound on the flattened curve without needing to tessellate here.
 			shp.points.forEach((p) => extend(p.x, p.y));
 		}
 	});
@@ -627,6 +717,27 @@ function shapeToSvgElement(shape) {
 		const d = `M ${shape.from.x} ${shape.from.y} A ${shape.radius} ${shape.radius} 0 0 ${sweep} ${shape.to.x} ${shape.to.y}`;
 		el.setAttribute('d', d);
 		el.setAttribute('class', 'shape shape-arc');
+		return el;
+	}
+	if (shape.type === 'bezier') {
+		const pts = shape.points;
+		let d = `M ${pts[0].x} ${pts[0].y}`;
+		for (let i = 1; i + 2 < pts.length; i += 3) {
+			d += ` C ${pts[i].x} ${pts[i].y} ${pts[i + 1].x} ${pts[i + 1].y} ${pts[i + 2].x} ${pts[i + 2].y}`;
+		}
+		const el = document.createElementNS(SVG_NS, 'path');
+		el.setAttribute('d', d);
+		el.setAttribute('class', 'shape shape-arc');
+		return el;
+	}
+	if (shape.type === 'text') {
+		const d = (shape.contours || [])
+			.filter((c) => c.length > 0)
+			.map((c) => `M ${c[0].x} ${c[0].y} ` + c.slice(1).map((p) => `L ${p.x} ${p.y}`).join(' ') + ' Z')
+			.join(' ');
+		const el = document.createElementNS(SVG_NS, 'path');
+		el.setAttribute('d', d || 'M 0 0 Z');
+		el.setAttribute('class', 'shape');
 		return el;
 	}
 	return null;
@@ -941,7 +1052,7 @@ function svgPointFromEvent(e) {
 // /api/preview/element on every mousemove — that endpoint is still used
 // (debounced, via renderForm()'s trailing livePreview()) once the drag ends,
 // so validation errors still surface the same way as editing the form.
-function localShapeFromProperties(subType, props) {
+function localShapeFromProperties(subType, props, dx, dy, baseShape) {
 	if (subType === 'Rectangle') {
 		const c = props.corner;
 		return {
@@ -969,6 +1080,20 @@ function localShapeFromProperties(subType, props) {
 	if (subType === 'PolyLineElement') {
 		return { type: 'polyline', points: props.points.map((p) => ({ x: p.x, y: p.y })) };
 	}
+	if (subType === 'BezierElement') {
+		return { type: 'bezier', points: props.points.map((p) => ({ x: p.x, y: p.y })) };
+	}
+	if (subType === 'TextElement') {
+		// Glyph outlines aren't reproducible client-side (no font engine here),
+		// so a whole-shape drag instead translates the last server-rendered
+		// contours by the drag offset, rather than going blank until the
+		// debounced /api/preview/element round trip resolves after mouseup.
+		if (!baseShape || baseShape.type !== 'text' || !Array.isArray(baseShape.contours)) return null;
+		return {
+			type: 'text',
+			contours: baseShape.contours.map((contour) => contour.map((p) => ({ x: p.x + dx, y: p.y + dy }))),
+		};
+	}
 	return null;
 }
 
@@ -985,11 +1110,14 @@ function bodyApplyDelta(subType) {
 			props.from.y += dy;
 			props.to.x += dx;
 			props.to.y += dy;
-		} else if (subType === 'PolyLineElement') {
+		} else if (subType === 'PolyLineElement' || subType === 'BezierElement') {
 			props.points.forEach((p) => {
 				p.x += dx;
 				p.y += dy;
 			});
+		} else if (subType === 'TextElement') {
+			props.position.x += dx;
+			props.position.y += dy;
 		}
 	};
 }
@@ -1030,7 +1158,7 @@ function addEditableHandles(g, view, subType, properties) {
 			props.to.x = cur.x;
 			props.to.y = cur.y;
 		});
-	} else if (subType === 'PolyLineElement') {
+	} else if (subType === 'PolyLineElement' || subType === 'BezierElement') {
 		properties.points.forEach((p, idx) => {
 			handle(p.x, p.y, (props, dx, dy, cur) => {
 				props.points[idx].x = cur.x;
@@ -1054,6 +1182,9 @@ function startShapeDrag(e, applyDelta) {
 	const startPt = svgPointFromEvent(e);
 	const startProps = JSON.parse(JSON.stringify(state.candidateProperties));
 	const subType = state.editingSubType;
+	// Captured once, at drag start: the baseline shape TextElement's drag
+	// translation is applied to (see localShapeFromProperties).
+	const baseShape = state.candidatePreview && state.candidatePreview.valid ? state.candidatePreview.shape : null;
 
 	function onMove(ev) {
 		const cur = svgPointFromEvent(ev);
@@ -1069,7 +1200,7 @@ function startShapeDrag(e, applyDelta) {
 			elementName: state.candidateName,
 			subType,
 			isEditing: true,
-			shape: localShapeFromProperties(subType, next),
+			shape: localShapeFromProperties(subType, next, dx, dy, baseShape),
 		};
 		renderPreview();
 	}
@@ -1283,3 +1414,4 @@ document.getElementById('btn-zoom-reset').onclick = resetView;
 setupCanvasInteraction();
 
 refresh().catch((e) => toast(e.message, true));
+loadFontList();

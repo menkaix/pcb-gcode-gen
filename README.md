@@ -44,6 +44,8 @@ L'application lit un fichier JSON décrivant un projet (tête d'outil, calques, 
 - **Circle** : `center {x,y,z}`, `radius`
 - **ArcPath** : `from {x,y,z}`, `to {x,y,z}`, `radius`, `direction` (`CLOCKWISE`/`COUNTER_CLOCKWISE`)
 - **PolyLineElement** : `points: [{x,y,z}, ...]`
+- **BezierElement** : courbe formée d'un ou plusieurs segments de Bézier cubiques chaînés. `points` : liste `[ancre, ctrl1, ctrl2, ancre, ctrl1, ctrl2, ancre, ...]` (1 + 3×n points pour n segments). La courbe est tessellée en polyligne avant génération du G-code.
+- **TextElement** : texte converti en chemins G-code à partir d'une police vectorielle (TrueType/OpenType). Propriétés : `text`, `position {x,y,z}` (origine de la ligne de base), `fontSize` (mm), `fontFamily` (nom d'une police installée sur la machine, ex. `SansSerif`, `Arial`, ou chemin absolu vers un fichier `.ttf`/`.otf`), `bold`, `italic`. Chaque contour de chaque glyphe (y compris les contre-formes des lettres comme "O" ou "A") devient un chemin G-code fermé indépendant. La liste des polices système détectées est disponible via `GET /api/fonts` dans l'interface web.
 
 Voir `input-sample.json` et `input-sample-router.json` pour des exemples complets.
 
