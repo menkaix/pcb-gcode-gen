@@ -125,6 +125,9 @@ public class ProjectService {
 		synchronized (lock) {
 			Layer layer = new Layer(request.layerName);
 			layer.setPasses(request.passes);
+			layer.setTabsEnabled(request.tabsEnabled);
+			layer.setTabCount(request.tabCount);
+			layer.setTabWidth(request.tabWidth);
 			definition.addLayer(layer);
 			return summarizeLayer(definition.getLayers().size() - 1, layer);
 		}
@@ -142,6 +145,9 @@ public class ProjectService {
 			Layer layer = layers.get(index);
 			layer.setLayerName(request.layerName);
 			layer.setPasses(request.passes);
+			layer.setTabsEnabled(request.tabsEnabled);
+			layer.setTabCount(request.tabCount);
+			layer.setTabWidth(request.tabWidth);
 			return summarizeLayer(index, layer);
 		}
 	}
@@ -158,6 +164,9 @@ public class ProjectService {
 		ans.put("index", index);
 		ans.put("layerName", layer.getLayerName());
 		ans.put("passes", layer.getPasses());
+		ans.put("tabsEnabled", layer.isTabsEnabled());
+		ans.put("tabCount", layer.getTabCount());
+		ans.put("tabWidth", layer.getTabWidth());
 		ans.put("elementCount", layer.getElements() == null ? 0 : layer.getElements().size());
 		return ans;
 	}

@@ -17,6 +17,12 @@ public class Layer implements Serializable {
 
 	private int passes;
 
+	private boolean tabsEnabled = false;
+
+	private int tabCount = 4;
+
+	private double tabWidth = 2.0;
+
 	private List<Element> elements = new ArrayList<Element>();
 
 	public void addElement(Element elt) {
@@ -33,6 +39,30 @@ public class Layer implements Serializable {
 
 	public void setPasses(int passes) {
 		this.passes = passes;
+	}
+
+	public boolean isTabsEnabled() {
+		return tabsEnabled;
+	}
+
+	public void setTabsEnabled(boolean tabsEnabled) {
+		this.tabsEnabled = tabsEnabled;
+	}
+
+	public int getTabCount() {
+		return tabCount;
+	}
+
+	public void setTabCount(int tabCount) {
+		this.tabCount = tabCount;
+	}
+
+	public double getTabWidth() {
+		return tabWidth;
+	}
+
+	public void setTabWidth(double tabWidth) {
+		this.tabWidth = tabWidth;
 	}
 
 	public List<Element> getElements() {

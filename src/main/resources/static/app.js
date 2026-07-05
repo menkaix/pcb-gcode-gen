@@ -6,6 +6,9 @@ const state = {
 	editingLayerIndex: null,
 	candidateLayerName: '',
 	candidatePasses: 0,
+	candidateTabsEnabled: false,
+	candidateTabCount: 4,
+	candidateTabWidth: 2,
 	selectedLayer: null,
 	selectedElement: null,
 	editingSubType: null,
@@ -177,6 +180,12 @@ function renderTree() {
 		passesSpan.className = 'muted';
 		passesSpan.textContent = `(${layer.passes} passes)`;
 
+		const tabsSpan = document.createElement('span');
+		tabsSpan.className = 'muted';
+		if (layer.tabsEnabled) {
+			tabsSpan.textContent = ` · ${layer.tabCount} tabs × ${layer.tabWidth}mm`;
+		}
+
 		if (state.formMode === 'layer' && state.editingLayerIndex === li) {
 			layerDiv.classList.add('editing');
 		}
@@ -184,6 +193,7 @@ function renderTree() {
 		header.append(
 			title,
 			passesSpan,
+			tabsSpan,
 			button('Modifier', () => startEditLayer(li, layer)),
 			button('Supprimer', () => deleteLayer(li), 'danger small'),
 			button('+ Forme', () => startNewElement(li))
@@ -219,7 +229,10 @@ async function addLayer() {
 	const name = prompt('Nom de la nouvelle couche', 'nouvelle-couche');
 	if (name === null) return;
 	try {
-		await apiFetch('/api/layers', { method: 'POST', body: JSON.stringify({ layerName: name, passes: 1 }) });
+		await apiFetch('/api/layers', {
+			method: 'POST',
+			body: JSON.stringify({ layerName: name, passes: 1, tabsEnabled: false, tabCount: 4, tabWidth: 2 }),
+		});
 		toast('Couche ajoutée.');
 		await refresh();
 	} catch (e) {
@@ -232,6 +245,9 @@ function startEditLayer(layerIndex, layer) {
 	state.editingLayerIndex = layerIndex;
 	state.candidateLayerName = layer.layerName;
 	state.candidatePasses = layer.passes;
+	state.candidateTabsEnabled = !!layer.tabsEnabled;
+	state.candidateTabCount = layer.tabCount || 4;
+	state.candidateTabWidth = layer.tabWidth || 2;
 	state.selectedLayer = null;
 	state.selectedElement = null;
 	state.candidatePreview = null;
@@ -273,6 +289,49 @@ function renderLayerForm() {
 	passesWrap.append(passesLbl, passesInput);
 	container.appendChild(passesWrap);
 
+	const tabsEnabledWrap = document.createElement('div');
+	tabsEnabledWrap.className = 'field';
+	const tabsEnabledLbl = document.createElement('label');
+	tabsEnabledLbl.textContent = 'Tabs de maintien activés';
+	const tabsEnabledInput = document.createElement('input');
+	tabsEnabledInput.type = 'checkbox';
+	tabsEnabledInput.checked = state.candidateTabsEnabled;
+	tabsEnabledInput.oninput = () => {
+		state.candidateTabsEnabled = tabsEnabledInput.checked;
+	};
+	tabsEnabledWrap.append(tabsEnabledLbl, tabsEnabledInput);
+	container.appendChild(tabsEnabledWrap);
+
+	const tabCountWrap = document.createElement('div');
+	tabCountWrap.className = 'field';
+	const tabCountLbl = document.createElement('label');
+	tabCountLbl.textContent = 'Nombre de tabs';
+	const tabCountInput = document.createElement('input');
+	tabCountInput.type = 'number';
+	tabCountInput.step = '1';
+	tabCountInput.min = '1';
+	tabCountInput.value = state.candidateTabCount;
+	tabCountInput.oninput = () => {
+		state.candidateTabCount = parseInt(tabCountInput.value, 10) || 0;
+	};
+	tabCountWrap.append(tabCountLbl, tabCountInput);
+	container.appendChild(tabCountWrap);
+
+	const tabWidthWrap = document.createElement('div');
+	tabWidthWrap.className = 'field';
+	const tabWidthLbl = document.createElement('label');
+	tabWidthLbl.textContent = 'Largeur du tab (mm)';
+	const tabWidthInput = document.createElement('input');
+	tabWidthInput.type = 'number';
+	tabWidthInput.step = '0.1';
+	tabWidthInput.min = '0';
+	tabWidthInput.value = state.candidateTabWidth;
+	tabWidthInput.oninput = () => {
+		state.candidateTabWidth = parseFloat(tabWidthInput.value) || 0;
+	};
+	tabWidthWrap.append(tabWidthLbl, tabWidthInput);
+	container.appendChild(tabWidthWrap);
+
 	const feedback = document.createElement('div');
 	feedback.id = 'form-feedback';
 	container.appendChild(feedback);
@@ -287,7 +346,13 @@ async function submitLayerEdit() {
 	try {
 		await apiFetch(`/api/layers/${state.editingLayerIndex}`, {
 			method: 'PUT',
-			body: JSON.stringify({ layerName: state.candidateLayerName, passes: state.candidatePasses }),
+			body: JSON.stringify({
+				layerName: state.candidateLayerName,
+				passes: state.candidatePasses,
+				tabsEnabled: state.candidateTabsEnabled,
+				tabCount: state.candidateTabCount,
+				tabWidth: state.candidateTabWidth,
+			}),
 		});
 		toast('Couche mise à jour.');
 		cancelForm();
@@ -743,6 +808,131 @@ function shapeToSvgElement(shape) {
 	return null;
 }
 
+// Resolves the Layer (with its tabsEnabled/tabCount/tabWidth settings) a
+// preview shape belongs to. A brand-new, not-yet-saved element (isCandidate)
+// carries layerIndex: -1 from currentShapes(), so its target layer is read
+// from state.selectedLayer instead.
+function layerForShape(s) {
+	const layers = state.project && state.project.layers;
+	if (!layers) return null;
+	if (s.layerIndex >= 0) return layers[s.layerIndex] || null;
+	if (s.isCandidate && state.selectedLayer !== null) return layers[state.selectedLayer] || null;
+	return null;
+}
+
+function closedLoopWithDistances(points) {
+	const loop = points.map((p) => ({ x: p.x, y: p.y }));
+	loop.push(loop[0]);
+	const cum = [0];
+	for (let i = 1; i < loop.length; i++) {
+		cum.push(cum[i - 1] + Math.hypot(loop[i].x - loop[i - 1].x, loop[i].y - loop[i - 1].y));
+	}
+	return { loop, cum };
+}
+
+function pointAtDistance(loop, cum, target) {
+	const last = loop.length - 1;
+	for (let i = 0; i < last; i++) {
+		if (target <= cum[i + 1]) {
+			const segLen = cum[i + 1] - cum[i];
+			const t = segLen <= 0 ? 0 : (target - cum[i]) / segLen;
+			const a = loop[i];
+			const b = loop[i + 1];
+			return { x: a.x + t * (b.x - a.x), y: a.y + t * (b.y - a.y) };
+		}
+	}
+	return loop[last];
+}
+
+// Mirrors CircleGcodePath's tab-splitting math: tabCount tabs of angular
+// width tabWidth/radius, evenly spaced, with the tool always cutting
+// clockwise (Circle elements are always emitted as CLOCKWISE server-side).
+function circleTabMarkers(shape, layer) {
+	const tabCount = layer.tabCount;
+	const tabWidth = layer.tabWidth;
+	const radius = shape.radius;
+	if (!(tabCount > 0) || !(tabWidth > 0) || !(radius > 0)) return [];
+
+	const anglePerSlot = (2 * Math.PI) / tabCount;
+	let tabAngle = tabWidth / radius;
+	if (tabAngle >= anglePerSlot) tabAngle = anglePerSlot * 0.5;
+	const cutAngle = anglePerSlot - tabAngle;
+	const dirSign = -1;
+	const theta0 = Math.PI;
+
+	const markers = [];
+	for (let k = 0; k < tabCount; k++) {
+		const startAngle = theta0 + dirSign * (k * anglePerSlot + cutAngle);
+		const endAngle = startAngle + dirSign * tabAngle;
+		markers.push({
+			arc: true,
+			radius,
+			from: {
+				x: shape.center.x + radius * Math.cos(startAngle),
+				y: shape.center.y + radius * Math.sin(startAngle),
+			},
+			to: { x: shape.center.x + radius * Math.cos(endAngle), y: shape.center.y + radius * Math.sin(endAngle) },
+		});
+	}
+	return markers;
+}
+
+// Mirrors ClosedLineGcodePath's tab-splitting math: tabCount tabs of arc
+// length tabWidth, evenly spaced by perimeter distance around the polygon.
+function polygonTabMarkers(shape, layer) {
+	const tabCount = layer.tabCount;
+	const tabWidth = layer.tabWidth;
+	if (!(tabCount > 0) || !(tabWidth > 0) || !shape.points || shape.points.length < 2) return [];
+
+	const { loop, cum } = closedLoopWithDistances(shape.points);
+	const perimeter = cum[cum.length - 1];
+	if (!(perimeter > 0)) return [];
+
+	const slot = perimeter / tabCount;
+	let cutLength = slot - tabWidth;
+	if (cutLength <= 0) cutLength = slot * 0.5;
+
+	const markers = [];
+	for (let k = 0; k < tabCount; k++) {
+		const tabStart = k * slot + cutLength;
+		const tabEnd = (k + 1) * slot;
+		markers.push({ arc: false, from: pointAtDistance(loop, cum, tabStart), to: pointAtDistance(loop, cum, tabEnd) });
+	}
+	return markers;
+}
+
+function tabMarkersForShape(shape, layer) {
+	if (!layer || !layer.tabsEnabled) return [];
+	if (shape.type === 'circle') return circleTabMarkers(shape, layer);
+	if (shape.type === 'polygon') return polygonTabMarkers(shape, layer);
+	if (shape.type === 'text') {
+		// Mirrors TextElement.reloadBehaviour(): one independent closed
+		// ClosedLineGcodePath per glyph contour (so letters with counters, like
+		// "O" or "A", get their own tabs on both the outer and inner outline).
+		const markers = [];
+		(shape.contours || []).forEach((contour) => {
+			markers.push(...polygonTabMarkers({ points: contour }, layer));
+		});
+		return markers;
+	}
+	return [];
+}
+
+function buildTabMarkerElements(shape, layer) {
+	return tabMarkersForShape(shape, layer).map((m) => {
+		const el = document.createElementNS(SVG_NS, 'path');
+		// Sweep flag matches the 'arc' shape type's convention: clockwise data
+		// (as emitted for Circle tabs) renders correctly under this group's
+		// Y-flip transform with sweep=0.
+		const d = m.arc
+			? `M ${m.from.x} ${m.from.y} A ${m.radius} ${m.radius} 0 0 0 ${m.to.x} ${m.to.y}`
+			: `M ${m.from.x} ${m.from.y} L ${m.to.x} ${m.to.y}`;
+		el.setAttribute('d', d);
+		el.setAttribute('class', 'tab-marker');
+		return el;
+	});
+}
+
 function currentShapes() {
 	const editing = state.formMode === 'element';
 	const isExistingEdit = editing && state.selectedElement !== null;
@@ -1026,6 +1216,9 @@ function shapesGroup(shapes, view) {
 		if (s.isEditing) {
 			addEditableHandles(g, view, s.subType, state.candidateProperties);
 		}
+
+		const layer = layerForShape(s);
+		buildTabMarkerElements(s.shape, layer).forEach((marker) => g.appendChild(marker));
 	});
 
 	return g;

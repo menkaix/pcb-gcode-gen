@@ -87,6 +87,9 @@ public class GcodeProjectDefinition implements Serializable {
 			LOGGER.debug("Processing layer: {}", layer.getLayerName());
 			Layer newLayer = new Layer(layer.getLayerName());
 			newLayer.setPasses(layer.getPasses());
+			newLayer.setTabsEnabled(layer.isTabsEnabled());
+			newLayer.setTabCount(layer.getTabCount());
+			newLayer.setTabWidth(layer.getTabWidth());
 
 			for (Element elt : layer.getElements()) {
 				LOGGER.trace("Submitting element for creation: {}", elt);

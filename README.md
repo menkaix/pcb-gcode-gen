@@ -26,6 +26,9 @@ L'application lit un fichier JSON décrivant un projet (tête d'outil, calques, 
     {
       "layerName": "default",
       "passes": 100,
+      "tabsEnabled": false,
+      "tabCount": 4,
+      "tabWidth": 2.0,
       "elements": [ ... ]
     }
   ]
@@ -37,6 +40,15 @@ L'application lit un fichier JSON décrivant un projet (tête d'outil, calques, 
 - `passIncrement` : incrément de profondeur Z ajouté à chaque passe
 - `feedRate` / `power` : vitesse d'avance (F) et puissance (S)
 - chaque calque (`layer`) est rejoué `passes` fois, en approfondissant le Z à chaque passe
+- `tabsEnabled` (défaut `false`) : si activé, laisse des ponts de maintien
+  (tabs) non découpés autour de chaque cercle et de chaque contour fermé
+  (Rectangle, PolyLine fermée, contours de Text) de ce calque, pour éviter
+  que la pièce/chute ne se détache pendant l'usinage
+- `tabCount` (défaut `4`) : nombre de tabs répartis uniformément autour de
+  chaque contour du calque
+- `tabWidth` (défaut `2.0`, en mm) : largeur (longueur d'arc) de chaque tab ;
+  pendant le passage sur un tab, l'outil remonte au niveau de sécurité
+  (`safeLevel`) au lieu de couper
 
 ### Éléments géométriques disponibles (`subType`)
 

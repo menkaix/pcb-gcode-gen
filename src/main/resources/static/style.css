@@ -350,6 +350,15 @@ button:disabled {
 	cursor: move;
 }
 
+.tab-marker {
+	fill: none;
+	stroke: var(--danger);
+	stroke-width: 1;
+	stroke-linecap: round;
+	vector-effect: non-scaling-stroke;
+	pointer-events: none;
+}
+
 .shape-handle {
 	fill: var(--ok);
 	stroke: white;

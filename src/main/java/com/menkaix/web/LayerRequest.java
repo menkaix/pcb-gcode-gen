@@ -10,5 +10,8 @@ public class LayerRequest {
 
 	public String layerName;
 	public int passes;
+	public boolean tabsEnabled;
+	public int tabCount;
+	public double tabWidth;
 
 }

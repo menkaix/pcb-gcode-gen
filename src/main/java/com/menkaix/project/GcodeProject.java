@@ -30,6 +30,7 @@ public class GcodeProject implements Serializable {
 	private static final long serialVersionUID = 2312883204979979860L;
 
 	private transient int pass = 0;
+	private transient Layer currentLayer;
 
 	private BitHead bitHead = BitHead.LASER;
 	private List<Layer> layers = new ArrayList<Layer>();
@@ -78,6 +79,8 @@ public class GcodeProject implements Serializable {
 		for (pass = 0; pass < maxPasses; pass++) {
 
 			for (Layer layer : layers) {
+
+				currentLayer = layer;
 
 				if (pass > layer.getPasses())
 					continue;
@@ -172,6 +175,10 @@ public class GcodeProject implements Serializable {
 
 	public void setPass(int pass) {
 		this.pass = pass;
+	}
+
+	public Layer getCurrentLayer() {
+		return currentLayer;
 	}
 
 	public BitHead getBitHead() {

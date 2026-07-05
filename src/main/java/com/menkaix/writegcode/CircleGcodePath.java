@@ -2,6 +2,7 @@ package com.menkaix.writegcode;
 
 import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.project.GcodeProject;
+import com.menkaix.project.Layer;
 import com.menkaix.project.RotationDirection;
 import com.menkaix.project.behaviours.GcodeBehaviour;
 import com.menkaix.project.values.BitHead;
@@ -69,7 +70,65 @@ public class CircleGcodePath implements GcodeBehaviour {
 		}
 
 		ans += "G1 X" + startX + " Y" + startY + " Z" + z + " F" + feedRate + "\n";
-		ans += gcodeDirection + " X" + startX + " Y" + startY + " Z" + z + " F" + feedRate + " I" + radius + " J0\n";
+
+		Layer layer = project.getCurrentLayer();
+		boolean tabsEnabled = layer != null && layer.isTabsEnabled() && layer.getTabCount() > 0
+				&& layer.getTabWidth() > 0;
+
+		if (!tabsEnabled) {
+			ans += gcodeDirection + " X" + startX + " Y" + startY + " Z" + z + " F" + feedRate + " I" + radius
+					+ " J0\n";
+		} else {
+			double cx = center.getX();
+			double cy = center.getY();
+			int tabCount = layer.getTabCount();
+			double anglePerSlot = 2 * Math.PI / tabCount;
+			double tabAngle = layer.getTabWidth() / radius;
+			if (tabAngle >= anglePerSlot) {
+				tabAngle = anglePerSlot * 0.5;
+			}
+			double cutAngle = anglePerSlot - tabAngle;
+			// G2 (clockwise, as viewed from +Z) sweeps through decreasing angle in the
+			// standard math convention used here; G3 sweeps through increasing angle.
+			double dirSign = direction == RotationDirection.COUNTER_CLOCKWISE ? 1 : -1;
+			double theta0 = Math.PI; // angle of (startX, startY) relative to the center
+
+			for (int k = 0; k < tabCount; k++) {
+				double segStartAngle = theta0 + dirSign * k * anglePerSlot;
+				double segEndAngle = segStartAngle + dirSign * cutAngle;
+
+				double segStartX = cx + radius * Math.cos(segStartAngle);
+				double segStartY = cy + radius * Math.sin(segStartAngle);
+				double segEndX = cx + radius * Math.cos(segEndAngle);
+				double segEndY = cy + radius * Math.sin(segEndAngle);
+
+				double iOffset = cx - segStartX;
+				double jOffset = cy - segStartY;
+
+				ans += gcodeDirection + " X" + segEndX + " Y" + segEndY + " Z" + z + " F" + feedRate + " I" + iOffset
+						+ " J" + jOffset + "\n";
+
+				if (k < tabCount - 1) {
+					double nextStartAngle = theta0 + dirSign * (k + 1) * anglePerSlot;
+					double nextStartX = cx + radius * Math.cos(nextStartAngle);
+					double nextStartY = cy + radius * Math.sin(nextStartAngle);
+
+					// Skip across the tab without cutting: retract (router) and/or cut the
+					// power (laser) while traversing, then resume at the next segment.
+					if (project.getBitHead() == BitHead.ROUTER) {
+						ans += "G0 Z" + project.getSafeLevel() + "\n";
+					}
+					if (toggleSpindle) {
+						ans += "S0\n";
+					}
+					ans += "G0 X" + nextStartX + " Y" + nextStartY + "\n";
+					if (toggleSpindle) {
+						ans += "S" + power + "\n";
+					}
+					ans += "G1 X" + nextStartX + " Y" + nextStartY + " Z" + z + " F" + feedRate + "\n";
+				}
+			}
+		}
 
 		if (project.getBitHead() == BitHead.ROUTER) {
 			ans += "G0 Z" + project.getSafeLevel() + "\n";
