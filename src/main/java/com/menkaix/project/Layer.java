@@ -23,6 +23,8 @@ public class Layer implements Serializable {
 
 	private double tabWidth = 2.0;
 
+	private boolean excludeFromGcode = false;
+
 	private List<Element> elements = new ArrayList<Element>();
 
 	public void addElement(Element elt) {
@@ -63,6 +65,14 @@ public class Layer implements Serializable {
 
 	public void setTabWidth(double tabWidth) {
 		this.tabWidth = tabWidth;
+	}
+
+	public boolean isExcludeFromGcode() {
+		return excludeFromGcode;
+	}
+
+	public void setExcludeFromGcode(boolean excludeFromGcode) {
+		this.excludeFromGcode = excludeFromGcode;
 	}
 
 	public List<Element> getElements() {

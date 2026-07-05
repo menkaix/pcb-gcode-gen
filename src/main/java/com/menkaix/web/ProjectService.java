@@ -129,6 +129,7 @@ public class ProjectService {
 			layer.setTabsEnabled(request.tabsEnabled);
 			layer.setTabCount(request.tabCount);
 			layer.setTabWidth(request.tabWidth);
+			layer.setExcludeFromGcode(request.excludeFromGcode);
 			definition.addLayer(layer);
 			return summarizeLayer(definition.getLayers().size() - 1, layer);
 		}
@@ -149,6 +150,7 @@ public class ProjectService {
 			layer.setTabsEnabled(request.tabsEnabled);
 			layer.setTabCount(request.tabCount);
 			layer.setTabWidth(request.tabWidth);
+			layer.setExcludeFromGcode(request.excludeFromGcode);
 			return summarizeLayer(index, layer);
 		}
 	}
@@ -168,6 +170,7 @@ public class ProjectService {
 		ans.put("tabsEnabled", layer.isTabsEnabled());
 		ans.put("tabCount", layer.getTabCount());
 		ans.put("tabWidth", layer.getTabWidth());
+		ans.put("excludeFromGcode", layer.isExcludeFromGcode());
 		ans.put("elementCount", layer.getElements() == null ? 0 : layer.getElements().size());
 		return ans;
 	}

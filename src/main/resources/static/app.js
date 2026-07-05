@@ -11,6 +11,10 @@ const state = {
 	candidateTabWidth: 2,
 	selectedLayer: null,
 	selectedElement: null,
+	// Layer indices currently hidden from the canvas. Purely a client-side view
+	// preference (not persisted with the project): unlike excludeFromGcode,
+	// hiding a layer never changes what gets generated, only what's drawn.
+	hiddenLayers: new Set(),
 	editingSubType: null,
 	candidateName: '',
 	candidateProperties: null,
@@ -202,10 +206,21 @@ function renderTree() {
 			layerDiv.classList.add('editing');
 		}
 
+		const hidden = state.hiddenLayers.has(li);
+		if (hidden) {
+			layerDiv.classList.add('layer-hidden');
+		}
+
 		header.append(
 			title,
 			passesSpan,
 			tabsSpan,
+			button(hidden ? '🚫 Masqué' : '👁 Visible', () => toggleLayerVisibility(li), 'small'),
+			button(
+				layer.excludeFromGcode ? '⛔ Exclu G-code' : '✅ Inclus G-code',
+				() => toggleLayerGcodeExclusion(li, layer),
+				layer.excludeFromGcode ? 'danger small' : 'small'
+			),
 			button('Modifier', () => startEditLayer(li, layer)),
 			button('Supprimer', () => deleteLayer(li), 'danger small'),
 			button('+ Forme', () => startNewElement(li))
@@ -243,7 +258,14 @@ async function addLayer() {
 	try {
 		await apiFetch('/api/layers', {
 			method: 'POST',
-			body: JSON.stringify({ layerName: name, passes: 1, tabsEnabled: false, tabCount: 4, tabWidth: 2 }),
+			body: JSON.stringify({
+				layerName: name,
+				passes: 1,
+				tabsEnabled: false,
+				tabCount: 4,
+				tabWidth: 2,
+				excludeFromGcode: false,
+			}),
 		});
 		toast('Couche ajoutée.');
 		await refresh();
@@ -375,6 +397,35 @@ async function submitLayerEdit() {
 			feedback.textContent = e.message;
 			feedback.className = 'error';
 		}
+		toast(e.message, true);
+	}
+}
+
+function toggleLayerVisibility(layerIndex) {
+	if (state.hiddenLayers.has(layerIndex)) {
+		state.hiddenLayers.delete(layerIndex);
+	} else {
+		state.hiddenLayers.add(layerIndex);
+	}
+	renderTree();
+	renderPreview();
+}
+
+async function toggleLayerGcodeExclusion(layerIndex, layer) {
+	try {
+		await apiFetch(`/api/layers/${layerIndex}`, {
+			method: 'PUT',
+			body: JSON.stringify({
+				layerName: layer.layerName,
+				passes: layer.passes,
+				tabsEnabled: layer.tabsEnabled,
+				tabCount: layer.tabCount,
+				tabWidth: layer.tabWidth,
+				excludeFromGcode: !layer.excludeFromGcode,
+			}),
+		});
+		await refresh();
+	} catch (e) {
 		toast(e.message, true);
 	}
 }
@@ -953,7 +1004,9 @@ function currentShapes() {
 	// only the live candidate in its place — otherwise the two would overlap
 	// during a canvas drag instead of the one shape visibly moving.
 	const shapes = state.shapes.filter(
-		(s) => !(isExistingEdit && s.layerIndex === state.selectedLayer && s.elementIndex === state.selectedElement)
+		(s) =>
+			!state.hiddenLayers.has(s.layerIndex) &&
+			!(isExistingEdit && s.layerIndex === state.selectedLayer && s.elementIndex === state.selectedElement)
 	);
 
 	if (!editing) {

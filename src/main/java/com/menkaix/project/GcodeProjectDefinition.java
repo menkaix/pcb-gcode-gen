@@ -84,6 +84,10 @@ public class GcodeProjectDefinition implements Serializable {
 		LOGGER.debug("Cleared existing layers for project generation.");
 
 		for (Layer layer : layers) {
+			if (layer.isExcludeFromGcode()) {
+				LOGGER.debug("Skipping layer excluded from G-code: {}", layer.getLayerName());
+				continue;
+			}
 			LOGGER.debug("Processing layer: {}", layer.getLayerName());
 			Layer newLayer = new Layer(layer.getLayerName());
 			newLayer.setPasses(layer.getPasses());
