@@ -21,6 +21,7 @@ import com.menkaix.elements.Element;
 import com.menkaix.elements.PolyLineElement;
 import com.menkaix.elements.Rectangle;
 import com.menkaix.elements.TextElement;
+import com.menkaix.elements.TraceElement;
 import com.menkaix.elements.factory.ElementFactory;
 import com.menkaix.geometry.components.SimplePoint;
 import com.menkaix.pcbgcode.utilities.DuplicateLayerNameException;
@@ -368,11 +369,60 @@ public class ProjectService {
 			shape.put("type", "text");
 			shape.put("contours", contours);
 
+		} else if (resolved instanceof TraceElement) {
+			TraceElement trace = (TraceElement) resolved;
+			shape.put("type", "trace");
+			shape.put("centerline", toPointMaps(trace.getCenterlinePoints()));
+			// This is the unmerged, per-element stroke outline only: two touching/
+			// overlapping traces will each show their own outline here, not the
+			// dissolved boundary the actual G-code generation will cut (that merge
+			// only happens across a whole layer's elements at once, which neither
+			// this per-element preview nor the all-elements preview below has the
+			// context to reproduce).
+			shape.put("contours", traceOutlineContours(trace.getBufferedGeometry()));
+
 		} else {
 			shape.put("type", "unknown");
 		}
 
 		return shape;
+	}
+
+	/**
+	 * Flattens a (possibly multi-polygon) JTS buffered geometry into one contour
+	 * per exterior/interior ring, dropping the JTS-duplicated closing coordinate
+	 * (the frontend's polygon renderer already closes the loop itself).
+	 */
+	private List<List<Map<String, Double>>> traceOutlineContours(org.locationtech.jts.geom.Geometry buffered) {
+		List<List<Map<String, Double>>> contours = new ArrayList<>();
+		for (int i = 0; i < buffered.getNumGeometries(); i++) {
+			org.locationtech.jts.geom.Geometry geometryN = buffered.getGeometryN(i);
+			if (!(geometryN instanceof org.locationtech.jts.geom.Polygon)) {
+				continue;
+			}
+			org.locationtech.jts.geom.Polygon polygon = (org.locationtech.jts.geom.Polygon) geometryN;
+			contours.add(ringToPointMaps(polygon.getExteriorRing()));
+			for (int h = 0; h < polygon.getNumInteriorRing(); h++) {
+				contours.add(ringToPointMaps(polygon.getInteriorRingN(h)));
+			}
+		}
+		return contours;
+	}
+
+	private List<Map<String, Double>> ringToPointMaps(org.locationtech.jts.geom.LineString ring) {
+		org.locationtech.jts.geom.Coordinate[] coordinates = ring.getCoordinates();
+		int count = coordinates.length;
+		if (count > 1 && coordinates[0].equals2D(coordinates[count - 1])) {
+			count--;
+		}
+		List<Map<String, Double>> ans = new ArrayList<>();
+		for (int i = 0; i < count; i++) {
+			Map<String, Double> point = new LinkedHashMap<>();
+			point.put("x", coordinates[i].x);
+			point.put("y", coordinates[i].y);
+			ans.add(point);
+		}
+		return ans;
 	}
 
 	private List<Map<String, Double>> toPointMaps(List<SimplePoint> points) {

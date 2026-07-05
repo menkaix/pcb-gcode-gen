@@ -120,6 +120,8 @@ public class GcodeProjectDefinition implements Serializable {
 			// For now, assuming a new pool per layer might be intended, but let's re-init
 			executorService = Executors.newCachedThreadPool(); // Re-initialize for next layer
 
+			TraceMerger.mergeInPlace(newLayer);
+
 			try {
 				ans.addLayer(newLayer);
 				LOGGER.debug("Added layer '{}' to the project.", newLayer.getLayerName());

@@ -1,0 +1,30 @@
+{
+  "bitHead": "ROUTER",
+  "layers": [
+    {
+      "layerName": "copper",
+      "passes": 1,
+      "tabsEnabled": true,
+      "tabCount": 4,
+      "tabWidth": 2.0,
+      "elements": [
+        {
+          "name": "Trace island",
+          "subType": "TraceIslandElement",
+          "properties": {}
+        },
+        {
+          "name": "Trace island",
+          "subType": "TraceIslandElement",
+          "properties": {}
+        }
+      ]
+    }
+  ],
+  "projectName": "output-sample-trace",
+  "projectFolder": "",
+  "safeLevel": 1.0,
+  "passIncrement": -0.035,
+  "feedRate": 100.0,
+  "power": 1000.0
+}

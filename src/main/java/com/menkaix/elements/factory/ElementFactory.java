@@ -7,6 +7,7 @@ import com.menkaix.elements.Element;
 import com.menkaix.elements.PolyLineElement;
 import com.menkaix.elements.Rectangle;
 import com.menkaix.elements.TextElement;
+import com.menkaix.elements.TraceElement;
 import com.menkaix.pcbgcode.utilities.MissingPropertyException;
 import com.menkaix.pcbgcode.utilities.UnknownElementException;
 
@@ -41,6 +42,11 @@ public class ElementFactory {
 			return ans;
 		} else if (base.getSubType().equals(TextElement.class.getSimpleName())) {
 			TextElement ans = new TextElement();
+			ans.setProperties(base.getProperties());
+			ans.reloadBehaviour();
+			return ans;
+		} else if (base.getSubType().equals(TraceElement.class.getSimpleName())) {
+			TraceElement ans = new TraceElement();
 			ans.setProperties(base.getProperties());
 			ans.reloadBehaviour();
 			return ans;

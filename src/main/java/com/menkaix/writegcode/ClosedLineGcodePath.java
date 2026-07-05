@@ -15,9 +15,22 @@ public class ClosedLineGcodePath implements GcodeBehaviour {
 	private Geometry geometry;
 	private Double feedRate;
 	private Double power;
+	private final boolean tabsAllowed;
 
 	public ClosedLineGcodePath(Geometry geometry) {
+		this(geometry, true);
+	}
+
+	/**
+	 * @param tabsAllowed whether this path may honor the owning layer's tab
+	 *                    settings at all; {@code false} forces a continuous cut
+	 *                    regardless of {@code Layer.tabsEnabled} (used for PCB
+	 *                    trace isolation islands, where a bridge would leave the
+	 *                    copper improperly isolated).
+	 */
+	public ClosedLineGcodePath(Geometry geometry, boolean tabsAllowed) {
 		setGeometry(geometry);
+		this.tabsAllowed = tabsAllowed;
 	}
 
 	@Override
@@ -66,7 +79,7 @@ public class ClosedLineGcodePath implements GcodeBehaviour {
 		double z = project.getPass() * project.getPassIncrement();
 
 		Layer layer = project.getCurrentLayer();
-		boolean tabsEnabled = layer != null && layer.isTabsEnabled() && layer.getTabCount() > 0
+		boolean tabsEnabled = tabsAllowed && layer != null && layer.isTabsEnabled() && layer.getTabCount() > 0
 				&& layer.getTabWidth() > 0;
 
 		if (!tabsEnabled) {

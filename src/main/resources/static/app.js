@@ -38,6 +38,11 @@ const DEFAULT_PROPERTIES = {
 		bold: false,
 		italic: false,
 	},
+	TraceElement: {
+		baseType: 'polyline',
+		width: 1,
+		points: [{ x: 0, y: 0, z: 0 }, { x: 10, y: 0, z: 0 }],
+	},
 };
 
 const FORM_SCHEMAS = {
@@ -78,6 +83,13 @@ const FORM_SCHEMAS = {
 			{ key: 'fontFamily', label: 'Police (nom système ou chemin .ttf/.otf)', type: 'text', datalist: 'font-list' },
 			{ key: 'bold', label: 'Gras', type: 'checkbox' },
 			{ key: 'italic', label: 'Italique', type: 'checkbox' },
+		],
+	},
+	TraceElement: {
+		fields: [
+			{ key: 'baseType', label: 'Type de tracé de base', type: 'select', options: ['polyline', 'bezier'] },
+			{ key: 'width', label: 'Largeur de la piste (mm)', type: 'number' },
+			{ key: 'points', label: 'Points (mm)', type: 'pointList' },
 		],
 	},
 };
@@ -795,7 +807,7 @@ function shapeToSvgElement(shape) {
 		el.setAttribute('class', 'shape shape-arc');
 		return el;
 	}
-	if (shape.type === 'text') {
+	if (shape.type === 'text' || shape.type === 'trace') {
 		const d = (shape.contours || [])
 			.filter((c) => c.length > 0)
 			.map((c) => `M ${c[0].x} ${c[0].y} ` + c.slice(1).map((p) => `L ${p.x} ${p.y}`).join(' ') + ' Z')
@@ -1287,6 +1299,13 @@ function localShapeFromProperties(subType, props, dx, dy, baseShape) {
 			contours: baseShape.contours.map((contour) => contour.map((p) => ({ x: p.x + dx, y: p.y + dy }))),
 		};
 	}
+	if (subType === 'TraceElement') {
+		// The buffered stroke outline (with its true width) isn't reproducible
+		// client-side (no polygon-offset library here), so this shows just the
+		// thin centerline as an instant drag placeholder; the debounced
+		// /api/preview/element round trip fills in the real buffered outline.
+		return { type: 'polyline', points: props.points.map((p) => ({ x: p.x, y: p.y })) };
+	}
 	return null;
 }
 
@@ -1303,7 +1322,7 @@ function bodyApplyDelta(subType) {
 			props.from.y += dy;
 			props.to.x += dx;
 			props.to.y += dy;
-		} else if (subType === 'PolyLineElement' || subType === 'BezierElement') {
+		} else if (subType === 'PolyLineElement' || subType === 'BezierElement' || subType === 'TraceElement') {
 			props.points.forEach((p) => {
 				p.x += dx;
 				p.y += dy;
@@ -1351,7 +1370,7 @@ function addEditableHandles(g, view, subType, properties) {
 			props.to.x = cur.x;
 			props.to.y = cur.y;
 		});
-	} else if (subType === 'PolyLineElement' || subType === 'BezierElement') {
+	} else if (subType === 'PolyLineElement' || subType === 'BezierElement' || subType === 'TraceElement') {
 		properties.points.forEach((p, idx) => {
 			handle(p.x, p.y, (props, dx, dy, cur) => {
 				props.points[idx].x = cur.x;

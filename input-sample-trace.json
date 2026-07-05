@@ -1,0 +1,56 @@
+{
+  "bitHead": "ROUTER",
+  "layers": [
+    {
+      "layerName": "copper",
+      "passes": 1,
+      "tabsEnabled": true,
+      "tabCount": 4,
+      "tabWidth": 2.0,
+      "elements": [
+        {
+          "name": "trace-a",
+          "subType": "TraceElement",
+          "properties": {
+            "baseType": "polyline",
+            "width": 2.0,
+            "points": [
+              { "x": 0.0, "y": 0.0, "z": 0.0 },
+              { "x": 10.0, "y": 0.0, "z": 0.0 }
+            ]
+          }
+        },
+        {
+          "name": "trace-b",
+          "subType": "TraceElement",
+          "properties": {
+            "baseType": "polyline",
+            "width": 2.0,
+            "points": [
+              { "x": 10.0, "y": 0.0, "z": 0.0 },
+              { "x": 10.0, "y": 10.0, "z": 0.0 }
+            ]
+          }
+        },
+        {
+          "name": "trace-c-isolated",
+          "subType": "TraceElement",
+          "properties": {
+            "baseType": "polyline",
+            "width": 2.0,
+            "points": [
+              { "x": 50.0, "y": 50.0, "z": 0.0 },
+              { "x": 60.0, "y": 50.0, "z": 0.0 }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "projectName": "output-sample-trace",
+  "projectFolder": "",
+  "safeLevel": 1.0,
+  "passIncrement": -0.035,
+  "feedRate": 100.0,
+  "power": 1000.0
+}
