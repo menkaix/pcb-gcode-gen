@@ -9,12 +9,19 @@ const state = {
 	candidateTabsEnabled: false,
 	candidateTabCount: 4,
 	candidateTabWidth: 2,
+	candidateHoleDepth: -1.6,
 	selectedLayer: null,
 	selectedElement: null,
 	// Layer indices currently hidden from the canvas. Purely a client-side view
 	// preference (not persisted with the project): unlike excludeFromGcode,
 	// hiding a layer never changes what gets generated, only what's drawn.
 	hiddenLayers: new Set(),
+	// Pure display mirroring (e.g. to preview a PCB's underside): never touched
+	// on the actual element properties, only on the render/interaction
+	// transform, so toggling either flag back off always returns to the exact
+	// same view — see flipTransform().
+	flipH: false,
+	flipV: false,
 	editingSubType: null,
 	candidateName: '',
 	candidateProperties: null,
@@ -46,6 +53,9 @@ const DEFAULT_PROPERTIES = {
 		baseType: 'polyline',
 		width: 1,
 		points: [{ x: 0, y: 0, z: 0 }, { x: 10, y: 0, z: 0 }],
+	},
+	HoleElement: {
+		position: { x: 0, y: 0 },
 	},
 };
 
@@ -94,6 +104,13 @@ const FORM_SCHEMAS = {
 			{ key: 'baseType', label: 'Type de tracé de base', type: 'select', options: ['polyline', 'bezier'] },
 			{ key: 'width', label: 'Largeur de la piste (mm)', type: 'number' },
 			{ key: 'points', label: 'Points (mm)', type: 'pointList' },
+		],
+	},
+	HoleElement: {
+		fields: [
+			// No Z field: a hole's plunge depth is the owning layer's holeDepth
+			// (see the layer form), not a per-element property.
+			{ key: 'position', label: 'Position (mm)', type: 'point2d' },
 		],
 	},
 };
@@ -265,6 +282,7 @@ async function addLayer() {
 				tabCount: 4,
 				tabWidth: 2,
 				excludeFromGcode: false,
+				holeDepth: -1.6,
 			}),
 		});
 		toast('Couche ajoutée.');
@@ -282,6 +300,7 @@ function startEditLayer(layerIndex, layer) {
 	state.candidateTabsEnabled = !!layer.tabsEnabled;
 	state.candidateTabCount = layer.tabCount || 4;
 	state.candidateTabWidth = layer.tabWidth || 2;
+	state.candidateHoleDepth = layer.holeDepth ?? -1.6;
 	state.selectedLayer = null;
 	state.selectedElement = null;
 	state.candidatePreview = null;
@@ -366,6 +385,20 @@ function renderLayerForm() {
 	tabWidthWrap.append(tabWidthLbl, tabWidthInput);
 	container.appendChild(tabWidthWrap);
 
+	const holeDepthWrap = document.createElement('div');
+	holeDepthWrap.className = 'field';
+	const holeDepthLbl = document.createElement('label');
+	holeDepthLbl.textContent = 'Profondeur de perçage des trous (mm)';
+	const holeDepthInput = document.createElement('input');
+	holeDepthInput.type = 'number';
+	holeDepthInput.step = 'any';
+	holeDepthInput.value = state.candidateHoleDepth;
+	holeDepthInput.oninput = () => {
+		state.candidateHoleDepth = parseFloat(holeDepthInput.value) || 0;
+	};
+	holeDepthWrap.append(holeDepthLbl, holeDepthInput);
+	container.appendChild(holeDepthWrap);
+
 	const feedback = document.createElement('div');
 	feedback.id = 'form-feedback';
 	container.appendChild(feedback);
@@ -386,6 +419,7 @@ async function submitLayerEdit() {
 				tabsEnabled: state.candidateTabsEnabled,
 				tabCount: state.candidateTabCount,
 				tabWidth: state.candidateTabWidth,
+				holeDepth: state.candidateHoleDepth,
 			}),
 		});
 		toast('Couche mise à jour.');
@@ -422,6 +456,7 @@ async function toggleLayerGcodeExclusion(layerIndex, layer) {
 				tabCount: layer.tabCount,
 				tabWidth: layer.tabWidth,
 				excludeFromGcode: !layer.excludeFromGcode,
+				holeDepth: layer.holeDepth,
 			}),
 		});
 		await refresh();
@@ -552,6 +587,7 @@ function renderForm() {
 	const props = state.candidateProperties;
 	schema.fields.forEach((f) => {
 		if (f.type === 'point') renderPointField(container, f.label, props[f.key], livePreview);
+		else if (f.type === 'point2d') renderPointField(container, f.label, props[f.key], livePreview, ['x', 'y']);
 		else if (f.type === 'number') renderNumberField(container, f.label, props, f.key, livePreview);
 		else if (f.type === 'select') renderSelectField(container, f.label, props, f.key, f.options, livePreview);
 		else if (f.type === 'pointList') renderPointListField(container, f.label, props[f.key], livePreview);
@@ -574,13 +610,13 @@ function renderForm() {
 	livePreview();
 }
 
-function renderPointField(container, label, value, onChange) {
+function renderPointField(container, label, value, onChange, axes = ['x', 'y', 'z']) {
 	const wrap = document.createElement('div');
 	wrap.className = 'field point-field';
 	const lbl = document.createElement('label');
 	lbl.textContent = label;
 	wrap.appendChild(lbl);
-	['x', 'y', 'z'].forEach((axis) => {
+	axes.forEach((axis) => {
 		const input = document.createElement('input');
 		input.type = 'number';
 		input.step = 'any';
@@ -770,6 +806,9 @@ async function submitElement() {
 
 const PADDING_MM = 5;
 const SVG_NS = 'http://www.w3.org/2000/svg';
+// Purely a visual marker size: HoleElement carries no diameter (the drill bit
+// determines that, not the shape), so this is not a real dimension.
+const HOLE_MARKER_RADIUS_MM = 0.4;
 
 function computeBBox(shapes) {
 	let minX = Infinity;
@@ -792,8 +831,10 @@ function computeBBox(shapes) {
 		} else if (shp.type === 'arc') {
 			extend(shp.from.x, shp.from.y, shp.radius);
 			extend(shp.to.x, shp.to.y, shp.radius);
-		} else if (shp.type === 'text') {
+		} else if (shp.type === 'text' || shp.type === 'trace') {
 			(shp.contours || []).forEach((contour) => contour.forEach((p) => extend(p.x, p.y)));
+		} else if (shp.type === 'hole') {
+			extend(shp.position.x, shp.position.y, HOLE_MARKER_RADIUS_MM);
 		} else if (shp.points) {
 			// Covers polygons, polylines, and bezier control points; a cubic
 			// Bezier curve always stays within its control points' convex hull,
@@ -856,6 +897,14 @@ function shapeToSvgElement(shape) {
 		const el = document.createElementNS(SVG_NS, 'path');
 		el.setAttribute('d', d);
 		el.setAttribute('class', 'shape shape-arc');
+		return el;
+	}
+	if (shape.type === 'hole') {
+		const el = document.createElementNS(SVG_NS, 'circle');
+		el.setAttribute('cx', shape.position.x);
+		el.setAttribute('cy', shape.position.y);
+		el.setAttribute('r', HOLE_MARKER_RADIUS_MM);
+		el.setAttribute('class', 'shape shape-hole');
 		return el;
 	}
 	if (shape.type === 'text' || shape.type === 'trace') {
@@ -1170,7 +1219,10 @@ function buildRulers(view, step) {
 
 	const firstX = Math.ceil(view.minX / step) * step;
 	for (let x = firstX; x <= view.minX + view.width + 1e-9; x += step) {
-		const px = ((x - view.minX) / view.width) * pxW;
+		// Mirrors flipTransform()'s x handling, so a tick always sits above the
+		// same physical mm mark on the canvas below, flipped or not.
+		const xDisplay = state.flipH ? view.minX + view.minX + view.width - x : x;
+		const px = ((xDisplay - view.minX) / view.width) * pxW;
 		const tick = document.createElementNS(SVG_NS, 'line');
 		tick.setAttribute('x1', px);
 		tick.setAttribute('x2', px);
@@ -1189,7 +1241,9 @@ function buildRulers(view, step) {
 
 	const firstY = Math.ceil(view.minY / step) * step;
 	for (let y = firstY; y <= maxY + 1e-9; y += step) {
-		const py = ((maxY - y) / view.height) * pxH;
+		// Mirrors flipTransform()'s y handling (flipV cancels the mandatory
+		// Y-up -> Y-down flip instead of compounding with it).
+		const py = state.flipV ? ((y - view.minY) / view.height) * pxH : ((maxY - y) / view.height) * pxH;
 		const tick = document.createElementNS(SVG_NS, 'line');
 		tick.setAttribute('y1', py);
 		tick.setAttribute('y2', py);
@@ -1205,6 +1259,24 @@ function buildRulers(view, step) {
 		label.textContent = formatTick(y, step);
 		leftSvg.appendChild(label);
 	}
+}
+
+// Single source of truth for the #flip-group transform: y always gets the
+// mandatory Y-up (data) -> Y-down (SVG) flip, plus an optional extra mirror
+// on either axis around the current view's own center, driven by
+// state.flipH/flipV. Every shape (including text/trace contours, which are
+// plain paths) lives inside this one <g>, so mirroring it here is enough to
+// keep every shape type consistent — no per-type special-casing needed. Both
+// shapesGroup() and applyView() call this so they can never disagree on the
+// current transform, exactly like niceStep() is shared for the grid/rulers.
+function flipTransform(view) {
+	const pivotX = view.minX + (view.minX + view.width);
+	const pivotY = view.minY + (view.minY + view.height);
+	const a = state.flipH ? -1 : 1;
+	const e = state.flipH ? pivotX : 0;
+	const d = state.flipV ? 1 : -1;
+	const f = state.flipV ? 0 : pivotY;
+	return `matrix(${a} 0 0 ${d} ${e} ${f})`;
 }
 
 // Single source of truth for the grid/ruler step: both are rebuilt together
@@ -1225,27 +1297,25 @@ function applyView() {
 		oldGrid.replaceWith(buildGrid(view, step));
 	}
 
-	// The content group's Y-flip pivot depends on view.minY/height, which pan
-	// and zoom change constantly — if left at the value from the last full
+	// The content group's flip pivots depend on view.min*/width/height, which
+	// pan and zoom change constantly — if left at the value from the last full
 	// renderPreview(), shapes and grid stay mirrored around a stale point while
 	// the viewBox and rulers move around the current one, so content visibly
 	// drifts out of sync with the rulers (scrolling the wrong way) as soon as
 	// you pan or zoom. Recompute and reapply it here every time, too.
 	const flipGroup = svg.querySelector('#flip-group');
 	if (flipGroup) {
-		flipGroup.setAttribute('transform', `matrix(1 0 0 -1 0 ${view.minY + view.minY + view.height})`);
+		flipGroup.setAttribute('transform', flipTransform(view));
 	}
 }
 
 function shapesGroup(shapes, view) {
-	// Reflection pivot: y' = pivot - y, keeps content inside the same [minY,maxY]
-	// band while flipping our Y-up data into the correct visual orientation.
-	const maxY = view.minY + view.height;
-	const pivot = view.minY + maxY;
-
 	const g = document.createElementNS(SVG_NS, 'g');
 	g.setAttribute('id', 'flip-group');
-	g.setAttribute('transform', `matrix(1 0 0 -1 0 ${pivot})`);
+	// Placeholder transform; applyView() (called right after this function
+	// returns, from renderPreview()) recomputes and reapplies the authoritative
+	// one via the same flipTransform() helper.
+	g.setAttribute('transform', flipTransform(view));
 
 	// Placeholder grid group; applyView() (called right after this function
 	// returns, from renderPreview()) replaces it using the authoritative step.
@@ -1359,6 +1429,9 @@ function localShapeFromProperties(subType, props, dx, dy, baseShape) {
 		// /api/preview/element round trip fills in the real buffered outline.
 		return { type: 'polyline', points: props.points.map((p) => ({ x: p.x, y: p.y })) };
 	}
+	if (subType === 'HoleElement') {
+		return { type: 'hole', position: { x: props.position.x, y: props.position.y } };
+	}
 	return null;
 }
 
@@ -1380,7 +1453,7 @@ function bodyApplyDelta(subType) {
 				p.x += dx;
 				p.y += dy;
 			});
-		} else if (subType === 'TextElement') {
+		} else if (subType === 'TextElement' || subType === 'HoleElement') {
 			props.position.x += dx;
 			props.position.y += dy;
 		}
@@ -1675,6 +1748,21 @@ document.getElementById('btn-generate').onclick = async () => {
 document.getElementById('btn-zoom-in').onclick = () => zoomBy(1 / 1.4);
 document.getElementById('btn-zoom-out').onclick = () => zoomBy(1.4);
 document.getElementById('btn-zoom-reset').onclick = resetView;
+
+function toggleFlip(axis) {
+	const btn = document.getElementById(axis === 'h' ? 'btn-flip-h' : 'btn-flip-v');
+	if (axis === 'h') {
+		state.flipH = !state.flipH;
+		btn.classList.toggle('active', state.flipH);
+	} else {
+		state.flipV = !state.flipV;
+		btn.classList.toggle('active', state.flipV);
+	}
+	applyView();
+}
+
+document.getElementById('btn-flip-h').onclick = () => toggleFlip('h');
+document.getElementById('btn-flip-v').onclick = () => toggleFlip('v');
 
 setupCanvasInteraction();
 

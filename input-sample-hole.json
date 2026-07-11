@@ -1,0 +1,32 @@
+{
+  "bitHead": "ROUTER",
+  "layers": [
+    {
+      "layerName": "drills",
+      "passes": 1,
+      "holeDepth": -1.6,
+      "elements": [
+        {
+          "name": "hole-1",
+          "subType": "HoleElement",
+          "properties": {
+            "position": { "x": 5.0, "y": 5.0 }
+          }
+        },
+        {
+          "name": "hole-2",
+          "subType": "HoleElement",
+          "properties": {
+            "position": { "x": 20.0, "y": 5.0 }
+          }
+        }
+      ]
+    }
+  ],
+  "projectName": "output-sample-hole",
+  "projectFolder": "",
+  "safeLevel": 1.0,
+  "passIncrement": -0.035,
+  "feedRate": 100.0,
+  "power": 1000.0
+}

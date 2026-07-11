@@ -14,5 +14,6 @@ public class LayerRequest {
 	public int tabCount;
 	public double tabWidth;
 	public boolean excludeFromGcode;
+	public double holeDepth;
 
 }

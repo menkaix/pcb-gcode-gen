@@ -1,0 +1,42 @@
+{
+  "bitHead": "ROUTER",
+  "layers": [
+    {
+      "layerName": "drills",
+      "passes": 1,
+      "tabsEnabled": false,
+      "tabCount": 0,
+      "tabWidth": 0.0,
+      "excludeFromGcode": false,
+      "holeDepth": -1.6,
+      "elements": [
+        {
+          "name": "HoleElement",
+          "subType": "HoleElement",
+          "properties": {
+            "position": {
+              "x": 5.0,
+              "y": 5.0
+            }
+          }
+        },
+        {
+          "name": "HoleElement",
+          "subType": "HoleElement",
+          "properties": {
+            "position": {
+              "x": 20.0,
+              "y": 5.0
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "projectName": "output-sample-hole",
+  "projectFolder": "",
+  "safeLevel": 1.0,
+  "passIncrement": -0.035,
+  "feedRate": 100.0,
+  "power": 1000.0
+}

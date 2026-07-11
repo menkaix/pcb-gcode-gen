@@ -25,6 +25,15 @@ public class Layer implements Serializable {
 
 	private boolean excludeFromGcode = false;
 
+	/**
+	 * Z depth (mm) that every {@code HoleElement} on this layer plunges to; a
+	 * hole only carries its X/Y drilling position, the plunge depth is a
+	 * per-layer setting so every hole drilled on the same layer/material
+	 * thickness shares it. Negative, following this project's convention that
+	 * Z decreases going into the material (see {@code passIncrement}).
+	 */
+	private double holeDepth = -1.6;
+
 	private List<Element> elements = new ArrayList<Element>();
 
 	public void addElement(Element elt) {
@@ -73,6 +82,14 @@ public class Layer implements Serializable {
 
 	public void setExcludeFromGcode(boolean excludeFromGcode) {
 		this.excludeFromGcode = excludeFromGcode;
+	}
+
+	public double getHoleDepth() {
+		return holeDepth;
+	}
+
+	public void setHoleDepth(double holeDepth) {
+		this.holeDepth = holeDepth;
 	}
 
 	public List<Element> getElements() {

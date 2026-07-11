@@ -5,6 +5,7 @@ import com.menkaix.elements.BezierElement;
 import com.menkaix.elements.Circle;
 import com.menkaix.elements.Element;
 import com.menkaix.elements.PolyLineElement;
+import com.menkaix.elements.HoleElement;
 import com.menkaix.elements.Rectangle;
 import com.menkaix.elements.TextElement;
 import com.menkaix.elements.TraceElement;
@@ -47,6 +48,11 @@ public class ElementFactory {
 			return ans;
 		} else if (base.getSubType().equals(TraceElement.class.getSimpleName())) {
 			TraceElement ans = new TraceElement();
+			ans.setProperties(base.getProperties());
+			ans.reloadBehaviour();
+			return ans;
+		} else if (base.getSubType().equals(HoleElement.class.getSimpleName())) {
+			HoleElement ans = new HoleElement();
 			ans.setProperties(base.getProperties());
 			ans.reloadBehaviour();
 			return ans;

@@ -19,6 +19,7 @@ import com.menkaix.elements.BezierElement;
 import com.menkaix.elements.Circle;
 import com.menkaix.elements.Element;
 import com.menkaix.elements.PolyLineElement;
+import com.menkaix.elements.HoleElement;
 import com.menkaix.elements.Rectangle;
 import com.menkaix.elements.TextElement;
 import com.menkaix.elements.TraceElement;
@@ -130,6 +131,7 @@ public class ProjectService {
 			layer.setTabCount(request.tabCount);
 			layer.setTabWidth(request.tabWidth);
 			layer.setExcludeFromGcode(request.excludeFromGcode);
+			layer.setHoleDepth(request.holeDepth);
 			definition.addLayer(layer);
 			return summarizeLayer(definition.getLayers().size() - 1, layer);
 		}
@@ -151,6 +153,7 @@ public class ProjectService {
 			layer.setTabCount(request.tabCount);
 			layer.setTabWidth(request.tabWidth);
 			layer.setExcludeFromGcode(request.excludeFromGcode);
+			layer.setHoleDepth(request.holeDepth);
 			return summarizeLayer(index, layer);
 		}
 	}
@@ -171,6 +174,7 @@ public class ProjectService {
 		ans.put("tabCount", layer.getTabCount());
 		ans.put("tabWidth", layer.getTabWidth());
 		ans.put("excludeFromGcode", layer.isExcludeFromGcode());
+		ans.put("holeDepth", layer.getHoleDepth());
 		ans.put("elementCount", layer.getElements() == null ? 0 : layer.getElements().size());
 		return ans;
 	}
@@ -383,6 +387,11 @@ public class ProjectService {
 			// this per-element preview nor the all-elements preview below has the
 			// context to reproduce).
 			shape.put("contours", traceOutlineContours(trace.getBufferedGeometry()));
+
+		} else if (resolved instanceof HoleElement) {
+			HoleElement hole = (HoleElement) resolved;
+			shape.put("type", "hole");
+			shape.put("position", toPointMap(hole.getPosition()));
 
 		} else {
 			shape.put("type", "unknown");

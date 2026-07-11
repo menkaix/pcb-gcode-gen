@@ -93,6 +93,7 @@ public class GcodeProjectDefinition implements Serializable {
 			newLayer.setPasses(layer.getPasses());
 			newLayer.setTabsEnabled(layer.isTabsEnabled());
 			newLayer.setTabCount(layer.getTabCount());
+			newLayer.setHoleDepth(layer.getHoleDepth());
 			newLayer.setTabWidth(layer.getTabWidth());
 
 			for (Element elt : layer.getElements()) {

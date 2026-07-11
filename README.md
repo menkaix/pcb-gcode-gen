@@ -29,6 +29,7 @@ L'application lit un fichier JSON décrivant un projet (tête d'outil, calques, 
       "tabsEnabled": false,
       "tabCount": 4,
       "tabWidth": 2.0,
+      "holeDepth": -1.6,
       "elements": [ ... ]
     }
   ]
@@ -49,6 +50,11 @@ L'application lit un fichier JSON décrivant un projet (tête d'outil, calques, 
 - `tabWidth` (défaut `2.0`, en mm) : largeur (longueur d'arc) de chaque tab ;
   pendant le passage sur un tab, l'outil remonte au niveau de sécurité
   (`safeLevel`) au lieu de couper
+- `holeDepth` (défaut `-1.6`, en mm) : profondeur Z de perçage pour chaque
+  `HoleElement` de ce calque (négatif, cf. convention de `passIncrement` :
+  Z décroît en s'enfonçant dans la matière). Un trou ne porte que ses
+  coordonnées X/Y ; l'enfoncement Z est ce réglage du calque, partagé par
+  tous les trous du calque (même épaisseur de matériau)
 
 ### Éléments géométriques disponibles (`subType`)
 
@@ -60,7 +66,9 @@ L'application lit un fichier JSON décrivant un projet (tête d'outil, calques, 
 - **TextElement** : texte converti en chemins G-code à partir d'une police vectorielle (TrueType/OpenType). Propriétés : `text`, `position {x,y,z}` (origine de la ligne de base), `fontSize` (mm), `fontFamily` (nom d'une police installée sur la machine, ex. `SansSerif`, `Arial`, ou chemin absolu vers un fichier `.ttf`/`.otf`), `bold`, `italic`. Chaque contour de chaque glyphe (y compris les contre-formes des lettres comme "O" ou "A") devient un chemin G-code fermé indépendant. La liste des polices système détectées est disponible via `GET /api/fonts` dans l'interface web.
 - **TraceElement** : représente une piste de cuivre PCB. Construite à partir d'un tracé de base (`baseType` : `"polyline"` ou `"bezier"`) défini par `points` (mêmes conventions que `PolyLineElement`/`BezierElement` selon le cas), et d'une `width` (mm, largeur totale de la piste). L'outil ne découpe pas l'intérieur de la piste : il découpe le **contour** de la piste (gravure d'isolation), obtenu en « gonflant » le tracé central de `width/2` de part et d'autre (jonctions et extrémités arrondies). Si les contours de plusieurs pistes d'un même calque se chevauchent ou se touchent, leurs contours extérieurs sont **fusionnés** avant génération du G-code : aucune découpe ne traverse jamais le cuivre partagé entre deux pistes connectées, elles deviennent un unique îlot de cuivre (fusion appliquée uniquement entre pistes d'un même calque). Un groupe de pistes formant une boucle fermée peut produire un îlot fusionné avec un trou intérieur ; les deux contours (extérieur et intérieur) sont alors découpés indépendamment, comme pour les contre-formes de `TextElement`. Les pistes ne supportent **jamais** les tabs, quel que soit le réglage `tabsEnabled` du calque — cela n'a pas de sens pour une gravure d'isolation.
 
-Voir `input-sample.json`, `input-sample-router.json` et `input-sample-trace.json` pour des exemples complets.
+- **HoleElement** : un trou percé, positionné uniquement par `position {x,y}`. Contrairement aux autres éléments, il ne porte pas de Z propre : la profondeur de perçage est le réglage `holeDepth` du calque (voir ci-dessus), commun à tous les trous du même calque.
+
+Voir `input-sample.json`, `input-sample-router.json`, `input-sample-trace.json` et `input-sample-hole.json` pour des exemples complets.
 
 Compilation et exécution
 -------------------------
