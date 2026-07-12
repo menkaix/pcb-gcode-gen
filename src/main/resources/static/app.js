@@ -36,6 +36,9 @@ const state = {
 	blocks: [],
 	// Per-repository ok/error status from the last reload, keyed by URL.
 	blockRepoStatus: {},
+	// Which of tree/preview/form is shown on the tablet/mobile tab bar; the
+	// desktop grid ignores this and shows all three panels at once.
+	activePanel: 'tree',
 };
 
 const DEFAULT_PROPERTIES = {
@@ -190,12 +193,52 @@ function toast(message, isError = false) {
 	}, 4000);
 }
 
-function button(label, onClick, cls = '') {
+function button(label, onClick, cls = '', title = '') {
 	const b = document.createElement('button');
 	b.textContent = label;
 	b.className = cls;
 	b.onclick = onClick;
+	if (title) b.title = title;
 	return b;
+}
+
+// ---------------- Dialogs (replace prompt()/confirm() for consistent touch/desktop UX) ----------------
+
+// Resolves true/false. The dialog's own <form method="dialog"> sets
+// dialog.returnValue to the clicked submit button's `value` (or '' if closed
+// via Escape/backdrop), so a plain equality check tells confirm from cancel.
+function confirmDialog(message) {
+	const dialog = document.getElementById('confirm-dialog');
+	document.getElementById('confirm-dialog-message').textContent = message;
+	document.getElementById('confirm-dialog-input-wrap').classList.add('hidden');
+	return new Promise((resolve) => {
+		function onClose() {
+			dialog.removeEventListener('close', onClose);
+			resolve(dialog.returnValue === 'confirmed');
+		}
+		dialog.addEventListener('close', onClose);
+		dialog.showModal();
+	});
+}
+
+// Resolves the entered string, or null if cancelled — mirrors prompt()'s
+// contract so call sites only need `if (name === null) return;`.
+function promptDialog(message, defaultValue = '') {
+	const dialog = document.getElementById('confirm-dialog');
+	const input = document.getElementById('confirm-dialog-input');
+	document.getElementById('confirm-dialog-message').textContent = message;
+	document.getElementById('confirm-dialog-input-wrap').classList.remove('hidden');
+	input.value = defaultValue;
+	return new Promise((resolve) => {
+		function onClose() {
+			dialog.removeEventListener('close', onClose);
+			resolve(dialog.returnValue === 'confirmed' ? input.value : null);
+		}
+		dialog.addEventListener('close', onClose);
+		dialog.showModal();
+		input.focus();
+		input.select();
+	});
 }
 
 // ---------------- Load / refresh ----------------
@@ -355,6 +398,51 @@ function renderMeta() {
 
 // ---------------- Layer / element tree ----------------
 
+// Groups the two lower-frequency layer actions (Modifier/Supprimer) behind a
+// "⋯" <details> popover instead of two more full-width buttons in the header
+// row — keeps the row from wrapping badly in the ~15-20rem tree panel, on
+// both desktop and the narrower mobile/tablet layouts.
+function buildLayerMenu(layerIndex, layer) {
+	const details = document.createElement('details');
+	details.className = 'row-menu';
+
+	const summary = document.createElement('summary');
+	summary.textContent = '⋯';
+	summary.title = 'Plus d’actions';
+	details.appendChild(summary);
+
+	const content = document.createElement('div');
+	content.className = 'row-menu-content';
+	content.appendChild(
+		button('Modifier', () => {
+			details.open = false;
+			startEditLayer(layerIndex, layer);
+		})
+	);
+	content.appendChild(
+		button(
+			'Supprimer',
+			() => {
+				details.open = false;
+				deleteLayer(layerIndex);
+			},
+			'danger'
+		)
+	);
+	details.appendChild(content);
+
+	// Only one row menu open at a time — closing the others on open avoids a
+	// pile of stale popovers left open across re-renders of the tree.
+	details.addEventListener('toggle', () => {
+		if (!details.open) return;
+		document.querySelectorAll('#layer-tree details.row-menu[open]').forEach((other) => {
+			if (other !== details) other.open = false;
+		});
+	});
+
+	return details;
+}
+
 function renderTree() {
 	const container = document.getElementById('layer-tree');
 	container.innerHTML = '';
@@ -391,14 +479,19 @@ function renderTree() {
 			title,
 			passesSpan,
 			tabsSpan,
-			button(hidden ? '🚫 Masqué' : '👁 Visible', () => toggleLayerVisibility(li), 'small'),
 			button(
-				layer.excludeFromGcode ? '⛔ Exclu G-code' : '✅ Inclus G-code',
-				() => toggleLayerGcodeExclusion(li, layer),
-				layer.excludeFromGcode ? 'danger small' : 'small'
+				hidden ? '🚫' : '👁',
+				() => toggleLayerVisibility(li),
+				'small',
+				hidden ? 'Couche masquée (cliquer pour afficher)' : 'Couche visible (cliquer pour masquer)'
 			),
-			button('Modifier', () => startEditLayer(li, layer)),
-			button('Supprimer', () => deleteLayer(li), 'danger small'),
+			button(
+				layer.excludeFromGcode ? '⛔' : '✅',
+				() => toggleLayerGcodeExclusion(li, layer),
+				layer.excludeFromGcode ? 'danger small' : 'small',
+				layer.excludeFromGcode ? 'Exclue du G-code (cliquer pour inclure)' : 'Incluse dans le G-code (cliquer pour exclure)'
+			),
+			buildLayerMenu(li, layer),
 			button('+ Forme', () => startNewElement(li))
 		);
 		layerDiv.appendChild(header);
@@ -429,7 +522,7 @@ function renderTree() {
 }
 
 async function addLayer() {
-	const name = prompt('Nom de la nouvelle couche', 'nouvelle-couche');
+	const name = await promptDialog('Nom de la nouvelle couche', 'nouvelle-couche');
 	if (name === null) return;
 	try {
 		await apiFetch('/api/layers', {
@@ -466,6 +559,7 @@ function startEditLayer(layerIndex, layer) {
 	renderTree();
 	renderLayerForm();
 	renderPreview();
+	setActivePanel('form');
 }
 
 function renderLayerForm() {
@@ -625,7 +719,7 @@ async function toggleLayerGcodeExclusion(layerIndex, layer) {
 }
 
 async function deleteLayer(layerIndex) {
-	if (!confirm('Supprimer cette couche et toutes ses formes ?')) return;
+	if (!(await confirmDialog('Supprimer cette couche et toutes ses formes ?'))) return;
 	try {
 		await apiFetch(`/api/layers/${layerIndex}`, { method: 'DELETE' });
 		toast('Couche supprimée.');
@@ -637,7 +731,7 @@ async function deleteLayer(layerIndex) {
 }
 
 async function deleteElement(layerIndex, elementIndex) {
-	if (!confirm('Supprimer cette forme ?')) return;
+	if (!(await confirmDialog('Supprimer cette forme ?'))) return;
 	try {
 		await apiFetch(`/api/layers/${layerIndex}/elements/${elementIndex}`, { method: 'DELETE' });
 		toast('Forme supprimée.');
@@ -664,6 +758,7 @@ function startNewElement(layerIndex) {
 	state.rotationFormOpen = false;
 	renderTree();
 	renderForm();
+	setActivePanel('form');
 }
 
 function selectElement(layerIndex, elementIndex) {
@@ -682,6 +777,7 @@ function selectElement(layerIndex, elementIndex) {
 	state.rotationFormOpen = false;
 	renderTree();
 	renderForm();
+	setActivePanel('form');
 }
 
 function cancelForm() {
@@ -1551,10 +1647,10 @@ function shapesGroup(shapes, view) {
 
 		if (s.isEditing) {
 			el.classList.add('selected-shape', 'editable-shape');
-			el.addEventListener('mousedown', (e) => startShapeDrag(e, bodyApplyDelta(s.subType)));
+			el.addEventListener('pointerdown', (e) => startShapeDrag(e, bodyApplyDelta(s.subType)));
 		} else if (s.layerIndex >= 0) {
 			el.classList.add('selectable-shape');
-			el.addEventListener('mousedown', (e) => {
+			el.addEventListener('pointerdown', (e) => {
 				e.stopPropagation();
 				selectElement(s.layerIndex, s.elementIndex);
 			});
@@ -1565,7 +1661,7 @@ function shapesGroup(shapes, view) {
 		g.appendChild(el);
 
 		// Handles are appended after (so on top of, for hit-testing) the shape
-		// body they belong to — otherwise the body's own mousedown would win
+		// body they belong to — otherwise the body's own pointerdown would win
 		// over an overlapping handle and a resize/vertex drag would silently
 		// turn into a move.
 		if (s.isEditing) {
@@ -1725,11 +1821,15 @@ function bodyApplyDelta(subType) {
 	};
 }
 
+const COARSE_POINTER = window.matchMedia('(pointer: coarse)').matches;
+
 function addEditableHandles(g, view, subType, properties) {
 	// Sized as a fraction of the current view span rather than a fixed mm
 	// radius, so handles stay a roughly constant on-screen size at any zoom
 	// level (view.width shrinks exactly as fast as pixels-per-mm grows).
-	const handleR = view.width * 0.012;
+	// Touch pointers get a bigger fraction — a fingertip needs a larger visual
+	// (and hit-test) target than a mouse cursor to reliably grab a handle.
+	const handleR = view.width * (COARSE_POINTER ? 0.022 : 0.012);
 
 	function handle(x, y, applyDelta) {
 		const el = document.createElementNS(SVG_NS, 'circle');
@@ -1737,7 +1837,7 @@ function addEditableHandles(g, view, subType, properties) {
 		el.setAttribute('cy', y);
 		el.setAttribute('r', handleR);
 		el.setAttribute('class', 'shape-handle');
-		el.addEventListener('mousedown', (e) => startShapeDrag(e, applyDelta));
+		el.addEventListener('pointerdown', (e) => startShapeDrag(e, applyDelta));
 		g.appendChild(el);
 	}
 
@@ -1782,6 +1882,14 @@ function startShapeDrag(e, applyDelta) {
 	e.preventDefault();
 	if (state.formMode !== 'element' || !state.candidateProperties) return;
 
+	const svg = document.getElementById('preview-svg');
+	const pointerId = e.pointerId;
+	// setPointerCapture redirects every subsequent event for this pointer to
+	// svg regardless of where it moves on screen — the touch/mouse equivalent
+	// of the old window-level mousemove/mouseup listeners, but it also keeps
+	// working if the pointer leaves the window, so no blur safety net needed.
+	svg.setPointerCapture(pointerId);
+
 	const startPt = svgPointFromEvent(e);
 	const startProps = JSON.parse(JSON.stringify(state.candidateProperties));
 	const subType = state.editingSubType;
@@ -1790,6 +1898,7 @@ function startShapeDrag(e, applyDelta) {
 	const baseShape = state.candidatePreview && state.candidatePreview.valid ? state.candidatePreview.shape : null;
 
 	function onMove(ev) {
+		if (ev.pointerId !== pointerId) return;
 		const cur = svgPointFromEvent(ev);
 		const dx = cur.x - startPt.x;
 		const dy = cur.y - startPt.y;
@@ -1808,14 +1917,21 @@ function startShapeDrag(e, applyDelta) {
 		renderPreview();
 	}
 
-	function onUp() {
-		window.removeEventListener('mousemove', onMove);
-		window.removeEventListener('mouseup', onUp);
+	function onUp(ev) {
+		if (ev.pointerId !== pointerId) return;
+		svg.removeEventListener('pointermove', onMove);
+		svg.removeEventListener('pointerup', onUp);
+		svg.removeEventListener('pointercancel', onUp);
+		if (svg.hasPointerCapture(pointerId)) svg.releasePointerCapture(pointerId);
 		renderForm();
 	}
 
-	window.addEventListener('mousemove', onMove);
-	window.addEventListener('mouseup', onUp);
+	// Listeners live on svg (never replaced) rather than the handle/shape
+	// element itself, which renderPreview() tears down and rebuilds on every
+	// drag frame (svg.innerHTML = '').
+	svg.addEventListener('pointermove', onMove);
+	svg.addEventListener('pointerup', onUp);
+	svg.addEventListener('pointercancel', onUp);
 }
 
 function renderPreview() {
@@ -1857,42 +1973,118 @@ function setupCanvasInteraction() {
 		{ passive: false }
 	);
 
+	// Pan (one pointer) and pinch-zoom (two pointers) share the same pointer
+	// tracking map: a mouse drag and a single-finger touch drag both land in
+	// panState, and a second finger touching down promotes the gesture to
+	// pinchState instead. Using Pointer Events (rather than separate
+	// mouse/touch handlers) means both device classes go through one code
+	// path, and setPointerCapture makes the old window-level mouseup/blur
+	// safety net unnecessary — a captured pointer keeps reporting to svg even
+	// once it leaves the window, and losing capture unexpectedly fires
+	// pointercancel, which endPointer() already handles the same as pointerup.
+	const activePointers = new Map();
 	let panState = null;
-	svg.addEventListener('mousedown', (e) => {
+	let pinchState = null;
+
+	function currentPoints() {
+		return [...activePointers.values()];
+	}
+
+	svg.addEventListener('pointerdown', (e) => {
 		if (!state.view) return;
-		panState = { startX: e.clientX, startY: e.clientY, view0: { ...state.view } };
-		svg.classList.add('grabbing');
-	});
-	window.addEventListener('mousemove', (e) => {
-		if (!panState) return;
-		const rect = svg.getBoundingClientRect();
-		const dxPx = e.clientX - panState.startX;
-		const dyPx = e.clientY - panState.startY;
-		state.view.minX = panState.view0.minX - (dxPx / rect.width) * panState.view0.width;
-		state.view.minY = panState.view0.minY - (dyPx / rect.height) * panState.view0.height;
-		applyView();
-	});
-	window.addEventListener('mouseup', () => {
-		if (panState) {
+		svg.setPointerCapture(e.pointerId);
+		activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+		if (activePointers.size === 1) {
+			panState = { startX: e.clientX, startY: e.clientY, view0: { ...state.view } };
+			svg.classList.add('grabbing');
+		} else if (activePointers.size === 2) {
 			panState = null;
 			svg.classList.remove('grabbing');
-		}
-	});
-	// Safety net: if the button is released outside the window (or the window
-	// loses focus mid-drag) and the mouseup above never fires, don't leave the
-	// canvas panning on the next unrelated mouse move.
-	window.addEventListener('blur', () => {
-		if (panState) {
-			panState = null;
-			svg.classList.remove('grabbing');
+			const [p1, p2] = currentPoints();
+			pinchState = {
+				startDist: Math.max(1, Math.hypot(p2.x - p1.x, p2.y - p1.y)),
+				view0: { ...state.view },
+			};
 		}
 	});
 
-	window.addEventListener('resize', () => {
-		if (!state.view) return;
-		matchPanelAspect(state.view);
-		applyView();
+	svg.addEventListener('pointermove', (e) => {
+		if (!activePointers.has(e.pointerId)) return;
+		activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+		if (pinchState && activePointers.size >= 2) {
+			const [p1, p2] = currentPoints();
+			const rect = svg.getBoundingClientRect();
+			const dist = Math.max(1, Math.hypot(p2.x - p1.x, p2.y - p1.y));
+			const midXpx = (p1.x + p2.x) / 2 - rect.left;
+			const midYpx = (p1.y + p2.y) / 2 - rect.top;
+			const view0 = pinchState.view0;
+			// Re-derive the zoom center from view0 (the view as it was when the
+			// pinch started) every move, using the current on-screen midpoint —
+			// that keeps the mm point under the fingers fixed even as the
+			// midpoint itself drifts while the fingers also pan together.
+			const userX = view0.minX + (midXpx / rect.width) * view0.width;
+			const userY = view0.minY + (midYpx / rect.height) * view0.height;
+			const factor = pinchState.startDist / dist;
+			const newWidth = Math.min(MAX_SPAN_MM, Math.max(MIN_SPAN_MM, view0.width * factor));
+			const actualFactor = newWidth / view0.width;
+			const newHeight = view0.height * actualFactor;
+			state.view.minX = userX - (midXpx / rect.width) * newWidth;
+			state.view.minY = userY - (midYpx / rect.height) * newHeight;
+			state.view.width = newWidth;
+			state.view.height = newHeight;
+			applyView();
+			return;
+		}
+
+		if (panState && activePointers.size === 1) {
+			const rect = svg.getBoundingClientRect();
+			const dxPx = e.clientX - panState.startX;
+			const dyPx = e.clientY - panState.startY;
+			state.view.minX = panState.view0.minX - (dxPx / rect.width) * panState.view0.width;
+			state.view.minY = panState.view0.minY - (dyPx / rect.height) * panState.view0.height;
+			applyView();
+		}
 	});
+
+	function endPointer(e) {
+		if (!activePointers.has(e.pointerId)) return;
+		activePointers.delete(e.pointerId);
+		if (svg.hasPointerCapture(e.pointerId)) svg.releasePointerCapture(e.pointerId);
+
+		if (activePointers.size < 2) {
+			pinchState = null;
+		}
+		if (activePointers.size === 1) {
+			// One finger remains after a pinch — resume panning from its current
+			// position rather than the (now stale) original pan start point.
+			const [p] = currentPoints();
+			panState = { startX: p.x, startY: p.y, view0: { ...state.view } };
+			svg.classList.add('grabbing');
+		} else if (activePointers.size === 0) {
+			panState = null;
+			svg.classList.remove('grabbing');
+		}
+	}
+
+	svg.addEventListener('pointerup', endPointer);
+	svg.addEventListener('pointercancel', endPointer);
+
+	// Recomputes the view/rulers whenever the panel's own pixel size changes,
+	// for any reason — window resize, but also a tab switch or header
+	// collapse/expand on narrow layouts, none of which fire a window 'resize'
+	// event the old listener relied on.
+	let resizeFrame = null;
+	const resizeObserver = new ResizeObserver(() => {
+		if (!state.view) return;
+		if (resizeFrame) cancelAnimationFrame(resizeFrame);
+		resizeFrame = requestAnimationFrame(() => {
+			matchPanelAspect(state.view);
+			applyView();
+		});
+	});
+	resizeObserver.observe(svg);
 }
 
 // ---------------- Import / export ----------------
@@ -2028,6 +2220,82 @@ function toggleFlip(axis) {
 
 document.getElementById('btn-flip-h').onclick = () => toggleFlip('h');
 document.getElementById('btn-flip-v').onclick = () => toggleFlip('v');
+
+// ---------------- Panel navigation (tablet/mobile tab bar) ----------------
+
+function setActivePanel(panel) {
+	state.activePanel = panel;
+	document.body.dataset.activePanel = panel;
+	document.querySelectorAll('.panel-tab').forEach((btn) => {
+		btn.classList.toggle('active', btn.dataset.panel === panel);
+	});
+}
+
+document.querySelectorAll('.panel-tab').forEach((btn) => {
+	btn.addEventListener('click', () => setActivePanel(btn.dataset.panel));
+});
+
+setActivePanel(state.activePanel);
+
+// The tablet layout (640-1023px) pins the preview panel permanently above
+// the tree/form tabs and has no "preview" tab of its own (see style.css) —
+// if a resize lands here while "preview" was the active tab (e.g. coming
+// from mobile), fall back to "tree" so a tab bar entry is always selected.
+const tabletQuery = window.matchMedia('(min-width: 640px) and (max-width: 1023px)');
+function syncActivePanelForBreakpoint() {
+	if (tabletQuery.matches && state.activePanel === 'preview') {
+		setActivePanel('tree');
+	}
+}
+tabletQuery.addEventListener('change', syncActivePanelForBreakpoint);
+syncActivePanelForBreakpoint();
+
+// ---------------- Header: collapsible meta panel + file menu ----------------
+
+// Meta fields default open on desktop (≥1024px, matching the pre-responsive
+// behavior) and collapsed on tablet/mobile, but stay a native <details> so
+// the user can always toggle it manually afterwards — this only sets the
+// initial state and re-syncs when a resize crosses the breakpoint.
+const metaDetails = document.getElementById('meta-details');
+const wideQuery = window.matchMedia('(min-width: 1024px)');
+function syncMetaDetailsForBreakpoint() {
+	metaDetails.open = wideQuery.matches;
+}
+wideQuery.addEventListener('change', syncMetaDetailsForBreakpoint);
+syncMetaDetailsForBreakpoint();
+
+const fileMenu = document.querySelector('.file-menu');
+const fileMenuToggle = document.getElementById('btn-file-menu-toggle');
+const fileMenuContent = document.getElementById('file-menu-content');
+
+function closeFileMenu() {
+	fileMenu.classList.remove('open');
+	fileMenuToggle.setAttribute('aria-expanded', 'false');
+}
+
+fileMenuToggle.addEventListener('click', () => {
+	const isOpen = fileMenu.classList.toggle('open');
+	fileMenuToggle.setAttribute('aria-expanded', String(isOpen));
+});
+
+// Any action inside the menu (import/export) should close it, same as a
+// native <select> or menu closes after picking an item.
+fileMenuContent.addEventListener('click', (e) => {
+	if (e.target.tagName === 'BUTTON') closeFileMenu();
+});
+
+document.addEventListener('click', (e) => {
+	if (fileMenu.classList.contains('open') && !fileMenu.contains(e.target)) {
+		closeFileMenu();
+	}
+});
+
+document.addEventListener('keydown', (e) => {
+	if (e.key === 'Escape' && fileMenu.classList.contains('open')) {
+		closeFileMenu();
+		fileMenuToggle.focus();
+	}
+});
 
 setupCanvasInteraction();
 
