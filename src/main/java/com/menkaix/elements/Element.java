@@ -51,6 +51,18 @@ public class Element implements Serializable {
 
 	}
 
+	/**
+	 * Rotation applied to this element's geometry, in degrees, positive being
+	 * clockwise as displayed on screen. Absent/null means unrotated (0).
+	 */
+	protected double getRotationDegrees() {
+		Object rotation = getProperty("rotation");
+		if (rotation == null) {
+			return 0.0;
+		}
+		return Double.parseDouble(rotation.toString());
+	}
+
 	protected SimplePoint pointFromMap(Object mapIn) throws MissingPropertyException {
 
 		if (mapIn instanceof SimplePoint) {

@@ -239,6 +239,49 @@ h2 {
 	background: color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
+#tree-panel .panel-header + .panel-header {
+	margin-top: 1rem;
+}
+
+.block-repo-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.2rem 0.1rem;
+	font-size: 0.85rem;
+}
+
+.block-repo-item .repo-url {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.block-repo-item .repo-status.ok {
+	color: var(--accent);
+}
+
+.block-repo-item .repo-status.error {
+	color: var(--danger);
+}
+
+.block-repo-add {
+	display: flex;
+	gap: 0.4rem;
+	margin: 0.4rem 0;
+}
+
+.block-repo-add input {
+	flex: 1;
+	min-width: 0;
+}
+
+#block-list {
+	font-size: 0.8rem;
+	line-height: 1.5;
+}
+
 button {
 	cursor: pointer;
 	border: 1px solid var(--border);
@@ -325,6 +368,24 @@ button:disabled {
 	display: flex;
 	gap: 0.5rem;
 	margin-top: 1rem;
+}
+
+.rotation-panel {
+	flex-direction: row;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.5rem;
+	border: 1px solid var(--border);
+	border-radius: 4px;
+	background: var(--bg-panel);
+}
+
+.rotation-panel label {
+	white-space: nowrap;
+}
+
+.rotation-panel input {
+	width: 6rem;
 }
 
 .shape {

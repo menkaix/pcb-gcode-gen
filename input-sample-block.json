@@ -1,0 +1,46 @@
+{
+  "bitHead": "ROUTER",
+  "blockRepositories": ["./examples/block-library-sample"],
+  "layers": [
+    {
+      "layerName": "components",
+      "passes": 1,
+      "holeDepth": -1.6,
+      "elements": [
+        {
+          "name": "j1",
+          "subType": "Block",
+          "properties": {
+            "blockId": "block-library-sample/connector-2pin",
+            "position": { "x": 10.0, "y": 10.0 },
+            "rotation": 0
+          }
+        },
+        {
+          "name": "j2",
+          "subType": "Block",
+          "properties": {
+            "blockId": "block-library-sample/connector-2pin",
+            "position": { "x": 30.0, "y": 10.0 },
+            "rotation": 90
+          }
+        },
+        {
+          "name": "b1",
+          "subType": "Block",
+          "properties": {
+            "blockId": "block-library-sample/l-bracket",
+            "position": { "x": 10.0, "y": 30.0 },
+            "rotation": 45
+          }
+        }
+      ]
+    }
+  ],
+  "projectName": "output-sample-block",
+  "projectFolder": "",
+  "safeLevel": 1.0,
+  "passIncrement": -0.035,
+  "feedRate": 100.0,
+  "power": 1000.0
+}

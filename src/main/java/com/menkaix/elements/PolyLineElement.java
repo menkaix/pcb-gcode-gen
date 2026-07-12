@@ -28,9 +28,23 @@ public class PolyLineElement extends Element {
 
 	private void updateGeometry() {
 
+		// The persisted "points" property must stay the un-rotated points (only
+		// normalized to SimplePoint) — rotation is applied solely to the transient
+		// geometry below. Writing rotated coordinates back into the property here
+		// would bake the current rotation into storage, so the next reload (e.g.
+		// after a save round-trip) would rotate an already-rotated shape again.
+		List<SimplePoint> rotatedPoints = points;
+		double rotationDegrees = getRotationDegrees();
+		if (rotationDegrees != 0.0 && !points.isEmpty()) {
+			SimplePoint pivot = SimplePoint.centroid(points);
+			rotatedPoints = new ArrayList<SimplePoint>();
+			for (SimplePoint p : points) {
+				rotatedPoints.add(SimplePoint.rotate(p, pivot, rotationDegrees));
+			}
+		}
+
 		geometry = new PolyLine();
-		// geometry.getPoints().clear();
-		geometry.getPoints().addAll(points);
+		geometry.getPoints().addAll(rotatedPoints);
 
 		getProperties().put("points", points);
 
@@ -59,6 +73,10 @@ public class PolyLineElement extends Element {
 
 		updateGeometry();
 
+	}
+
+	public PolyLine getGeometry() {
+		return geometry;
 	}
 
 	public void addPoint(double x, double y) {

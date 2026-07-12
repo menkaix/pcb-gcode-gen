@@ -24,7 +24,22 @@ public class BezierElement extends Element {
 	private transient List<SimplePoint> points = new ArrayList<>();
 
 	private void updateGeometry() {
-		geometry = new BezierCurve(points);
+		// The persisted "points" property must stay the un-rotated control points —
+		// rotation is applied solely to the transient geometry below. Writing
+		// rotated coordinates back into the property here would bake the current
+		// rotation into storage, so the next reload (e.g. after a save round-trip)
+		// would rotate an already-rotated curve again.
+		List<SimplePoint> rotatedPoints = points;
+		double rotationDegrees = getRotationDegrees();
+		if (rotationDegrees != 0.0 && !points.isEmpty()) {
+			SimplePoint pivot = SimplePoint.centroid(points);
+			rotatedPoints = new ArrayList<>();
+			for (SimplePoint p : points) {
+				rotatedPoints.add(SimplePoint.rotate(p, pivot, rotationDegrees));
+			}
+		}
+
+		geometry = new BezierCurve(rotatedPoints);
 
 		getProperties().put("points", points);
 

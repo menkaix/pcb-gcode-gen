@@ -26,13 +26,29 @@ const state = {
 	candidateName: '',
 	candidateProperties: null,
 	candidatePreview: null,
+	// Whether the small "Rotation" popover form is currently open for the
+	// selected/new element. Reset whenever the selection changes (see
+	// selectElement/startNewElement/cancelForm) so it never leaks across shapes.
+	rotationFormOpen: false,
+	// Blocks currently known from the last /api/blocks/reload or /api/blocks
+	// call (id, blockName, repoUrl, componentCount) — populates the Block
+	// form's blockId datalist and the "Bibliothèques de blocs" panel.
+	blocks: [],
+	// Per-repository ok/error status from the last reload, keyed by URL.
+	blockRepoStatus: {},
 };
 
 const DEFAULT_PROPERTIES = {
-	Rectangle: { corner: { x: 0, y: 0, z: 0 }, width: 10, height: 10 },
+	Rectangle: { corner: { x: 0, y: 0, z: 0 }, width: 10, height: 10, rotation: 0 },
 	Circle: { center: { x: 0, y: 0, z: 0 }, radius: 5 },
-	ArcPath: { from: { x: 0, y: 0, z: 0 }, to: { x: 10, y: 0, z: 0 }, radius: 10, direction: 'CLOCKWISE' },
-	PolyLineElement: { points: [{ x: 0, y: 0, z: 0 }, { x: 10, y: 0, z: 0 }] },
+	ArcPath: {
+		from: { x: 0, y: 0, z: 0 },
+		to: { x: 10, y: 0, z: 0 },
+		radius: 10,
+		direction: 'CLOCKWISE',
+		rotation: 0,
+	},
+	PolyLineElement: { points: [{ x: 0, y: 0, z: 0 }, { x: 10, y: 0, z: 0 }], rotation: 0 },
 	BezierElement: {
 		points: [
 			{ x: 0, y: 0, z: 0 },
@@ -40,6 +56,7 @@ const DEFAULT_PROPERTIES = {
 			{ x: 15, y: 15, z: 0 },
 			{ x: 20, y: 0, z: 0 },
 		],
+		rotation: 0,
 	},
 	TextElement: {
 		position: { x: 0, y: 0, z: 0 },
@@ -48,16 +65,36 @@ const DEFAULT_PROPERTIES = {
 		fontFamily: 'SansSerif',
 		bold: false,
 		italic: false,
+		rotation: 0,
 	},
 	TraceElement: {
 		baseType: 'polyline',
 		width: 1,
 		points: [{ x: 0, y: 0, z: 0 }, { x: 10, y: 0, z: 0 }],
+		rotation: 0,
 	},
 	HoleElement: {
 		position: { x: 0, y: 0 },
 	},
+	Block: {
+		blockId: '',
+		position: { x: 0, y: 0 },
+		rotation: 0,
+	},
 };
+
+// Shape types whose geometry actually changes under rotation (Circle and
+// HoleElement are single point/radius shapes, rotation-invariant around
+// their own center, so the Rotation button is hidden for them).
+const ROTATABLE_TYPES = new Set([
+	'Rectangle',
+	'ArcPath',
+	'PolyLineElement',
+	'BezierElement',
+	'TextElement',
+	'TraceElement',
+	'Block',
+]);
 
 const FORM_SCHEMAS = {
 	Rectangle: {
@@ -113,6 +150,12 @@ const FORM_SCHEMAS = {
 			{ key: 'position', label: 'Position (mm)', type: 'point2d' },
 		],
 	},
+	Block: {
+		fields: [
+			{ key: 'blockId', label: 'Bloc', type: 'text', datalist: 'block-list-datalist' },
+			{ key: 'position', label: 'Position (mm)', type: 'point2d' },
+		],
+	},
 };
 
 // ---------------- API helpers ----------------
@@ -164,6 +207,7 @@ async function refresh() {
 	renderMeta();
 	renderTree();
 	renderPreview();
+	renderBlockRepositories();
 }
 
 // Populated once at startup; only used to suggest values for the TextElement
@@ -183,6 +227,121 @@ async function loadFontList() {
 		// Non-critical: the fontFamily field still works as a plain text input.
 	}
 }
+
+// ---------------- Block libraries ----------------
+
+// Refreshes the blockId <datalist> and the "Bibliothèques de blocs" panel's
+// block list from the in-memory cache (no git clone/pull) - cheap enough to
+// call after every reload and on startup.
+async function loadBlockList() {
+	try {
+		state.blocks = await apiFetch('/api/blocks');
+	} catch (e) {
+		state.blocks = [];
+	}
+	const datalist = document.getElementById('block-list-datalist');
+	datalist.innerHTML = '';
+	state.blocks.forEach((b) => {
+		const option = document.createElement('option');
+		option.value = b.id;
+		option.label = `${b.blockName} (${b.componentCount} formes)`;
+		datalist.appendChild(option);
+	});
+	renderBlockListPanel();
+}
+
+function renderBlockListPanel() {
+	const container = document.getElementById('block-list');
+	container.innerHTML = '';
+	if (state.blocks.length === 0) {
+		container.textContent = 'Aucun bloc chargé. Ajoutez un dépôt puis cliquez sur "Recharger".';
+		return;
+	}
+	const list = document.createElement('ul');
+	list.style.margin = '0';
+	list.style.paddingLeft = '1.1rem';
+	state.blocks.forEach((b) => {
+		const li = document.createElement('li');
+		li.textContent = `${b.id} — ${b.blockName} (${b.componentCount} formes)`;
+		list.appendChild(li);
+	});
+	container.appendChild(list);
+}
+
+function renderBlockRepositories() {
+	const container = document.getElementById('block-repositories');
+	if (!container) return;
+	container.innerHTML = '';
+	const urls = (state.project && state.project.blockRepositories) || [];
+	urls.forEach((url, index) => {
+		const item = document.createElement('div');
+		item.className = 'block-repo-item';
+
+		const urlSpan = document.createElement('span');
+		urlSpan.className = 'repo-url';
+		urlSpan.textContent = url;
+		urlSpan.title = url;
+		item.appendChild(urlSpan);
+
+		const status = state.blockRepoStatus[url];
+		if (status) {
+			const statusSpan = document.createElement('span');
+			statusSpan.className = 'repo-status ' + (status.ok ? 'ok' : 'error');
+			statusSpan.textContent = status.ok ? `✓ ${status.blocksFound} bloc(s)` : `✗ ${status.error}`;
+			statusSpan.title = status.ok ? '' : status.error;
+			item.appendChild(statusSpan);
+		}
+
+		item.appendChild(button('×', () => removeBlockRepository(index), 'danger'));
+		container.appendChild(item);
+	});
+}
+
+async function saveBlockRepositories(urls) {
+	const result = await apiFetch('/api/blocks/repositories', { method: 'PUT', body: JSON.stringify({ urls }) });
+	state.project.blockRepositories = result.urls;
+	renderBlockRepositories();
+}
+
+async function removeBlockRepository(index) {
+	const urls = (state.project.blockRepositories || []).slice();
+	urls.splice(index, 1);
+	try {
+		await saveBlockRepositories(urls);
+	} catch (e) {
+		toast(e.message, true);
+	}
+}
+
+document.getElementById('btn-add-block-repo').onclick = async () => {
+	const input = document.getElementById('block-repo-url');
+	const url = input.value.trim();
+	if (!url) return;
+	const urls = (state.project.blockRepositories || []).concat([url]);
+	try {
+		await saveBlockRepositories(urls);
+		input.value = '';
+	} catch (e) {
+		toast(e.message, true);
+	}
+};
+
+document.getElementById('btn-reload-blocks').onclick = async () => {
+	try {
+		const result = await apiFetch('/api/blocks/reload', { method: 'POST' });
+		state.blockRepoStatus = {};
+		(result.repositories || []).forEach((status) => {
+			state.blockRepoStatus[status.url] = status;
+		});
+		state.blocks = result.blocks || [];
+		renderBlockRepositories();
+		renderBlockListPanel();
+		await loadBlockList();
+		toast('Bibliothèques de blocs rechargées.');
+	} catch (e) {
+		toast(e.message, true);
+	}
+};
 
 function renderMeta() {
 	const p = state.project;
@@ -502,6 +661,7 @@ function startNewElement(layerIndex) {
 	// Avoid briefly showing the previously-edited element's (now stale) live
 	// preview mislabeled as this new one before its own preview resolves.
 	state.candidatePreview = null;
+	state.rotationFormOpen = false;
 	renderTree();
 	renderForm();
 }
@@ -519,6 +679,7 @@ function selectElement(layerIndex, elementIndex) {
 	// currentShapes() falls back to this element's own saved shape until a
 	// fresh validated preview comes back for it.
 	state.candidatePreview = null;
+	state.rotationFormOpen = false;
 	renderTree();
 	renderForm();
 }
@@ -529,6 +690,7 @@ function cancelForm() {
 	state.selectedLayer = null;
 	state.selectedElement = null;
 	state.candidatePreview = null;
+	state.rotationFormOpen = false;
 	document.getElementById('element-form').innerHTML = '';
 	document.getElementById('form-title').textContent = 'Sélectionnez ou ajoutez une forme';
 	renderTree();
@@ -578,6 +740,7 @@ function renderForm() {
 	typeSelect.onchange = () => {
 		state.editingSubType = typeSelect.value;
 		state.candidateProperties = JSON.parse(JSON.stringify(DEFAULT_PROPERTIES[state.editingSubType]));
+		state.rotationFormOpen = false;
 		renderForm();
 	};
 	typeWrap.append(typeLbl, typeSelect);
@@ -595,12 +758,24 @@ function renderForm() {
 		else if (f.type === 'checkbox') renderCheckboxField(container, f.label, props, f.key, livePreview);
 	});
 
+	if (ROTATABLE_TYPES.has(state.editingSubType) && state.rotationFormOpen) {
+		renderRotationPanel(container, props);
+	}
+
 	const feedback = document.createElement('div');
 	feedback.id = 'form-feedback';
 	container.appendChild(feedback);
 
 	const btnRow = document.createElement('div');
 	btnRow.className = 'form-actions';
+	if (ROTATABLE_TYPES.has(state.editingSubType)) {
+		btnRow.append(
+			button('Rotation', () => {
+				state.rotationFormOpen = !state.rotationFormOpen;
+				renderForm();
+			})
+		);
+	}
 	btnRow.append(
 		button(isNew ? 'Ajouter' : 'Enregistrer la forme', submitElement, 'primary'),
 		button('Annuler', cancelForm)
@@ -608,6 +783,39 @@ function renderForm() {
 	container.appendChild(btnRow);
 
 	livePreview();
+}
+
+// Small popover-style form opened by the "Rotation" button: a single angle
+// input (degrees, positive = clockwise as displayed on screen) that stages
+// props.rotation on the candidate element, same as any other field — still
+// requires "Enregistrer la forme" to persist, and drives the live preview so
+// the rotation is visible immediately while typing.
+function renderRotationPanel(container, props) {
+	const panel = document.createElement('div');
+	panel.className = 'field rotation-panel';
+
+	const lbl = document.createElement('label');
+	lbl.textContent = 'Rotation (°, sens horaire = positif)';
+	panel.appendChild(lbl);
+
+	const input = document.createElement('input');
+	input.type = 'number';
+	input.step = 'any';
+	input.value = props.rotation ?? 0;
+	input.oninput = () => {
+		props.rotation = parseFloat(input.value) || 0;
+		livePreview();
+	};
+	panel.appendChild(input);
+
+	panel.appendChild(
+		button('Fermer', () => {
+			state.rotationFormOpen = false;
+			renderForm();
+		})
+	);
+
+	container.appendChild(panel);
 }
 
 function renderPointField(container, label, value, onChange, axes = ['x', 'y', 'z']) {
@@ -916,6 +1124,18 @@ function shapeToSvgElement(shape) {
 		el.setAttribute('d', d || 'M 0 0 Z');
 		el.setAttribute('class', 'shape');
 		return el;
+	}
+	if (shape.type === 'group') {
+		// A Block instance: its children were already rotated/translated
+		// server-side (ProjectService.extractGeometry), so each is just rendered
+		// with its own renderer and grouped, no extra transform needed here.
+		const g = document.createElementNS(SVG_NS, 'g');
+		g.setAttribute('class', 'shape-group');
+		(shape.shapes || []).forEach((child) => {
+			const childEl = shapeToSvgElement(child);
+			if (childEl) g.appendChild(childEl);
+		});
+		return g;
 	}
 	return null;
 }
@@ -1432,6 +1652,51 @@ function localShapeFromProperties(subType, props, dx, dy, baseShape) {
 	if (subType === 'HoleElement') {
 		return { type: 'hole', position: { x: props.position.x, y: props.position.y } };
 	}
+	if (subType === 'Block') {
+		// A block's own geometry (its resolved children) isn't reproducible
+		// client-side (it depends on the block library JSON), so a whole-shape
+		// drag instead translates the last server-rendered group by the drag
+		// offset, the same trick TextElement uses above for its glyph contours.
+		if (!baseShape || baseShape.type !== 'group') return null;
+		return translateShape(baseShape, dx, dy);
+	}
+	return null;
+}
+
+// Recursively translates a /api/preview shape by (dx, dy), used to redraw a
+// Block's group instantly while dragging (see localShapeFromProperties).
+function translateShape(shape, dx, dy) {
+	if (!shape) return null;
+	if (shape.type === 'polygon' || shape.type === 'polyline') {
+		return { type: shape.type, points: shape.points.map((p) => ({ x: p.x + dx, y: p.y + dy })) };
+	}
+	if (shape.type === 'circle') {
+		return { type: 'circle', center: { x: shape.center.x + dx, y: shape.center.y + dy }, radius: shape.radius };
+	}
+	if (shape.type === 'arc') {
+		return {
+			type: 'arc',
+			from: { x: shape.from.x + dx, y: shape.from.y + dy },
+			to: { x: shape.to.x + dx, y: shape.to.y + dy },
+			radius: shape.radius,
+			direction: shape.direction,
+		};
+	}
+	if (shape.type === 'bezier') {
+		return { type: 'bezier', points: shape.points.map((p) => ({ x: p.x + dx, y: p.y + dy })) };
+	}
+	if (shape.type === 'text' || shape.type === 'trace') {
+		return {
+			type: shape.type,
+			contours: (shape.contours || []).map((c) => c.map((p) => ({ x: p.x + dx, y: p.y + dy }))),
+		};
+	}
+	if (shape.type === 'hole') {
+		return { type: 'hole', position: { x: shape.position.x + dx, y: shape.position.y + dy } };
+	}
+	if (shape.type === 'group') {
+		return { type: 'group', shapes: (shape.shapes || []).map((child) => translateShape(child, dx, dy)) };
+	}
 	return null;
 }
 
@@ -1453,7 +1718,7 @@ function bodyApplyDelta(subType) {
 				p.x += dx;
 				p.y += dy;
 			});
-		} else if (subType === 'TextElement' || subType === 'HoleElement') {
+		} else if (subType === 'TextElement' || subType === 'HoleElement' || subType === 'Block') {
 			props.position.x += dx;
 			props.position.y += dy;
 		}
@@ -1768,3 +2033,4 @@ setupCanvasInteraction();
 
 refresh().catch((e) => toast(e.message, true));
 loadFontList();
+loadBlockList();

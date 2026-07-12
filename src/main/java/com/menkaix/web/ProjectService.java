@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.menkaix.elements.ArcPath;
 import com.menkaix.elements.BezierElement;
+import com.menkaix.elements.Block;
 import com.menkaix.elements.Circle;
 import com.menkaix.elements.Element;
 import com.menkaix.elements.PolyLineElement;
@@ -100,6 +101,21 @@ public class ProjectService {
 				definition.setPower(meta.getPower());
 			}
 			return definition;
+		}
+	}
+
+	// ---------------- Block libraries ----------------
+
+	public List<String> getBlockRepositories() {
+		synchronized (lock) {
+			return definition.getBlockRepositories();
+		}
+	}
+
+	public List<String> setBlockRepositories(List<String> urls) {
+		synchronized (lock) {
+			definition.setBlockRepositories(urls != null ? urls : new ArrayList<>());
+			return definition.getBlockRepositories();
 		}
 	}
 
@@ -357,10 +373,12 @@ public class ProjectService {
 			shape.put("direction", direction == null ? null : direction.toString());
 
 		} else if (resolved instanceof PolyLineElement) {
-			@SuppressWarnings("unchecked")
-			List<SimplePoint> points = (List<SimplePoint>) resolved.getProperty("points");
+			PolyLineElement polyLine = (PolyLineElement) resolved;
+			// Deliberately uses getGeometry() rather than the "points" property: the
+			// property holds the un-rotated, persisted points, while the geometry
+			// (rebuilt in reloadBehaviour()) reflects the element's current rotation.
 			shape.put("type", "polyline");
-			shape.put("points", toPointMaps(points));
+			shape.put("points", toPointMaps(polyLine.getGeometry().getPoints()));
 
 		} else if (resolved instanceof BezierElement) {
 			BezierElement bezier = (BezierElement) resolved;
@@ -392,6 +410,15 @@ public class ProjectService {
 			HoleElement hole = (HoleElement) resolved;
 			shape.put("type", "hole");
 			shape.put("position", toPointMap(hole.getPosition()));
+
+		} else if (resolved instanceof Block) {
+			Block block = (Block) resolved;
+			List<Map<String, Object>> children = new ArrayList<>();
+			for (Element child : block.getResolvedChildren()) {
+				children.add(extractGeometry(child));
+			}
+			shape.put("type", "group");
+			shape.put("shapes", children);
 
 		} else {
 			shape.put("type", "unknown");

@@ -11,6 +11,7 @@ import java.util.stream.Collectors; // Added for stream operations in logging
 import org.slf4j.Logger; // Added
 import org.slf4j.LoggerFactory; // Added
 
+import com.menkaix.elements.Block;
 import com.menkaix.elements.Element;
 import com.menkaix.elements.factory.ElementFactory;
 import com.menkaix.pcbgcode.utilities.DuplicateLayerNameException;
@@ -38,6 +39,9 @@ public class GcodeProjectDefinition implements Serializable {
 	private Double feedRate; //
 	private Double power; //
 
+	/** Git repository URLs to load block libraries from; see {@code BlockLibraryService}. */
+	private List<String> blockRepositories = new ArrayList<String>();
+
 	private class FactoryElementsRunnable implements Runnable {
 
 		List<Element> elementList;
@@ -63,6 +67,46 @@ public class GcodeProjectDefinition implements Serializable {
 				LOGGER.error("Missing property while creating element from base: {}", baseElement, e);
 			} catch (UnknownElementException e) {
 				LOGGER.error("Unknown element type encountered for base: {}", baseElement, e);
+			}
+
+		}
+
+	}
+
+	/**
+	 * A {@code Block} element does not resolve to a single native element like
+	 * every other subtype: it expands to a whole group of them. Its already
+	 * fully-resolved children (see {@code Block#getResolvedChildren()}) are
+	 * spliced into the layer's flat element list in its place, so downstream
+	 * per-layer logic (trace island merging in {@code TraceMerger}, tabs, the
+	 * G-code writer) sees plain native elements exactly as if the user had
+	 * added each of them individually - none of that logic needs to know
+	 * blocks exist.
+	 */
+	private class BlockExpansionRunnable implements Runnable {
+
+		List<Element> elementList;
+		Element baseElement;
+
+		public BlockExpansionRunnable(List<Element> list, Element base) {
+			elementList = list;
+			baseElement = base;
+		}
+
+		@Override
+		public void run() {
+
+			try {
+				Block resolved = (Block) ElementFactory.create(baseElement);
+
+				synchronized (elementList) {
+					elementList.addAll(resolved.getResolvedChildren());
+				}
+
+			} catch (MissingPropertyException e) {
+				LOGGER.error("Missing property while expanding block from base: {}", baseElement, e);
+			} catch (UnknownElementException e) {
+				LOGGER.error("Unknown block referenced by element: {}", baseElement, e);
 			}
 
 		}
@@ -97,8 +141,13 @@ public class GcodeProjectDefinition implements Serializable {
 			newLayer.setTabWidth(layer.getTabWidth());
 
 			for (Element elt : layer.getElements()) {
-				LOGGER.trace("Submitting element for creation: {}", elt);
-				executorService.execute(new FactoryElementsRunnable(newLayer.getElements(), elt));
+				if (Block.class.getSimpleName().equals(elt.getSubType())) {
+					LOGGER.trace("Submitting block for expansion: {}", elt);
+					executorService.execute(new BlockExpansionRunnable(newLayer.getElements(), elt));
+				} else {
+					LOGGER.trace("Submitting element for creation: {}", elt);
+					executorService.execute(new FactoryElementsRunnable(newLayer.getElements(), elt));
+				}
 			}
 
 			// Shutdown the executor service and wait for tasks to complete for this layer
@@ -216,6 +265,14 @@ public class GcodeProjectDefinition implements Serializable {
 
 	public void setPower(Double power) {
 		this.power = power;
+	}
+
+	public List<String> getBlockRepositories() {
+		return blockRepositories;
+	}
+
+	public void setBlockRepositories(List<String> blockRepositories) {
+		this.blockRepositories = blockRepositories;
 	}
 
 	public Layer getLayer(String string) {

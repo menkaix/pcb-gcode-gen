@@ -30,6 +30,13 @@ public class ArcPath extends Element {
 		SimplePoint from = pointFromMap(getProperty("from"));
 		SimplePoint to = pointFromMap(getProperty("to"));
 
+		double rotationDegrees = getRotationDegrees();
+		if (rotationDegrees != 0.0) {
+			SimplePoint pivot = SimplePoint.middle(from, to);
+			from = SimplePoint.rotate(from, pivot, rotationDegrees);
+			to = SimplePoint.rotate(to, pivot, rotationDegrees);
+		}
+
 		geometry = new PointCouple(from, to);
 
 		// setRadius((Double)getProperty("radius"));

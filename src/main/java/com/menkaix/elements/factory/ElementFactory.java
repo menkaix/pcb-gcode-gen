@@ -2,6 +2,7 @@ package com.menkaix.elements.factory;
 
 import com.menkaix.elements.ArcPath;
 import com.menkaix.elements.BezierElement;
+import com.menkaix.elements.Block;
 import com.menkaix.elements.Circle;
 import com.menkaix.elements.Element;
 import com.menkaix.elements.PolyLineElement;
@@ -53,6 +54,11 @@ public class ElementFactory {
 			return ans;
 		} else if (base.getSubType().equals(HoleElement.class.getSimpleName())) {
 			HoleElement ans = new HoleElement();
+			ans.setProperties(base.getProperties());
+			ans.reloadBehaviour();
+			return ans;
+		} else if (base.getSubType().equals(Block.class.getSimpleName())) {
+			Block ans = new Block();
 			ans.setProperties(base.getProperties());
 			ans.reloadBehaviour();
 			return ans;

@@ -12,3 +12,5 @@ target/
 build/
 bin/
 .vscode/
+blocks-cache/
+examples/block-library-sample/

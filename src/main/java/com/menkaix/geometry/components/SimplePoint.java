@@ -1,6 +1,7 @@
 package com.menkaix.geometry.components;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class SimplePoint implements Serializable{
 
@@ -106,7 +107,36 @@ public class SimplePoint implements Serializable{
 	public boolean equals(SimplePoint other, double epsilon) {
 		return distance(this, other)<=epsilon;
 	}
-	
+
+	public static SimplePoint centroid(List<SimplePoint> points) {
+		double sx = 0, sy = 0, sz = 0;
+		for (SimplePoint p : points) {
+			sx += p.x;
+			sy += p.y;
+			sz += p.z;
+		}
+		int n = points.size();
+		return new SimplePoint(sx / n, sy / n, sz / n);
+	}
+
+	/**
+	 * Rotates a point around a pivot by an angle in degrees, positive being
+	 * clockwise as displayed on screen (this project's mm coordinates are
+	 * Y-up; the UI flips Y back to Y-down for on-screen rendering, which is
+	 * why clockwise-on-screen is {@code cos, +sin / -sin, cos} here rather
+	 * than the textbook Y-up counter-clockwise-positive form).
+	 */
+	public static SimplePoint rotate(SimplePoint p, SimplePoint pivot, double angleDegreesClockwise) {
+		double rad = Math.toRadians(angleDegreesClockwise);
+		double cos = Math.cos(rad);
+		double sin = Math.sin(rad);
+		double dx = p.x - pivot.x;
+		double dy = p.y - pivot.y;
+		double nx = pivot.x + dx * cos + dy * sin;
+		double ny = pivot.y - dx * sin + dy * cos;
+		return new SimplePoint(nx, ny, p.z);
+	}
+
 
 	@Override
 	public String toString() {

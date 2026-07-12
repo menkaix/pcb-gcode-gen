@@ -54,6 +54,14 @@ public class TraceElement extends Element {
 			points.add(pointFromMap(object));
 		}
 
+		double rotationDegrees = getRotationDegrees();
+		if (rotationDegrees != 0.0) {
+			SimplePoint pivot = SimplePoint.centroid(points);
+			for (int i = 0; i < points.size(); i++) {
+				points.set(i, SimplePoint.rotate(points.get(i), pivot, rotationDegrees));
+			}
+		}
+
 		com.menkaix.project.behaviours.Geometry centerline;
 		if ("polyline".equals(baseType)) {
 			if (points.size() < 2) {

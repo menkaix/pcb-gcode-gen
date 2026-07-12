@@ -62,6 +62,15 @@ public class TextElement extends Element {
 		Font font = resolveFont(fontFamily, bold, italic, fontSize);
 		contours = glyphContours(font, text, position);
 
+		double rotationDegrees = getRotationDegrees();
+		if (rotationDegrees != 0.0) {
+			for (List<SimplePoint> contour : contours) {
+				for (int i = 0; i < contour.size(); i++) {
+					contour.set(i, SimplePoint.rotate(contour.get(i), position, rotationDegrees));
+				}
+			}
+		}
+
 		getBehaviours().clear();
 		for (List<SimplePoint> contour : contours) {
 			if (contour.size() < 3) {
@@ -148,7 +157,11 @@ public class TextElement extends Element {
 	 * here, once, at the source.
 	 */
 	private static SimplePoint toWorldPoint(double glyphX, double glyphY, SimplePoint position) {
-		return new SimplePoint(position.getX() + glyphX, position.getY() - glyphY, position.getZ());
+		// position.getZ() is null whenever the "position" property's JSON omits
+		// "z" (valid and common - see Element#pointFromMap, which treats z as
+		// optional everywhere else), so it can't be unboxed directly here.
+		double z = position.getZ() != null ? position.getZ() : 0.0;
+		return new SimplePoint(position.getX() + glyphX, position.getY() - glyphY, z);
 	}
 
 	public List<List<SimplePoint>> getContours() {

@@ -48,10 +48,24 @@ public class Rectangle extends Element {
 		Double width = (Double) getProperty("width");
 		Double height = (Double) getProperty("height");
 
-		geometry.addPoint(corner.getX(), corner.getY());
-		geometry.addPoint(corner.getX(), corner.getY() + height);
-		geometry.addPoint(corner.getX() + width, corner.getY() + height);
-		geometry.addPoint(corner.getX() + width, corner.getY());
+		SimplePoint p1 = new SimplePoint(corner.getX(), corner.getY());
+		SimplePoint p2 = new SimplePoint(corner.getX(), corner.getY() + height);
+		SimplePoint p3 = new SimplePoint(corner.getX() + width, corner.getY() + height);
+		SimplePoint p4 = new SimplePoint(corner.getX() + width, corner.getY());
+
+		double rotationDegrees = getRotationDegrees();
+		if (rotationDegrees != 0.0) {
+			SimplePoint center = new SimplePoint(corner.getX() + width / 2, corner.getY() + height / 2);
+			p1 = SimplePoint.rotate(p1, center, rotationDegrees);
+			p2 = SimplePoint.rotate(p2, center, rotationDegrees);
+			p3 = SimplePoint.rotate(p3, center, rotationDegrees);
+			p4 = SimplePoint.rotate(p4, center, rotationDegrees);
+		}
+
+		geometry.addPoint(p1.getX(), p1.getY());
+		geometry.addPoint(p2.getX(), p2.getY());
+		geometry.addPoint(p3.getX(), p3.getY());
+		geometry.addPoint(p4.getX(), p4.getY());
 
 	}
 

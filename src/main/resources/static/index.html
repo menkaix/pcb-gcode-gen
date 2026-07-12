@@ -51,6 +51,17 @@
 				<button id="btn-add-layer">+ Couche</button>
 			</div>
 			<div id="layer-tree"></div>
+
+			<div class="panel-header">
+				<h2>Bibliothèques de blocs</h2>
+				<button id="btn-reload-blocks" title="Cloner/mettre à jour les dépôts et rescanner les blocs">↻ Recharger</button>
+			</div>
+			<div id="block-repositories"></div>
+			<div class="block-repo-add">
+				<input id="block-repo-url" type="text" placeholder="URL du dépôt git (https://, ssh://, git@, ou chemin local)" />
+				<button id="btn-add-block-repo">+ Dépôt</button>
+			</div>
+			<div id="block-list" class="muted"></div>
 		</section>
 
 		<section id="preview-panel">
@@ -80,6 +91,7 @@
 
 	<div id="toast" class="hidden"></div>
 	<datalist id="font-list"></datalist>
+	<datalist id="block-list-datalist"></datalist>
 
 	<script src="app.js"></script>
 </body>
