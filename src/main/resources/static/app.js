@@ -2205,10 +2205,43 @@ document.getElementById('btn-export-gcode').onclick = async () => {
 	}
 };
 
-document.getElementById('btn-save').onclick = async () => {
+// Single-slot save in the browser's localStorage: saving always overwrites
+// the previous snapshot, loading pushes it back to the server like an import.
+const LOCAL_PROJECT_KEY = 'pcb-gcode-gen.project';
+
+document.getElementById('btn-save').onclick = () => {
 	try {
-		const result = await apiFetch('/api/project/save', { method: 'POST' });
-		toast(`Projet enregistré : ${result.savedJsonPath}`);
+		localStorage.setItem(LOCAL_PROJECT_KEY, JSON.stringify(state.project));
+		toast(`Projet « ${state.project.projectName || 'sans nom'} » enregistré dans le navigateur.`);
+	} catch (e) {
+		toast(`Impossible d'enregistrer le projet : ${e.message}`, true);
+	}
+};
+
+document.getElementById('btn-load').onclick = async () => {
+	const raw = localStorage.getItem(LOCAL_PROJECT_KEY);
+	if (raw === null) {
+		toast('Aucun projet enregistré dans le navigateur.', true);
+		return;
+	}
+	let parsed;
+	try {
+		parsed = JSON.parse(raw);
+	} catch (e) {
+		toast(`Sauvegarde illisible : ${e.message}`, true);
+		return;
+	}
+	const name = parsed.projectName || 'sans nom';
+	if (!(await confirmDialog(`Charger le projet « ${name} » ? Le projet en cours sera remplacé.`))) {
+		return;
+	}
+	try {
+		await apiFetch('/api/project', { method: 'PUT', body: JSON.stringify(parsed) });
+		// Same as importProjectFile(): indices from before the load may no
+		// longer point to anything meaningful, so drop any open selection.
+		cancelForm();
+		await refresh();
+		toast(`Projet « ${name} » chargé.`);
 	} catch (e) {
 		toast(e.message, true);
 	}
