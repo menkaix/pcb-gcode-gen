@@ -193,12 +193,34 @@ function toast(message, isError = false) {
 	}, 4000);
 }
 
-function button(label, onClick, cls = '', title = '') {
+// Returns an <svg><use> pointing into the inline sprite defined in index.html.
+function icon(name) {
+	const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+	svg.setAttribute('class', 'icon');
+	svg.setAttribute('aria-hidden', 'true');
+	const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
+	use.setAttribute('href', '#i-' + name);
+	svg.appendChild(use);
+	return svg;
+}
+
+// A button with an empty label but an icon becomes a square icon-only button
+// (.icon-btn); pass a `title` so it still has a tooltip and accessible name.
+function button(label, onClick, cls = '', title = '', iconName = '') {
 	const b = document.createElement('button');
-	b.textContent = label;
-	b.className = cls;
+	b.type = 'button';
+	if (iconName) b.appendChild(icon(iconName));
+	if (label) {
+		const span = document.createElement('span');
+		span.textContent = label;
+		b.appendChild(span);
+	}
+	b.className = iconName && !label ? `${cls} icon-btn`.trim() : cls;
 	b.onclick = onClick;
-	if (title) b.title = title;
+	if (title) {
+		b.title = title;
+		if (!label) b.setAttribute('aria-label', title);
+	}
 	return b;
 }
 
@@ -335,7 +357,7 @@ function renderBlockRepositories() {
 			item.appendChild(statusSpan);
 		}
 
-		item.appendChild(button('×', () => removeBlockRepository(index), 'danger'));
+		item.appendChild(button('', () => removeBlockRepository(index), 'danger small', 'Retirer ce dépôt', 'trash'));
 		container.appendChild(item);
 	});
 }
@@ -407,8 +429,9 @@ function buildLayerMenu(layerIndex, layer) {
 	details.className = 'row-menu';
 
 	const summary = document.createElement('summary');
-	summary.textContent = '⋯';
+	summary.appendChild(icon('more-h'));
 	summary.title = 'Plus d’actions';
+	summary.setAttribute('aria-label', 'Plus d’actions');
 	details.appendChild(summary);
 
 	const content = document.createElement('div');
@@ -417,7 +440,7 @@ function buildLayerMenu(layerIndex, layer) {
 		button('Modifier', () => {
 			details.open = false;
 			startEditLayer(layerIndex, layer);
-		})
+		}, '', '', 'pencil')
 	);
 	content.appendChild(
 		button(
@@ -426,7 +449,9 @@ function buildLayerMenu(layerIndex, layer) {
 				details.open = false;
 				deleteLayer(layerIndex);
 			},
-			'danger'
+			'danger',
+			'',
+			'trash'
 		)
 	);
 	details.appendChild(content);
@@ -480,19 +505,21 @@ function renderTree() {
 			passesSpan,
 			tabsSpan,
 			button(
-				hidden ? '🚫' : '👁',
+				'',
 				() => toggleLayerVisibility(li),
 				'small',
-				hidden ? 'Couche masquée (cliquer pour afficher)' : 'Couche visible (cliquer pour masquer)'
+				hidden ? 'Couche masquée (cliquer pour afficher)' : 'Couche visible (cliquer pour masquer)',
+				hidden ? 'eye-off' : 'eye'
 			),
 			button(
-				layer.excludeFromGcode ? '⛔' : '✅',
+				'',
 				() => toggleLayerGcodeExclusion(li, layer),
 				layer.excludeFromGcode ? 'danger small' : 'small',
-				layer.excludeFromGcode ? 'Exclue du G-code (cliquer pour inclure)' : 'Incluse dans le G-code (cliquer pour exclure)'
+				layer.excludeFromGcode ? 'Exclue du G-code (cliquer pour inclure)' : 'Incluse dans le G-code (cliquer pour exclure)',
+				layer.excludeFromGcode ? 'ban' : 'check-circle'
 			),
 			buildLayerMenu(li, layer),
-			button('+ Forme', () => startNewElement(li))
+			button('Forme', () => startNewElement(li), 'small', 'Ajouter une forme à cette couche', 'plus')
 		);
 		layerDiv.appendChild(header);
 
@@ -507,10 +534,10 @@ function renderTree() {
 			label.textContent = `${el.name} (${el.subType})`;
 			item.appendChild(label);
 			item.appendChild(
-				button('x', (e) => {
+				button('', (e) => {
 					e.stopPropagation();
 					deleteElement(li, ei);
-				}, 'danger small')
+				}, 'danger small', 'Supprimer cette forme', 'trash')
 			);
 			item.onclick = () => selectElement(li, ei);
 			list.appendChild(item);
@@ -658,7 +685,10 @@ function renderLayerForm() {
 
 	const btnRow = document.createElement('div');
 	btnRow.className = 'form-actions';
-	btnRow.append(button('Enregistrer la couche', submitLayerEdit, 'primary'), button('Annuler', cancelForm));
+	btnRow.append(
+		button('Enregistrer la couche', submitLayerEdit, 'primary', '', 'save'),
+		button('Annuler', cancelForm, '', '', 'x')
+	);
 	container.appendChild(btnRow);
 }
 
@@ -869,12 +899,12 @@ function renderForm() {
 			button('Rotation', () => {
 				state.rotationFormOpen = !state.rotationFormOpen;
 				renderForm();
-			})
+			}, '', '', 'rotate-cw')
 		);
 	}
 	btnRow.append(
-		button(isNew ? 'Ajouter' : 'Enregistrer la forme', submitElement, 'primary'),
-		button('Annuler', cancelForm)
+		button(isNew ? 'Ajouter' : 'Enregistrer la forme', submitElement, 'primary', '', isNew ? 'plus' : 'save'),
+		button('Annuler', cancelForm, '', '', 'x')
 	);
 	container.appendChild(btnRow);
 
@@ -905,10 +935,10 @@ function renderRotationPanel(container, props) {
 	panel.appendChild(input);
 
 	panel.appendChild(
-		button('Fermer', () => {
+		button('', () => {
 			state.rotationFormOpen = false;
 			renderForm();
-		})
+		}, 'small', 'Fermer le panneau de rotation', 'x')
 	);
 
 	container.appendChild(panel);
@@ -1029,19 +1059,19 @@ function renderPointListField(container, label, points, onChange) {
 			row.appendChild(input);
 		});
 		row.appendChild(
-			button('×', () => {
+			button('', () => {
 				points.splice(idx, 1);
 				renderForm();
-			}, 'danger small')
+			}, 'danger small', 'Supprimer ce point', 'trash')
 		);
 		wrap.appendChild(row);
 	});
 
 	wrap.appendChild(
-		button('+ point', () => {
+		button('Point', () => {
 			points.push({ x: 0, y: 0, z: 0 });
 			renderForm();
-		})
+		}, 'small', 'Ajouter un point', 'plus')
 	);
 	container.appendChild(wrap);
 }
@@ -2166,15 +2196,6 @@ document.getElementById('btn-export-project').onclick = () => {
 	downloadJson(`${name}.json`, state.project);
 };
 
-document.getElementById('btn-export-generated').onclick = async () => {
-	try {
-		const generated = await apiFetch('/api/project/generated');
-		downloadJson(`${generated.projectName || 'projet'}-generated.json`, generated);
-	} catch (e) {
-		toast(e.message, true);
-	}
-};
-
 document.getElementById('btn-export-gcode').onclick = async () => {
 	try {
 		const result = await apiFetch('/api/project/gcode');
@@ -2188,15 +2209,6 @@ document.getElementById('btn-save').onclick = async () => {
 	try {
 		const result = await apiFetch('/api/project/save', { method: 'POST' });
 		toast(`Projet enregistré : ${result.savedJsonPath}`);
-	} catch (e) {
-		toast(e.message, true);
-	}
-};
-
-document.getElementById('btn-generate').onclick = async () => {
-	try {
-		const result = await apiFetch('/api/project/generate', { method: 'POST' });
-		toast(`G-code généré : ${result.gcodePath}`);
 	} catch (e) {
 		toast(e.message, true);
 	}
@@ -2281,7 +2293,9 @@ fileMenuToggle.addEventListener('click', () => {
 // Any action inside the menu (import/export) should close it, same as a
 // native <select> or menu closes after picking an item.
 fileMenuContent.addEventListener('click', (e) => {
-	if (e.target.tagName === 'BUTTON') closeFileMenu();
+	// closest() rather than tagName: the buttons contain <svg>/<span> children,
+	// so e.target is usually one of those, not the <button> itself.
+	if (e.target.closest('button')) closeFileMenu();
 });
 
 document.addEventListener('click', (e) => {

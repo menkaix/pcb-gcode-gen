@@ -2,79 +2,56 @@
   "bitHead": "ROUTER",
   "layers": [
     {
-      "layerName": "default",
+      "layerName": "decoupe",
       "passes": 100,
-      "elements": [
-        {
-          "name": "Rectangle",
-          "subType": "Rectangle",
-          "properties": {
-            "corner": {
-              "x": 10.0,
-              "y": 5.0,
-              "z": 0.0
-            },
-            "width": 12.5,
-            "height": 17.5
-          }
-        },
-        {
-          "name": "Circle",
-          "subType": "Circle",
-          "properties": {
-            "center": {
-              "x": 30.0,
-              "y": 21.0,
-              "z": 0.0
-            },
-            "radius": 2.5
-          }
-        }
-      ]
+      "tabsEnabled": false,
+      "tabCount": 4,
+      "tabWidth": 2.0,
+      "excludeFromGcode": false,
+      "holeDepth": 0.0,
+      "elements": []
     },
     {
       "layerName": "labels",
       "passes": 1,
+      "tabsEnabled": false,
+      "tabCount": 0,
+      "tabWidth": 0.0,
+      "excludeFromGcode": false,
+      "holeDepth": 0.0,
       "elements": [
         {
-          "name": "ArcPath",
-          "subType": "ArcPath",
+          "name": "TextElement",
+          "subType": "TextElement",
           "properties": {
-            "from": {
-              "x": 30.0,
-              "y": 10.0,
+            "fontFamily": "SansSerif",
+            "rotation": 0.0,
+            "fontSize": 3.0,
+            "position": {
+              "x": 9.60385513305664,
+              "y": 15.539430022239685,
               "z": 0.0
             },
-            "to": {
-              "x": 35.0,
-              "y": 15.0,
-              "z": 0.0
-            },
-            "radius": 12.0,
-            "direction": "CLOCKWISE"
+            "text": "Ground",
+            "bold": false,
+            "italic": false
           }
         },
         {
-          "name": "PolyLineElement",
-          "subType": "PolyLineElement",
+          "name": "TextElement",
+          "subType": "TextElement",
           "properties": {
-            "points": [
-              {
-                "x": 30.0,
-                "y": 10.0,
-                "z": 0.0
-              },
-              {
-                "x": 45.0,
-                "y": 12.0,
-                "z": 0.0
-              },
-              {
-                "x": 35.0,
-                "y": 15.0,
-                "z": 0.0
-              }
-            ]
+            "fontFamily": "SansSerif",
+            "rotation": 0.0,
+            "fontSize": 3.0,
+            "position": {
+              "x": 9.932257652282715,
+              "y": 24.1100115776062,
+              "z": 0.0
+            },
+            "text": "RUPT",
+            "bold": false,
+            "italic": false
           }
         }
       ]
